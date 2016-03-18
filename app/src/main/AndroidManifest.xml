@@ -11,7 +11,7 @@
             android:name="com.amap.api.v2.apikey"
             android:value="f98e237fe322fdcd33073cc1502b0496"/>
         <activity
-            android:name=".MainActivity"
+            android:name=".ReleaseRecall"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,6 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MainActivity"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
