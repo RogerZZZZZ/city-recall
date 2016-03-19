@@ -25,6 +25,7 @@ android {
 }
 
 dependencies {
+    compile project(':slidelibrary')
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile files('libs/AMap_2DMap_V2.8.1_20160202.jar')
@@ -38,4 +39,6 @@ dependencies {
     compile files('libs/okhttp-2.6.0-leancloud.jar')
     compile files('libs/okio-1.6.0-leancloud.jar')
     compile files('libs/protobuf-java-2.6.1.jar')
+    compile files('libs/volley-sources.jar')
+    compile files('libs/volley.jar')
 }

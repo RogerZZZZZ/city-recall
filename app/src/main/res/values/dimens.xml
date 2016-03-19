@@ -11,4 +11,7 @@
 
     <!-- custom -->
     <dimen name="width_grid_image">88dp</dimen>
+
+    <dimen name="slidingmenu_offset">60dp</dimen>
+    <dimen name="shadow_width">5dp</dimen>
 </resources>
