@@ -40,14 +40,12 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
 
     private EditText et_write_status;
     private WrapHeightGridView gv_write_status;
-    private View include_retweeted_status_card;
-    private ImageView iv_rstatus_img;
-    private TextView tv_rstatus_username;
-    private TextView tv_rstatus_content;
 
     private ImageView iv_image;
     private ImageView iv_emoji;
     private ImageView iv_add;
+    private TextView titlebar_tv_left;
+    private TextView titlebar_tv_right;
 
     private LinearLayout ll_emotion_dashboard;
     private ViewPager vp_emotion_dashboard;
@@ -76,7 +74,9 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                 .setRightText("发送")
                 .setRightOnClickListener(this)
                 .build();
-
+        //顶部
+        titlebar_tv_left = (TextView) findViewById(R.id.titlebar_tv_left);
+        titlebar_tv_right = (TextView) findViewById(R.id.titlebar_tv_right);
         //输入框
         et_write_status = (EditText) findViewById(R.id.et_write_status);
         //添加的九宫格图片
@@ -96,20 +96,20 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
         gv_write_status.setAdapter(statusGridImgsAdapter);
         gv_write_status.setOnItemClickListener(this);
 
+        titlebar_tv_left.setOnClickListener(this);
+        titlebar_tv_right.setOnClickListener(this);
         iv_image.setOnClickListener(this);
         iv_add.setOnClickListener(this);
         iv_emoji.setOnClickListener(this);
     }
 
+    //ToDo 发送逻辑
     private void sendStatus(){
         String comment = et_write_status.getText().toString();
         if(TextUtils.isEmpty(comment)){
             ToastUtils.showToast(this, "发送内容不能为空", Toast.LENGTH_SHORT);
             return;
         }
-
-
-
     }
 
     //初始化表情面板内容
@@ -154,17 +154,6 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
         }
     }
 
-//    private void showIfNeedEditDialog(final Uri imageUri){
-//        DialogUtils.showListDialog(this, "是否需要编辑图片", new String[]{"编辑图片", "使用原图"}, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int which) {
-//                if(which == 0) {
-//                    Intent int
-//                }
-//            }
-//        });
-//    }
-
     //创建显示表情的GridView
     private GridView createEmotionGridView(List<String> emotionNames, int gvWidth, int padding, int itemWidth, int gvHeight){
         GridView gv = new GridView(this);
@@ -186,10 +175,10 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
     @Override
     public void onClick(View view) {
         switch(view.getId()){
-            case R.id.titlebar_iv_left:
-                ToastUtils.showToast(ReleaseRecall.this, "title_bar_left", Toast.LENGTH_SHORT);
+            case R.id.titlebar_tv_left:
+                finish();
                 break;
-            case R.id.titlebar_iv_right:
+            case R.id.titlebar_tv_right:
                 ToastUtils.showToast(ReleaseRecall.this, "title_bar_right", Toast.LENGTH_SHORT);
                 break;
             case R.id.iv_image:

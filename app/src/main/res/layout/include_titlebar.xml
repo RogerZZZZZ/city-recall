@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_titlebar"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="56dp"
     android:background="@drawable/navigationbar_background"
     android:orientation="horizontal" >
 
@@ -58,5 +58,11 @@
         android:layout_height="1px"
         android:layout_alignParentBottom="true"
         android:background="@color/bg_agray" />
+
+    <View
+        android:background="#D3D3D3"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp">
+    </View>
 
 </RelativeLayout>

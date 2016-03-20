@@ -29,4 +29,8 @@
     <color name="bg_gray_bar">#f9f9f9</color>
     <color name="divider_gray">#d7d7d7</color>
 
+    <color name="confirm_regist_error">#ffd39b</color>
+    <color name="confirm_regist_correct">#ffb90f</color>
+    <color name="edittext_bg">#fffaf0</color>
+
 </resources>
