@@ -14,6 +14,7 @@
         android:background="@drawable/editext_bg"
         android:hint="用户名"
         android:textSize="14dp"
+        android:maxLines="1"
         android:textColorHint="@color/txt_light_gray"/>
 
     <EditText
@@ -23,9 +24,11 @@
         android:layout_marginTop="15dp"
         android:padding="10dp"
         style="@style/TextViewSubhead"
+        android:inputType="textPassword"
         android:background="@drawable/editext_bg"
         android:hint="密码"
         android:textSize="14dp"
+        android:maxLines="1"
         android:textColorHint="@color/txt_light_gray"/>
 
     <EditText
@@ -34,10 +37,25 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:padding="12dp"
+        android:inputType="textPassword"
         style="@style/TextViewSubhead"
         android:background="@drawable/editext_bg"
         android:hint="确认密码"
         android:textSize="14dp"
+        android:maxLines="1"
+        android:textColorHint="@color/txt_light_gray"/>
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:padding="12dp"
+        style="@style/TextViewSubhead"
+        android:background="@drawable/editext_bg"
+        android:hint="邮箱（可选）"
+        android:textSize="14dp"
+        android:maxLines="1"
         android:textColorHint="@color/txt_light_gray"/>
 
     <LinearLayout
@@ -54,9 +72,22 @@
             android:layout_height="40dp" />
 
         <Button
+            android:id="@+id/confirm_regist_notReady"
+            android:layout_weight="18"
+            android:layout_width="0dp"
+            android:textSize="16dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/confirm_regist_not_ready"
+            android:text="确认注册"
+            android:textColor="@color/white"
+            android:layout_height="40dp" />
+
+        <Button
             android:id="@+id/confirm_regist"
             android:layout_weight="18"
             android:layout_width="0dp"
+            android:visibility="gone"
             android:textSize="16dp"
             android:layout_gravity="center"
             android:gravity="center"
@@ -69,7 +100,6 @@
             android:background="@color/bg_gray"
             android:layout_width="0dp"
             android:layout_weight="1"
-
             android:layout_height="40dp" />
 
         </LinearLayout>

@@ -12,8 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVUser;
+import com.example.rogerzzzz.cityrecall.LoginActivity;
 import com.example.rogerzzzz.cityrecall.R;
-import com.example.rogerzzzz.cityrecall.RegistActivity;
 import com.example.rogerzzzz.cityrecall.ReleaseRecall;
 import com.example.rogerzzzz.cityrecall.adapter.LeftMenuAdapter;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
@@ -45,14 +46,15 @@ public class HomePageLeftMenu extends Fragment implements AdapterView.OnItemClic
             switch(position){
                 case 0:
                     ToastUtils.showToast(getActivity(), "personal information", Toast.LENGTH_SHORT);
+                    AVUser.logOut();
+                    Intent intent2 = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(intent2);
                     break;
                 case 1:
                     ToastUtils.showToast(getActivity(), "personal collection", Toast.LENGTH_SHORT);
                     break;
                 case 2:
                     ToastUtils.showToast(getActivity(), "Setting", Toast.LENGTH_SHORT);
-                    Intent intent1 = new Intent(getActivity(), RegistActivity.class);
-                    startActivity(intent1);
                     break;
                 case 3:
                     Intent intent = new Intent(getActivity(), ReleaseRecall.class);

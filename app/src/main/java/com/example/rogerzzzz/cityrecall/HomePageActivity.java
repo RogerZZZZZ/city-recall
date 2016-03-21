@@ -8,6 +8,7 @@ import android.view.Window;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.MapView;
 import com.example.rogerzzzz.cityrecall.fragment.HomePageLeftMenu;
+import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
@@ -25,6 +26,7 @@ public class HomePageActivity extends SlidingFragmentActivity {
         setContentView(R.layout.activity_homepage);
         initLeftMenu();
         initMap(savedInstanceState);
+        UserUtils.initCloudService(HomePageActivity.this);
     }
 
     private void initLeftMenu(){

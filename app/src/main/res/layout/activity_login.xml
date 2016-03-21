@@ -1,6 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/orange"
     android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_marginTop="50dp"
+        android:layout_width="100dp"
+        android:src="@drawable/img_loading"
+        android:layout_gravity="center"
+        android:layout_height="80dp" />
+
+    <LinearLayout
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:visibility="invisible"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="50dp" />
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:background="@drawable/login_edittext"
+            android:hint="用户名"
+            android:textColorHint="@color/txt_light_gray"
+            android:textSize="16sp"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:padding="10dp"
+            android:layout_height="50dp" />
+
+        <Button
+            android:visibility="invisible"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="50dp" />
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:visibility="invisible"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="50dp" />
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:background="@drawable/login_edittext"
+            android:hint="密码"
+            android:textColorHint="@color/txt_light_gray"
+            android:textSize="16sp"
+            android:maxLines="1"
+            android:inputType="textPassword"
+            android:textColor="@color/white"
+            android:padding="10dp"
+            android:layout_height="50dp" />
+
+        <Button
+            android:visibility="invisible"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:visibility="invisible"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="50dp" />
+
+        <Button
+            android:id="@+id/confirm_login"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:background="@drawable/login_edittext"
+            android:textColorHint="@color/txt_light_gray"
+            android:textSize="16sp"
+            android:text="登陆"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:layout_height="50dp" />
+
+        <Button
+            android:visibility="invisible"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/registerBtn"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="注册"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

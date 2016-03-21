@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.Window;
 
@@ -56,7 +57,6 @@ public class RegistActivity extends FragmentActivity implements View.OnClickList
             }
         };
         viewPager.setAdapter(fragmentPagerAdapter);
-
     }
 
     @Override
@@ -64,8 +64,8 @@ public class RegistActivity extends FragmentActivity implements View.OnClickList
         switch (view.getId()){
             case R.id.titlebar_tv_left:
                 finish();
-//                viewPager.setCurrentItem(1);
         }
 
     }
+
 }
