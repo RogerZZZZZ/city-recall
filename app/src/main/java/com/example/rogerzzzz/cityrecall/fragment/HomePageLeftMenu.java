@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVUser;
@@ -18,12 +20,15 @@ import com.example.rogerzzzz.cityrecall.R;
 import com.example.rogerzzzz.cityrecall.ReleaseRecall;
 import com.example.rogerzzzz.cityrecall.adapter.LeftMenuAdapter;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
+import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 
 /**
  * Created by rogerzzzz on 16/3/19.
  */
-public class HomePageLeftMenu extends Fragment implements AdapterView.OnItemClickListener{
+public class HomePageLeftMenu extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener{
     private View view;
+    private TextView textView;
+    private ImageView imageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,8 +38,19 @@ public class HomePageLeftMenu extends Fragment implements AdapterView.OnItemClic
 
         LeftMenuAdapter leftMenuAdapter = new LeftMenuAdapter(getActivity(), R.layout.left_menu_item);
         ListView listView = (ListView) view.findViewById(R.id.menu_item_list);
+        textView = (TextView) view.findViewById(R.id.user_username);
+        imageView = (ImageView) view.findViewById(R.id.potrait_icon);
         listView.setAdapter(leftMenuAdapter);
         listView.setOnItemClickListener(this);
+
+        imageView.setOnClickListener(this);
+
+        AVUser currentUser = AVUser.getCurrentUser();
+        if(UserUtils.isUserLogin()){
+            textView.setText(currentUser.getUsername());
+        }else{
+            textView.setText("登陆/注册");
+        }
 
         return view;
     }
@@ -63,6 +79,15 @@ public class HomePageLeftMenu extends Fragment implements AdapterView.OnItemClic
                 default:
                     break;
             }
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()){
+            case R.id.potrait_icon:
+                //Todo 个人信息页面
+                break;
         }
     }
 }
