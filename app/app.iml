@@ -90,6 +90,7 @@
     <orderEntry type="library" exported="" name="AMap_Search_V3.2.1_20160308" level="project" />
     <orderEntry type="library" exported="" name="AMap_Navi_v1.7.0.1_20160203" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
+    <orderEntry type="library" exported="" name="AMap_Location_V2.4.0_20160308" level="project" />
     <orderEntry type="library" exported="" name="AMap_2DMap_V2.8.1_20160202" level="project" />
     <orderEntry type="library" exported="" name="okio-1.6.0-leancloud" level="project" />
     <orderEntry type="library" exported="" name="protobuf-java-2.6.1" level="project" />

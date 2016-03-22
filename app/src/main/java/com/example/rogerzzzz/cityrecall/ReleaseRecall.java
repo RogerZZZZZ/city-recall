@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -18,6 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.example.rogerzzzz.cityrecall.adapter.EmotionGvAdapter;
 import com.example.rogerzzzz.cityrecall.adapter.EmotionPagerAdapter;
 import com.example.rogerzzzz.cityrecall.adapter.WriteStatusGridImgsAdapter;
@@ -28,8 +33,10 @@ import com.example.rogerzzzz.cityrecall.utils.ImageUtils;
 import com.example.rogerzzzz.cityrecall.utils.StringUtils;
 import com.example.rogerzzzz.cityrecall.utils.TitleBuilder;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
+import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.widget.WrapHeightGridView;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +75,7 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
     private void initView(){
         //标题栏
         new TitleBuilder(this)
-                .setTitleText("发微博")
+                .setTitleText("新动态")
                 .setLeftText("取消")
                 .setLeftOnClickListener(this)
                 .setRightText("发送")
@@ -104,12 +111,43 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
     }
 
     //ToDo 发送逻辑
-    private void sendStatus(){
+    private void sendStatus() throws FileNotFoundException, AVException {
         String comment = et_write_status.getText().toString();
         if(TextUtils.isEmpty(comment)){
             ToastUtils.showToast(this, "发送内容不能为空", Toast.LENGTH_SHORT);
             return;
         }
+
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                UserUtils.initCloudService(ReleaseRecall.this);
+                try {
+                    ArrayList<String> arr = UserUtils.savePic(imgUri, ReleaseRecall.this);
+                    AVQuery<AVObject> query = new AVQuery<AVObject>("_File");
+                    Log.d("arr---->", arr.size() +"");
+                    query.whereContainedIn("name", arr);
+                    query.findInBackground(new FindCallback<AVObject>() {
+                        @Override
+                        public void done(List<AVObject> avObjects, AVException e) {
+                            Log.d("成功", avObjects.size() + "");
+                            if(e == null && avObjects.size() > 0){
+                                Log.d("成功", avObjects.get(0).get("url") + "");
+                            } else if(e != null){
+                                Log.d("失败", e.getMessage());
+                            }else{
+                                Log.d("lasdl---->", "';';'");
+                            }
+                        }
+                    });
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (AVException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     //初始化表情面板内容
@@ -180,6 +218,13 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                 break;
             case R.id.titlebar_tv_right:
                 ToastUtils.showToast(ReleaseRecall.this, "title_bar_right", Toast.LENGTH_SHORT);
+                try {
+                    sendStatus();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (AVException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.iv_image:
                 DialogUtils.showImagePickDialog(this);

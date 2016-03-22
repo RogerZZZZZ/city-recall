@@ -15,8 +15,8 @@ import com.example.rogerzzzz.cityrecall.R;
 public class LeftMenuAdapter extends BaseAdapter {
     private Context context;
     private int resourceId;
-    private int[] settingIcons = new int[]{R.drawable.iconfont_detail, R.drawable.iconfont_detailcollected, R.drawable.iconfont_setting, R.drawable.iconfont_write};
-    private String[] settingNames = new String[]{"个人信息", "个人收藏", "设置", "发送新动态"};
+    private int[] settingIcons = new int[]{R.drawable.iconfont_detail, R.drawable.iconfont_detailcollected, R.drawable.iconfont_setting, R.drawable.iconfont_write, R.drawable.iconfont_logout};
+    private String[] settingNames = new String[]{"个人信息", "个人收藏", "设置", "发送新动态", "登出"};
 
     public LeftMenuAdapter(Context context, int viewResourseId){
         this.context = context;
