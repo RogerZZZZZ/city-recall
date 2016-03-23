@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +14,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.FindCallback;
 import com.example.rogerzzzz.cityrecall.LoginActivity;
 import com.example.rogerzzzz.cityrecall.R;
 import com.example.rogerzzzz.cityrecall.ReleaseRecall;
 import com.example.rogerzzzz.cityrecall.adapter.LeftMenuAdapter;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
-
-import java.util.List;
 
 /**
  * Created by rogerzzzz on 16/3/19.
@@ -78,20 +71,6 @@ public class HomePageLeftMenu extends Fragment implements AdapterView.OnItemClic
                     break;
                 case 2:
                     ToastUtils.showToast(getActivity(), "Setting", Toast.LENGTH_SHORT);
-                    AVQuery<AVObject> query = new AVQuery<AVObject>("_File");
-                    query.whereEqualTo("key", "S576ua9JdEnMpU35FLGgIbFzYt6G2STAvk2IMaEx");
-                    query.findInBackground(new FindCallback<AVObject>() {
-                        @Override
-                        public void done(List<AVObject> avObjects, AVException e) {
-                            if(e == null){
-                                Log.d("成功", avObjects.size() + "");
-                                Log.d("成功", avObjects.get(0).get("url") + "");
-                            } else {
-                                Log.d("失败", e.getMessage());
-                            }
-                        }
-                    });
-
                     break;
                 case 3:
                     Intent intent = new Intent(getActivity(), ReleaseRecall.class);

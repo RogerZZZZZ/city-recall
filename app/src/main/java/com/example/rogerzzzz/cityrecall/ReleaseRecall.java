@@ -99,7 +99,7 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("发送中..");
 
-        statusGridImgsAdapter = new WriteStatusGridImgsAdapter(this, imgUri, gv_write_status);
+        statusGridImgsAdapter = new WriteStatusGridImgsAdapter(this, imgUri, gv_write_status, ReleaseRecall.this);
         gv_write_status.setAdapter(statusGridImgsAdapter);
         gv_write_status.setOnItemClickListener(this);
 
@@ -126,18 +126,16 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                 try {
                     ArrayList<String> arr = UserUtils.savePic(imgUri, ReleaseRecall.this);
                     AVQuery<AVObject> query = new AVQuery<AVObject>("_File");
-                    Log.d("arr---->", arr.size() +"");
                     query.whereContainedIn("name", arr);
                     query.findInBackground(new FindCallback<AVObject>() {
                         @Override
                         public void done(List<AVObject> avObjects, AVException e) {
                             Log.d("成功", avObjects.size() + "");
                             if(e == null && avObjects.size() > 0){
-                                Log.d("成功", avObjects.get(0).get("url") + "");
+                                String urlString = StringUtils.arrayListToString(avObjects);
+                                Log.d("成功", urlString + "");
                             } else if(e != null){
                                 Log.d("失败", e.getMessage());
-                            }else{
-                                Log.d("lasdl---->", "';';'");
                             }
                         }
                     });

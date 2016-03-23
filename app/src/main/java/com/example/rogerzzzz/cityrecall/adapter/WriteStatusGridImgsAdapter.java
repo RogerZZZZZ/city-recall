@@ -1,7 +1,10 @@
 package com.example.rogerzzzz.cityrecall.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.rogerzzzz.cityrecall.R;
+import com.example.rogerzzzz.cityrecall.utils.BitmapUtils;
+import com.example.rogerzzzz.cityrecall.utils.ImageUtils;
 
 import java.util.ArrayList;
 
@@ -21,11 +26,13 @@ public class WriteStatusGridImgsAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Uri> datas;
     private GridView gv;
+    private Activity activity;
 
-    public WriteStatusGridImgsAdapter(Context context, ArrayList<Uri> datas, GridView gv) {
+    public WriteStatusGridImgsAdapter(Context context, ArrayList<Uri> datas, GridView gv, Activity activity) {
         this.context = context;
         this.datas = datas;
         this.gv = gv;
+        this.activity = activity;
     }
 
     @Override
@@ -67,8 +74,9 @@ public class WriteStatusGridImgsAdapter extends BaseAdapter {
         if(position < getCount() - 1) {
             // set data
             Uri item = getItem(position);
-            holder.iv_image.setImageURI(item);
-
+            String path = ImageUtils.getImageAbsolutePath(activity, item);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(BitmapUtils.decodeBitmap(path), 0, BitmapUtils.decodeBitmap(path).length);
+            holder.iv_image.setImageBitmap(bitmap);
             holder.iv_delete_image.setVisibility(View.VISIBLE);
             holder.iv_delete_image.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -21,10 +21,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVObject;
 import com.example.rogerzzzz.cityrecall.MainActivity;
 import com.example.rogerzzzz.cityrecall.R;
 import com.example.rogerzzzz.cityrecall.enity.Emotion;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -195,4 +197,13 @@ public class StringUtils {
 
 	}
 
+    public static String arrayListToString(List<AVObject> arrayList){
+        String returnString = arrayList.get(0).get("url").toString();
+        int len = arrayList.size(),
+            i;
+        for(i = 1; i < len; i++){
+            returnString += "," + arrayList.get(i).get("url").toString();
+        }
+        return returnString;
+    }
 }
