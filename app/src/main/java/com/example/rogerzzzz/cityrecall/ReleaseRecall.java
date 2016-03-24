@@ -22,7 +22,9 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.example.rogerzzzz.cityrecall.adapter.EmotionGvAdapter;
 import com.example.rogerzzzz.cityrecall.adapter.EmotionPagerAdapter;
 import com.example.rogerzzzz.cityrecall.adapter.WriteStatusGridImgsAdapter;
@@ -112,7 +114,8 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
 
     //ToDo 发送逻辑
     private void sendStatus() throws FileNotFoundException, AVException {
-        String comment = et_write_status.getText().toString();
+        final String comment = et_write_status.getText().toString();
+        final AVUser currentUser = AVUser.getCurrentUser();
         if(TextUtils.isEmpty(comment)){
             ToastUtils.showToast(this, "发送内容不能为空", Toast.LENGTH_SHORT);
             return;
@@ -130,13 +133,24 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                     query.findInBackground(new FindCallback<AVObject>() {
                         @Override
                         public void done(List<AVObject> avObjects, AVException e) {
-                            Log.d("成功", avObjects.size() + "");
+                            String urlString = "";
                             if(e == null && avObjects.size() > 0){
-                                String urlString = StringUtils.arrayListToString(avObjects);
+                                urlString = StringUtils.arrayListToString(avObjects);
                                 Log.d("成功", urlString + "");
                             } else if(e != null){
                                 Log.d("失败", e.getMessage());
                             }
+
+                            AVObject recallItem = new AVObject("ReCall");
+                            recallItem.put("username", currentUser.getUsername());
+                            recallItem.put("content", comment);
+                            recallItem.put("picString", urlString);
+                            recallItem.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(AVException e) {
+
+                                }
+                            });
                         }
                     });
                 } catch (FileNotFoundException e) {

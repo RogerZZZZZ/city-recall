@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +15,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.avos.avoscloud.AVUser;
 import com.example.rogerzzzz.cityrecall.LoginActivity;
 import com.example.rogerzzzz.cityrecall.R;
 import com.example.rogerzzzz.cityrecall.ReleaseRecall;
 import com.example.rogerzzzz.cityrecall.adapter.LeftMenuAdapter;
+import com.example.rogerzzzz.cityrecall.bean.MapItemBean;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
+import com.example.rogerzzzz.cityrecall.utils.VolleyErrorHelper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by rogerzzzz on 16/3/19.
@@ -71,6 +85,7 @@ public class HomePageLeftMenu extends Fragment implements AdapterView.OnItemClic
                     break;
                 case 2:
                     ToastUtils.showToast(getActivity(), "Setting", Toast.LENGTH_SHORT);
+                    volleyPost();
                     break;
                 case 3:
                     Intent intent = new Intent(getActivity(), ReleaseRecall.class);
@@ -94,5 +109,50 @@ public class HomePageLeftMenu extends Fragment implements AdapterView.OnItemClic
                 //Todo 个人信息页面
                 break;
         }
+    }
+
+    private void volleyPost(){
+        String url = "http://yuntuapi.amap.com/datamanage/data/create";
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("aa", response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("bb", VolleyErrorHelper.getMessage(error, getActivity()));
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                AVUser currentUser = AVUser.getCurrentUser();
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("key", "5b53128b4f4b0f122d198544defe6c59");
+                map.put("tableid", "56e908e4305a2a32886fcb10");
+                map.put("locType", "1");
+
+                MapItemBean mapItemBean = new MapItemBean();
+                mapItemBean.set_name("myCity");
+                mapItemBean.set_address("myCity");
+                mapItemBean.setContent("asd");
+                mapItemBean.set_location("104.394729,31.125698");
+                mapItemBean.setUsername(currentUser.getUsername());
+                String data = JSON.toJSONString(mapItemBean);
+                Log.i("data", data);
+                map.put("data", data);
+                return map;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/x-www-form-urlencoded");
+                return headers;
+            }
+        };
+//        request.setTag("mapRequest");
+        requestQueue.add(request);
     }
 }

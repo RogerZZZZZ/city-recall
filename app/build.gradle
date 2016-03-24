@@ -42,4 +42,5 @@ dependencies {
     compile files('libs/volley-sources.jar')
     compile files('libs/volley.jar')
     compile files('libs/AMap_Location_V2.4.0_20160308.jar')
+    compile files('libs/gson.jar')
 }
