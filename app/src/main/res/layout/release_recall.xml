@@ -40,6 +40,30 @@
                 android:verticalSpacing="8dp">
                 </com.example.rogerzzzz.cityrecall.widget.WrapHeightGridView>
 
+            <LinearLayout
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="5dp"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@drawable/icon_gcoding"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+
+                <TextView
+                    android:maxWidth="200dp"
+                    android:id="@+id/location_tv"
+                    android:textColor="@color/txt_black"
+                    android:textSize="14dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:text="正在定位"
+                    android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
                <com.amap.api.maps2d.MapView
                    android:id="@+id/map"
                    android:layout_width="0dp"

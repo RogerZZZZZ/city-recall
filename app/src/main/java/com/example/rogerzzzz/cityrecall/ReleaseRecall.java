@@ -80,6 +80,7 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
     private WriteStatusGridImgsAdapter statusGridImgsAdapter;
     private ArrayList<Uri> imgUri = new ArrayList<Uri>();
     private EmotionPagerAdapter emotionPagerAdapter;
+    private TextView address_tv;
 
     private MapView mapView;
     private AMap aMap;
@@ -127,6 +128,8 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
         //进度条
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("发送中..");
+        //定位
+        address_tv = (TextView) findViewById(R.id.location_tv);
 
         statusGridImgsAdapter = new WriteStatusGridImgsAdapter(this, imgUri, gv_write_status, ReleaseRecall.this);
         gv_write_status.setAdapter(statusGridImgsAdapter);
@@ -152,6 +155,9 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
 
     //ToDo 发送逻辑
     private void sendStatus() throws FileNotFoundException, AVException {
+        final ProgressDialog progressDialog = (ProgressDialog) DialogUtils.createLoadingDialog(ReleaseRecall.this);
+        progressDialog.show();
+
         final String comment = et_write_status.getText().toString();
         final AVUser currentUser = AVUser.getCurrentUser();
         if (TextUtils.isEmpty(comment)) {
@@ -185,7 +191,6 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                                             String urlString = "";
                                             if (e == null && avObjects.size() > 0) {
                                                 urlString = StringUtils.arrayListToString(avObjects);
-                                                Log.d("成功", urlString + "");
                                             } else if (e != null) {
                                                 Log.d("失败", e.getMessage());
                                             }
@@ -197,7 +202,8 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                                             recallItem.saveInBackground(new SaveCallback() {
                                                 @Override
                                                 public void done(AVException e) {
-                                                    ToastUtils.showToast(ReleaseRecall.this, "success", Toast.LENGTH_SHORT);
+                                                    progressDialog.dismiss();
+                                                    ReleaseRecall.this.finish();
                                                 }
                                             });
                                         }
@@ -230,7 +236,6 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                         mapItemBean.set_location(longtitude + "," + latitude);
                         mapItemBean.setUsername(currentUser.getUsername());
                         String data = JSON.toJSONString(mapItemBean);
-                        Log.i("data", data);
                         map.put("data", data);
                         return map;
                     }
@@ -314,7 +319,6 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                 finish();
                 break;
             case R.id.titlebar_tv_right:
-                ToastUtils.showToast(ReleaseRecall.this, "title_bar_right", Toast.LENGTH_SHORT);
                 try {
                     sendStatus();
                 } catch (FileNotFoundException e) {
@@ -403,9 +407,9 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
     public void onLocationChanged(AMapLocation aMapLocation) {
         if(mListener != null && aMapLocation != null){
             if(aMapLocation != null && aMapLocation.getErrorCode() == 0){
-//                mListener.onLocationChanged(aMapLocation);
                 latitude = aMapLocation.getLatitude();
                 longtitude = aMapLocation.getLongitude();
+                address_tv.setText(aMapLocation.getAddress());
             }else{
                 String errText = "定位失败，" + aMapLocation.getErrorCode() + ":" + aMapLocation.getErrorInfo();
                 Log.e("AmapErr", errText);
