@@ -40,9 +40,12 @@
                 android:verticalSpacing="8dp">
                 </com.example.rogerzzzz.cityrecall.widget.WrapHeightGridView>
 
-            <include layout="@layout/include_retweeted_status_card"
-                android:id="@+id/include_retweeted_status_card"
-                android:visibility="gone" />
+               <com.amap.api.maps2d.MapView
+                   android:id="@+id/map"
+                   android:layout_width="0dp"
+                   android:layout_height="0dp">
+                   </com.amap.api.maps2d.MapView>
+
             </LinearLayout>
         </ScrollView>
 
@@ -97,34 +100,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
         </android.support.v4.view.ViewPager>
-
-        <RadioGroup
-            android:id="@+id/rg_emotion_dashboard"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal" >
-
-            <RadioButton
-                android:id="@+id/rb_emotion_dashboard_recently"
-                style="@style/RadioButtonEmotionDashboard"
-                android:text="最近" />
-
-            <RadioButton
-                android:id="@+id/rb_emotion_dashboard_default"
-                style="@style/RadioButtonEmotionDashboard"
-                android:checked="true"
-                android:text="默认" />
-
-            <RadioButton
-                android:id="@+id/rb_emotion_dashboard_emoji"
-                style="@style/RadioButtonEmotionDashboard"
-                android:text="Emoji" />
-
-            <RadioButton
-                android:id="@+id/rb_emotion_dashboard_langxiaohua"
-                style="@style/RadioButtonEmotionDashboard"
-                android:text="浪小花" />
-        </RadioGroup>
     </LinearLayout>
 
 

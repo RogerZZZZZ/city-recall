@@ -56,7 +56,6 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     }
 
     private void initMap(){
-
         if(aMap == null){
             aMap = mapView.getMap();
             MyLocationStyle myLocationStyle = new MyLocationStyle();
@@ -130,6 +129,5 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
                 Log.e("AmapErr", errText);
             }
         }
-
     }
 }
