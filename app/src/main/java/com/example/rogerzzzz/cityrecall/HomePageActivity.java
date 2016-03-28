@@ -1,9 +1,13 @@
 package com.example.rogerzzzz.cityrecall;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.RelativeLayout;
@@ -19,19 +23,23 @@ import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
+import com.amap.api.maps2d.model.CameraPosition;
+import com.amap.api.maps2d.model.CircleOptions;
 import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.LatLngBounds;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.services.cloud.CloudItem;
+import com.amap.api.services.cloud.CloudItemDetail;
+import com.amap.api.services.cloud.CloudResult;
+import com.amap.api.services.cloud.CloudSearch;
+import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
-import com.amap.api.services.core.PoiItem;
-import com.amap.api.services.core.SuggestionCity;
-import com.amap.api.services.poisearch.PoiResult;
-import com.amap.api.services.poisearch.PoiSearch;
 import com.example.rogerzzzz.cityrecall.fragment.HomePageLeftMenu;
+import com.example.rogerzzzz.cityrecall.utils.AMapUtil;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
+import com.example.rogerzzzz.cityrecall.widget.CloudOverlay;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
@@ -42,25 +50,28 @@ import java.util.List;
  * Created by rogerzzzz on 16/3/18.
  */
 public class HomePageActivity extends SlidingFragmentActivity implements LocationSource, AMapLocationListener, AMap.OnMapClickListener,
-        AMap.InfoWindowAdapter, AMap.OnMarkerClickListener, PoiSearch.OnPoiSearchListener{
+        AMap.InfoWindowAdapter, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, CloudSearch.OnCloudSearchListener{
     private MapView mapView;
     private AMap aMap;
     private OnLocationChangedListener mListener;
     private AMapLocationClient mLocationClient;
     private AMapLocationClientOption mLocationOption;
-    private PoiResult poiResult;
-    private int currentPage = 0;
-    private PoiSearch.Query query;
     private LatLonPoint lp;
-    private myPoiOverlay  poiOverlay;
-    private Marker locationMarker;
+    private CloudSearch cloudSearch;
+    private CloudSearch.Query query;
+    private CloudOverlay cloudOverlay;
+    private List<CloudItem> mCloudItems;
+    private ProgressDialog progressDialog;
+    private Marker mCloudIDMarker;
+    private String TAG = "CityRecall";
+    private ArrayList<CloudItem> items = new ArrayList<CloudItem>();
+    private String tableId = "56e908e4305a2a32886fcb10";
     private Marker detailMarker;
     private Marker mlastMarker;
-    private PoiSearch poiSearch;
-    private List<PoiItem> poiItem;
     private RelativeLayout mPoiDetail;
     private TextView mPoiName, mPoiAddress;
     private String keyWord = "myCity";
+    private boolean isInitNearbySearch = false;
 
     public double longtitude;
     public double latitude;
@@ -75,7 +86,6 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         initLeftMenu();
         initMap();
         UserUtils.initCloudService(HomePageActivity.this);
-        doSearchQuery();
     }
 
     private void initLeftMenu(){
@@ -95,6 +105,8 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         if(aMap == null){
             aMap = mapView.getMap();
             MyLocationStyle myLocationStyle = new MyLocationStyle();
+            myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
+            myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));// 设置圆形的填充颜色
             myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.location_marker));
             aMap.setMyLocationStyle(myLocationStyle);
             aMap.setLocationSource(this);
@@ -103,22 +115,47 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
             aMap.setOnMapClickListener(this);
             aMap.setOnMarkerClickListener(this);
             aMap.setInfoWindowAdapter(this);
+            aMap.setOnInfoWindowClickListener(this);
             mPoiDetail = (RelativeLayout) findViewById(R.id.poi_detail);
             mPoiName = (TextView) findViewById(R.id.poi_name);
             mPoiAddress = (TextView) findViewById(R.id.poi_address);
+
+            cloudSearch = new CloudSearch(this);
+            cloudSearch.setOnCloudSearchListener(this);
         }
     }
 
-    protected void doSearchQuery(){
-        query = new PoiSearch.Query(keyWord, "", "");
-        query.setPageSize(20);
-        query.setPageNum(currentPage);
-        if(lp != null){
-            poiSearch = new PoiSearch(this, query);
-            poiSearch.setOnPoiSearchListener(this);
-            poiSearch.setBound(new PoiSearch.SearchBound(lp, 5000, true));
-            poiSearch.searchPOIAsyn();
+    private void showProgressDialog(){
+        if(progressDialog == null) progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(true);
+        progressDialog.setMessage("\n正在搜索   ");
+        progressDialog.show();
+    }
+
+    private void dismissProgressDialog(){
+        if(progressDialog != null){
+            progressDialog.dismiss();
         }
+    }
+
+    public void searchByBound() {
+        showProgressDialog();
+        items.clear();
+        CloudSearch.SearchBound bound = new CloudSearch.SearchBound(new LatLonPoint(
+                lp.getLatitude(), lp.getLongitude()), 4000);
+        try {
+            query = new CloudSearch.Query(tableId, keyWord, bound);
+            query.setPageSize(10);
+            CloudSearch.Sortingrules sorting = new CloudSearch.Sortingrules(
+                    "_id", false);
+            query.setSortingrules(sorting);
+            cloudSearch.searchCloudAsyn(query);// 异步搜索
+        } catch (AMapException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -153,6 +190,7 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
 
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
+        aMap.clear();
         mListener = onLocationChangedListener;
         if(mLocationClient == null){
             mLocationClient = new AMapLocationClient(this);
@@ -181,7 +219,11 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
                 mListener.onLocationChanged(aMapLocation);
                 longtitude = aMapLocation.getLongitude();
                 latitude = aMapLocation.getLatitude();
-                lp = new LatLonPoint(longtitude, latitude);
+                if(!isInitNearbySearch){
+                    lp = new LatLonPoint(latitude, longtitude);
+                    searchByBound();
+                    isInitNearbySearch = true;
+                }
             }else{
                 String errText = "定位失败，" + aMapLocation.getErrorCode() + ":" + aMapLocation.getErrorInfo();
                 Log.e("AmapErr", errText);
@@ -212,7 +254,7 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         if(marker.getObject() != null){
             whetherToShowDetailInfo(true);
             try{
-                PoiItem mCurrentPoi = (PoiItem) marker.getObject();
+                CloudItem mCurrentPoi = (CloudItem) marker.getObject();
                 if(mlastMarker == null){
                     mlastMarker = marker;
                 }else{
@@ -224,6 +266,7 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
                 setPoiItemDisplayContent(mCurrentPoi);
             }catch (Exception e){
                 //Todo handle exception
+                e.printStackTrace();
             }
         }else{
             whetherToShowDetailInfo(false);
@@ -232,57 +275,9 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         return true;
     }
 
-    @Override
-    public void onPoiSearched(PoiResult result, int code) {
-        Log.d("code--:", code + "");
-        if(code == 1000){
-            if(result != null && result.getQuery() != null){
-                if(result.getQuery().equals(query)){
-                    poiResult = result;
-                    poiItem = poiResult.getPois();
-                    List<SuggestionCity> suggestionCities = poiResult.getSearchSuggestionCitys();
-                    if(poiItem != null && poiItem.size() > 0){
-                        whetherToShowDetailInfo(false);
-                        if(mlastMarker != null){
-                            resetLastMarker();
-                        }
-                        if(poiOverlay != null){
-                            poiOverlay.removeFromMap();
-                        }
-                        aMap.clear();
-                        poiOverlay = new myPoiOverlay(aMap, poiItem);
-                        poiOverlay.addToMap();
-                        poiOverlay.zoomToSpan();
-                    } else if(suggestionCities != null && suggestionCities.size() > 0){
-                        showSuggestCity(suggestionCities);
-                    }else{
-                        ToastUtils.showToast(HomePageActivity.this, "无结果", Toast.LENGTH_SHORT);
-                    }
-                }
-            }else{
-                ToastUtils.showToast(HomePageActivity.this, "无结果", Toast.LENGTH_SHORT);
-            }
-        }
-    }
-
-    private void setPoiItemDisplayContent(final PoiItem mCurrentPoi) {
-        mPoiName.setText(mCurrentPoi.getTitle());
-        mPoiAddress.setText(mCurrentPoi.getSnippet());
-    }
-
-    private void showSuggestCity(List<SuggestionCity> cities){
-        String information = "推荐城市\n";
-        for (int i = 0; i < cities.size(); i++) {
-            information += "城市名称:" + cities.get(i).getCityName() + "城市区号:"
-                    + cities.get(i).getCityCode() + "城市编码:"
-                    + cities.get(i).getAdCode() + "\n";
-        }
-        ToastUtils.showToast(HomePageActivity.this, information, Toast.LENGTH_SHORT);
-    }
-
-    @Override
-    public void onPoiItemSearched(PoiItem poiItem, int i) {
-
+    private void setPoiItemDisplayContent(final CloudItem mCurrentPoi) {
+        mPoiName.setText("123");
+        mPoiAddress.setText("123");
     }
 
     private void whetherToShowDetailInfo(boolean isToShow){
@@ -298,89 +293,77 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         mlastMarker = null;
     }
 
-    private class myPoiOverlay{
-        private AMap maMap;
-        private List<PoiItem> mPois;
-        private ArrayList<Marker> mPoiMarkers = new ArrayList<Marker>();
-
-        public myPoiOverlay(AMap amap, List<PoiItem> pois){
-            this.maMap = amap;
-            this.mPois = pois;
-        }
-
-        /*
-        * 添加Marker到地图上
-         */
-        public void addToMap(){
-            for(int i = 0; i < mPois.size(); i++){
-                Marker marker = maMap.addMarker(getMarkerOptions(i));
-                PoiItem item = mPois.get(i);
-                marker.setObject(item);
-                mPoiMarkers.add(marker);
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        String tile = marker.getTitle();
+        for (CloudItem item : items) {
+            if (tile.equals(item.getTitle())) {
+                Intent intent = new Intent(HomePageActivity.this,
+                        HomePageActivity.class);
+                intent.putExtra("clouditem", item);
+                startActivity(intent);
+                break;
             }
         }
-
-        /*
-        * remove all markers
-         */
-        public void removeFromMap(){
-            for(Marker marker : mPoiMarkers){
-                marker.remove();
-            }
-        }
-
-        /*
-        * 移动镜头到当前的视角
-         */
-        public void zoomToSpan(){
-            if(mPois != null && mPois.size() > 0){
-                if(maMap == null) return;
-                LatLngBounds bounds = getLatLngBounds();
-                maMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
-            }
-        }
-
-        private LatLngBounds getLatLngBounds(){
-            LatLngBounds.Builder b = LatLngBounds.builder();
-            for(int i = 0; i < mPois.size(); i++){
-                b.include(new LatLng(mPois.get(i).getLatLonPoint().getLatitude(), mPois.get(i).getLatLonPoint().getLongitude()));
-            }
-            return b.build();
-        }
-
-        private MarkerOptions getMarkerOptions(int index){
-            return new MarkerOptions()
-                    .position(new LatLng(mPois.get(index).getLatLonPoint().getLatitude(), mPois.get(index).getLatLonPoint().getLongitude()))
-                    .title(getTitle(index))
-                    .snippet(getSnippet(index))
-                    .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_gcoding)));
-        }
-
-        protected String getTitle(int index){
-            return mPois.get(index).getTitle();
-        }
-
-        protected String getSnippet(int index){
-            return mPois.get(index).getSnippet();
-        }
-
-        public int getPoiIndex(Marker marker){
-            for(int i = 0; i < mPoiMarkers.size(); i++){
-                if(mPoiMarkers.get(i).equals(marker)){
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        public PoiItem getPoiItem(int index){
-            if(index < 0 || index >= mPois.size()){
-                return null;
-            }
-            return mPois.get(index);
-        }
-
-
     }
 
+    @Override
+    public void onCloudSearched(CloudResult result, int code) {
+        dismissProgressDialog();
+        if(code == 1000){
+            if(result != null && result.getQuery() != null){
+                if(result.getQuery().equals(query)){
+                    mCloudItems = result.getClouds();
+                    if(mCloudItems != null && mCloudItems.size() > 0){
+                        cloudOverlay = new CloudOverlay(aMap, mCloudItems, getResources());
+                        cloudOverlay.removeFromMap();
+                        cloudOverlay.addToMap();
+                        for(CloudItem item : mCloudItems){
+                            items.add(item);
+                        }
+                        if(query.getBound().getShape().equals(CloudSearch.SearchBound.BOUND_SHAPE)){
+                            aMap.addCircle(new CircleOptions().center(new LatLng(lp.getLatitude(), lp.getLongitude()))
+                                    .radius(5000).strokeColor(Color.BLACK)
+                                    .strokeWidth(3));
+                            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(lp.getLatitude(),
+                                            lp.getLongitude()), 12));
+                        }
+                    }else{
+                        ToastUtils.showToast(this, "无结果", Toast.LENGTH_SHORT);
+                    }
+                }
+            }else{
+                ToastUtils.showToast(this, "无结果", Toast.LENGTH_SHORT);
+            }
+        }else{
+            ToastUtils.showToast(this, "无结果", Toast.LENGTH_SHORT);
+        }
+    }
+
+    @Override
+    public void onCloudItemDetailSearched(CloudItemDetail item, int code) {
+        dismissProgressDialog();
+        if(code == 1000 && item != null){
+            if(mCloudIDMarker != null){
+                mCloudIDMarker.destroy();
+            }
+            LatLng position = AMapUtil.convertToLatLng(item.getLatLonPoint());
+            aMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(position, 18, 0, 30)));
+            mCloudIDMarker = aMap.addMarker(new MarkerOptions().position(position)
+                        .title(item.getTitle())
+                        .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_gcoding))));
+            items.add(item);
+        }else{
+            ToastUtils.showToast(HomePageActivity.this, code + "", Toast.LENGTH_SHORT);
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }
