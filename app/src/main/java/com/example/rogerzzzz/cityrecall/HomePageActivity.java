@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ import com.amap.api.services.cloud.CloudResult;
 import com.amap.api.services.cloud.CloudSearch;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
+import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.fragment.HomePageLeftMenu;
 import com.example.rogerzzzz.cityrecall.utils.AMapUtil;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
@@ -44,13 +46,15 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by rogerzzzz on 16/3/18.
  */
 public class HomePageActivity extends SlidingFragmentActivity implements LocationSource, AMapLocationListener, AMap.OnMapClickListener,
-        AMap.InfoWindowAdapter, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, CloudSearch.OnCloudSearchListener{
+        AMap.InfoWindowAdapter, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, CloudSearch.OnCloudSearchListener, View.OnClickListener{
     private MapView mapView;
     private AMap aMap;
     private OnLocationChangedListener mListener;
@@ -65,12 +69,13 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     private Marker mCloudIDMarker;
     private String TAG = "CityRecall";
     private ArrayList<CloudItem> items = new ArrayList<CloudItem>();
-    private String tableId = "56e908e4305a2a32886fcb10";
+    private String tableId = ServerParameter.CLOUDMAP_DIY_TABLEID;
     private Marker detailMarker;
     private Marker mlastMarker;
     private RelativeLayout mPoiDetail;
-    private TextView mPoiName, mPoiAddress;
-    private String keyWord = "myCity";
+    private TextView mPoiName, mPoiAddress, mPoiFavour;
+    private LinearLayout jumpLayout;
+    private String keyWord = ServerParameter.CLOUD_SERVICE_KEYWORD;
     private boolean isInitNearbySearch = false;
 
     public double longtitude;
@@ -119,6 +124,9 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
             mPoiDetail = (RelativeLayout) findViewById(R.id.poi_detail);
             mPoiName = (TextView) findViewById(R.id.poi_name);
             mPoiAddress = (TextView) findViewById(R.id.poi_address);
+            mPoiFavour = (TextView) findViewById(R.id.poi_favour);
+            jumpLayout = (LinearLayout) findViewById(R.id.jump_layout);
+            jumpLayout.setOnClickListener(this);
 
             cloudSearch = new CloudSearch(this);
             cloudSearch.setOnCloudSearchListener(this);
@@ -276,8 +284,18 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     }
 
     private void setPoiItemDisplayContent(final CloudItem mCurrentPoi) {
-        mPoiName.setText("123");
-        mPoiAddress.setText("123");
+        Iterator iterator =  mCurrentPoi.getCustomfield().entrySet().iterator();
+        while(iterator.hasNext()){
+            Map.Entry entry = (Map.Entry) iterator.next();
+            Object key = entry.getKey();
+            Object val = entry.getValue();
+            //Todo favour parameter
+            if(key.equals("content")){
+                mPoiAddress.setText(val.toString());
+            }else if(key.equals("username")){
+                mPoiName.setText(val.toString());
+            }
+        }
     }
 
     private void whetherToShowDetailInfo(boolean isToShow){
@@ -365,5 +383,15 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
             finish();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.jump_layout:
+                Intent intent = new Intent(HomePageActivity.this, StatusDetailActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }

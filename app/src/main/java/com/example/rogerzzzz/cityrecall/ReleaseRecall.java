@@ -46,6 +46,7 @@ import com.example.rogerzzzz.cityrecall.adapter.EmotionPagerAdapter;
 import com.example.rogerzzzz.cityrecall.adapter.WriteStatusGridImgsAdapter;
 import com.example.rogerzzzz.cityrecall.bean.MapItemBean;
 import com.example.rogerzzzz.cityrecall.enity.Emotion;
+import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.utils.DialogUtils;
 import com.example.rogerzzzz.cityrecall.utils.DisplayUtils;
 import com.example.rogerzzzz.cityrecall.utils.ImageUtils;
@@ -226,13 +227,13 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                     protected Map<String, String> getParams() throws AuthFailureError {
                         AVUser currentUser = AVUser.getCurrentUser();
                         Map<String, String> map = new HashMap<String, String>();
-                        map.put("key", "5b53128b4f4b0f122d198544defe6c59");
-                        map.put("tableid", "56e908e4305a2a32886fcb10");
+                        map.put("key", ServerParameter.CLOUDMAP_SERVICE_KEY);
+                        map.put("tableid", ServerParameter.CLOUDMAP_DIY_TABLEID);
                         map.put("locType", "1");
                         MapItemBean mapItemBean = new MapItemBean();
-                        mapItemBean.set_name("myCity");
-                        mapItemBean.set_address("myCity");
-                        mapItemBean.setContent("asd");
+                        mapItemBean.set_name(ServerParameter.CLOUDMAP_ITEM_NAME);
+                        mapItemBean.set_address(ServerParameter.CLOUDMAP_ITEM_ADDRESS);
+                        mapItemBean.setContent(comment);
                         mapItemBean.set_location(longtitude + "," + latitude);
                         mapItemBean.setUsername(currentUser.getUsername());
                         String data = JSON.toJSONString(mapItemBean);

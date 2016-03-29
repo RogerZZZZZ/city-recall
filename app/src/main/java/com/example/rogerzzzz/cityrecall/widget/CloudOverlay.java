@@ -90,6 +90,7 @@ public class CloudOverlay {
         for (int i = 0; i < mPoiMarks.size(); i++) {
             if (mPoiMarks.get(i).equals(marker)) {
                 return i;
+//                mPois.get(0).get
             }
         }
         return -1;
