@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -390,6 +391,7 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         switch (view.getId()){
             case R.id.jump_layout:
                 Intent intent = new Intent(HomePageActivity.this, StatusDetailActivity.class);
+                intent.putExtra("detailObject", (Parcelable) mlastMarker.getObject());
                 startActivity(intent);
                 break;
         }

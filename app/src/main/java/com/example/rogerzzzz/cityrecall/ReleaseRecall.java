@@ -166,6 +166,11 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
             return;
         }
 
+        if(address_tv.getText().toString().equals("正在定位")){
+            ToastUtils.showToast(this, "定位没有完成", Toast.LENGTH_SHORT);
+            return;
+        }
+
         new Thread() {
             @Override
             public void run() {
@@ -232,7 +237,7 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                         map.put("locType", "1");
                         MapItemBean mapItemBean = new MapItemBean();
                         mapItemBean.set_name(ServerParameter.CLOUDMAP_ITEM_NAME);
-                        mapItemBean.set_address(ServerParameter.CLOUDMAP_ITEM_ADDRESS);
+                        mapItemBean.set_address(address_tv.getText().toString());
                         mapItemBean.setContent(comment);
                         mapItemBean.set_location(longtitude + "," + latitude);
                         mapItemBean.setUsername(currentUser.getUsername());
