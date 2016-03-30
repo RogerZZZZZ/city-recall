@@ -33,4 +33,6 @@
     <color name="confirm_regist_correct">#ffb90f</color>
     <color name="edittext_bg">#fffaf0</color>
 
+    <color name="detail_username">#104e8b</color>
+
 </resources>

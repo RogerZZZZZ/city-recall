@@ -1,8 +1,9 @@
 package com.example.rogerzzzz.cityrecall;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
+import com.example.rogerzzzz.cityrecall.utils.BitmapHelper;
 import com.example.rogerzzzz.cityrecall.utils.TitleBuilder;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 
@@ -51,7 +53,7 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
 
     private void init(){
         new TitleBuilder(this)
-                .setTitleText("")
+                .setTitleText("详情")
                 .setLeftText("返回")
                 .setLeftOnClickListener(this)
                 .build();
@@ -74,7 +76,8 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
 
         String id = cloudItem.getID();
         String address = cloudItem.getSnippet();
-        String content = "", username = "";
+        String content = "";
+        String username = "";
         String createTime = cloudItem.getCreatetime();
         Iterator iterator = cloudItem.getCustomfield().entrySet().iterator();
         while(iterator.hasNext()){
@@ -100,8 +103,8 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
             public void done(List<AVUser> avObjects, AVException e) {
                 if(e == null){
                     AVFile avFile = avObjects.get(0).getAVFile("avatar");
-                    String url = avFile.getUrl();
-                    Log.d("url", url);
+                    final String url = avFile.getUrl();
+                    new MyTask(url).execute();
                 }else{
                     e.printStackTrace();
                 }
@@ -120,6 +123,30 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
             case R.id.favour_layout:
                 break;
         }
+    }
 
+    private class MyTask extends AsyncTask<String, Void, String>{
+        private String url = "";
+        private Bitmap bitmap;
+        public MyTask(String url){
+            this.url = url;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            bitmap = BitmapHelper.getBitmap(url);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            potrait_pic.setImageBitmap(bitmap);
+        }
     }
 }

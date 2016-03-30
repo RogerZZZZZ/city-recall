@@ -12,23 +12,23 @@
         android:layout_height="fill_parent">
 
         <LinearLayout
-            android:layout_width="60dp"
-            android:layout_weight="1"
+            android:minWidth="60dp"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
                 android:id="@+id/potrait_pic"
-                android:layout_width="50dp"
-                android:layout_height="50dp" />
+                android:layout_width="60dp"
+                android:layout_height="60dp" />
 
             </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_weight="5"
+            android:layout_weight="7"
             android:layout_height="wrap_content">
 
             <!--username-->
@@ -36,7 +36,8 @@
                 android:layout_marginLeft="10dp"
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
-                android:textColor="@color/orange"
+                android:textColor="@color/detail_username"
+                android:textStyle="bold"
                 android:textSize="16dp"
                 android:layout_height="20dp" />
 
@@ -51,7 +52,6 @@
                 android:textColor="@color/txt_black"
                 android:layout_height="wrap_content" />
 
-
             <LinearLayout
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="10dp"
@@ -59,54 +59,41 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <Button
-                    android:layout_width="0dp"
-                    android:visibility="invisible"
-                    android:layout_weight="1"
-                    android:layout_height="30dp" />
-
                 <LinearLayout
                     android:id="@+id/favour_layout"
                     android:padding="4dp"
                     android:background="@drawable/comment_layout_border"
-                    android:layout_width="0dp"
-                    android:layout_weight="5"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <ImageView
                         android:layout_gravity="center"
-                        android:layout_width="16dp"
+                        android:layout_width="12dp"
                         android:src="@drawable/iconfont_heart"
-                        android:layout_height="16dp" />
+                        android:layout_height="12dp" />
 
                     <TextView
                         android:layout_marginLeft="5dp"
                         android:id="@+id/favour_btn"
-                        android:textColor="@color/alpha_black"
-                        android:textSize="16dp"
+                        android:textSize="13dp"
+                        android:text="10"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     </LinearLayout>
 
-                <Button
-                    android:visibility="invisible"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp" />
-
                 <LinearLayout
+                    android:layout_marginLeft="20dp"
                     android:id="@+id/comment_layout"
                     android:background="@drawable/comment_layout_border"
-                    android:layout_weight="5"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:padding="4dp"
                     android:layout_height="wrap_content">
 
                     <ImageView
                         android:layout_gravity="center"
                         android:src="@drawable/iconfont_comment"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp" />
+                        android:layout_width="12dp"
+                        android:layout_height="12dp" />
 
                     <TextView
                         android:layout_marginLeft="5dp"
@@ -114,15 +101,9 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:text="查看评论"
-                        android:textSize="16dp"
+                        android:textSize="13dp"
                         android:layout_height="wrap_content" />
                     </LinearLayout>
-
-                <Button
-                    android:visibility="invisible"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp" />
                 </LinearLayout>
 
             <!--address-->
@@ -141,8 +122,8 @@
                 <TextView
                     android:maxWidth="200dp"
                     android:id="@+id/location_tv"
-                    android:textColor="@color/txt_black"
-                    android:textSize="14dp"
+                    android:textColor="@color/detail_username"
+                    android:textSize="12dp"
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -150,10 +131,11 @@
 
             <!--time-->
             <TextView
+                android:layout_marginTop="6dp"
                 android:id="@+id/time"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/txt_light_gray"
-                android:textSize="14dp"
+                android:textSize="12dp"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp" />
 
