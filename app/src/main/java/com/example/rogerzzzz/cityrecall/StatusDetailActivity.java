@@ -1,27 +1,31 @@
 package com.example.rogerzzzz.cityrecall;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.amap.api.services.cloud.CloudImage;
 import com.amap.api.services.cloud.CloudItem;
-import com.android.volley.toolbox.ImageLoader;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
+import com.example.rogerzzzz.cityrecall.adapter.DetailPicGridviewAdapter;
 import com.example.rogerzzzz.cityrecall.utils.BitmapHelper;
 import com.example.rogerzzzz.cityrecall.utils.TitleBuilder;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,10 +42,9 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
     private LinearLayout favour_layout;
     private LinearLayout comment_layout;
     private TextView time_tv;
-
     private CloudItem cloudItem;
-    private List<CloudImage> cloudImages;
-    private ImageLoader imageLoader;
+    private String picUrl;
+    private List<String> picList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,6 +113,49 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
                 }
             }
         });
+
+        AVQuery<AVObject> query_pic = new AVQuery<AVObject>("ReCall");
+        query_pic.whereEqualTo("mapItemId", id);
+        query_pic.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException e) {
+                if(e == null && avObjects.size() > 0){
+                    String picWallUrl = avObjects.get(0).get("picString").toString();
+                    picUrl = picWallUrl;
+                    List<String> list = Arrays.asList(picWallUrl.split(","));
+                    picList = list;
+                    setGridView(list);
+                }else{
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void setGridView(List<String> list){
+        int size = list.size();
+        int length = 60;
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        float density = dm.density;
+        int gridviewWidth = (int) (size * (length + 4) * density);
+        int itemWith = (int) (length * density);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(gridviewWidth, LinearLayout.LayoutParams.MATCH_PARENT);
+        mgridView.setLayoutParams(params);
+        mgridView .setColumnWidth(itemWith);
+        mgridView.setHorizontalSpacing(5);
+        mgridView.setStretchMode(GridView.NO_STRETCH);
+        mgridView.setNumColumns(size);
+
+        DetailPicGridviewAdapter adapter = new DetailPicGridviewAdapter(getApplicationContext(), list);
+        mgridView.setAdapter(adapter);
+        mgridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                showImage(i);
+            }
+        });
     }
 
     @Override
@@ -147,6 +193,15 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             potrait_pic.setImageBitmap(bitmap);
+        }
+    }
+
+    private void showImage(int position){
+        if(picList.size() != 0){
+            Intent intent = new Intent(StatusDetailActivity.this, PreviewPhotoActivity.class);
+            intent.putExtra("picUrl", picUrl);
+            intent.putExtra("position", position);
+            startActivity(intent);
         }
     }
 }

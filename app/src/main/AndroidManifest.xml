@@ -28,6 +28,8 @@
         <activity android:name=".LoginActivity"/>
         <activity android:name=".HomePageActivity"/>
         <activity android:name=".StatusDetailActivity"/>
+        <activity android:name=".CommentActivity"/>
+        <activity android:name=".PreviewPhotoActivity"/>
 
     </application>
 
