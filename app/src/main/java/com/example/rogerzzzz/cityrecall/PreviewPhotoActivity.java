@@ -12,13 +12,10 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
-import com.example.rogerzzzz.cityrecall.utils.ImageCacheUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

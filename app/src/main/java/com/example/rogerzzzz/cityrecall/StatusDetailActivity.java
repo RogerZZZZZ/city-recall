@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -25,6 +26,7 @@ import com.example.rogerzzzz.cityrecall.utils.BitmapHelper;
 import com.example.rogerzzzz.cityrecall.utils.TitleBuilder;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -115,6 +117,28 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
             }
         });
 
+        //init favour module
+        AVQuery<AVObject> statusFavours = new AVQuery<AVObject>("Favour");
+        statusFavours.whereEqualTo("statusId", id);
+        AVQuery<AVObject> individualFavous = new AVQuery<AVObject>("Favour");
+        individualFavous.whereEqualTo("username", username);
+        List<AVQuery<AVObject>> queries = new ArrayList<AVQuery<AVObject>>();
+        queries.add(statusFavours);
+        queries.add(individualFavous);
+        AVQuery<AVObject> mainQuery = AVQuery.and(queries);
+        mainQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException e) {
+                if(e == null){
+                    Log.d("favour", avObjects.size() + "");
+                }else{
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+        //init picture wall module
         AVQuery<AVObject> query_pic = new AVQuery<AVObject>("ReCall");
         query_pic.whereEqualTo("mapItemId", id);
         query_pic.findInBackground(new FindCallback<AVObject>() {
