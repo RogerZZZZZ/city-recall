@@ -42,12 +42,19 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
     private TextView address_tv;
     private ImageView potrait_pic;
     private LinearLayout favour_layout;
+    private LinearLayout not_favour_layout;
     private LinearLayout comment_layout;
     private TextView time_tv;
     private CloudItem cloudItem;
     private String picUrl;
     private List<String> picList;
     private MyTask task;
+    private FavourTask favourTask;
+    private FavourTask favourTaskNot;
+
+    private String username;
+    private String id;
+    private AVObject favourObject = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,10 +75,15 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         content_tv = (TextView) findViewById(R.id.content);
         potrait_pic = (ImageView) findViewById(R.id.potrait_pic);
         favour_layout = (LinearLayout) findViewById(R.id.favour_layout);
+        not_favour_layout = (LinearLayout) findViewById(R.id.favour_layout_not);
         comment_layout = (LinearLayout) findViewById(R.id.comment_layout);
         time_tv = (TextView) findViewById(R.id.time);
         mgridView = (GridView) findViewById(R.id.grid);
         address_tv = (TextView) findViewById(R.id.location_tv);
+
+        favour_layout.setOnClickListener(this);
+        not_favour_layout.setOnClickListener(this);
+        comment_layout.setOnClickListener(this);
 
         cloudItem = getIntent().getParcelableExtra("detailObject");
         if(cloudItem == null){
@@ -79,17 +91,15 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
             return;
         }
 
-        String id = cloudItem.getID();
+        id = cloudItem.getID();
         String address = cloudItem.getSnippet();
         String content = "";
-        String username = "";
         String createTime = cloudItem.getCreatetime();
         Iterator iterator = cloudItem.getCustomfield().entrySet().iterator();
         while(iterator.hasNext()){
             Map.Entry entry = (Map.Entry) iterator.next();
             Object key = entry.getKey();
             Object val = entry.getValue();
-            //Todo favour parameter
             if(key.equals("content")){
                 content = val.toString();
             }else if(key.equals("username")){
@@ -130,13 +140,16 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
             @Override
             public void done(List<AVObject> avObjects, AVException e) {
                 if(e == null){
-                    Log.d("favour", avObjects.size() + "");
+                    if(avObjects.size() != 0){
+                        not_favour_layout.setVisibility(View.GONE);
+                        favour_layout.setVisibility(View.VISIBLE);
+                        favourObject = avObjects.get(0);
+                    }
                 }else{
                     e.printStackTrace();
                 }
             }
         });
-
 
         //init picture wall module
         AVQuery<AVObject> query_pic = new AVQuery<AVObject>("ReCall");
@@ -199,7 +212,21 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
                 break;
             case R.id.comment_layout:
                 break;
+            case R.id.favour_layout_not:
+                favourTask = new FavourTask(0);
+                favourTask.execute();
+                break;
             case R.id.favour_layout:
+                if(favourObject != null){
+                    favourTaskNot = new FavourTask(1, favourObject);
+                }else{
+                    favourTaskNot = new FavourTask(1);
+                }
+                if(favourTaskNot != null && favourTaskNot.getStatus() != AsyncTask.Status.RUNNING){
+                    favourTaskNot.execute();
+                }
+                break;
+            default:
                 break;
         }
     }
@@ -224,6 +251,77 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         }
     }
 
+    private class FavourTask extends AsyncTask<String, Void, Void>{
+        private int flag; //1:cancel 0: favour
+        private AVObject temObject = null;
+        private AVQuery<AVObject> statusFavours;
+        private AVQuery<AVObject> individualFavous;
+        private List<AVQuery<AVObject>> queries;
+        private AVQuery<AVObject> mainQuery;
+
+        public FavourTask(int flag){
+            this.flag = flag;
+        }
+
+        public FavourTask(int flag, AVObject temObject){
+            this.temObject = temObject;
+            this.flag = flag;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            statusFavours = new AVQuery<AVObject>("Favour");
+            statusFavours.whereEqualTo("statusId", id);
+            individualFavous = new AVQuery<AVObject>("Favour");
+            individualFavous.whereEqualTo("username", username);
+            queries = new ArrayList<AVQuery<AVObject>>();
+            queries.add(statusFavours);
+            queries.add(individualFavous);
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            if(flag == 1){
+                //cancel
+                if(temObject != null){
+                    temObject.deleteInBackground();
+                }else {
+                    mainQuery = AVQuery.and(queries);
+                    mainQuery.findInBackground(new FindCallback<AVObject>() {
+                        @Override
+                        public void done(List<AVObject> avObjects, AVException e) {
+                            if(e == null && avObjects.size() != 0){
+                                avObjects.get(0).deleteInBackground();
+                            }
+                        }
+                    });
+                }
+            } else{
+                //favour
+                AVObject post = new AVObject("Favour");
+                post.put("username", username);
+                post.put("statusId", id);
+                post.saveInBackground();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(flag == 1){
+                //cancel
+                favour_layout.setVisibility(View.GONE);
+                not_favour_layout.setVisibility(View.VISIBLE);
+            } else{
+                //favour
+                favour_layout.setVisibility(View.VISIBLE);
+                not_favour_layout.setVisibility(View.GONE);
+            }
+        }
+    }
+
     private void showImage(int position){
         if(picList.size() != 0){
             Intent intent = new Intent(StatusDetailActivity.this, PreviewPhotoActivity.class);
@@ -238,6 +336,12 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         super.onDestroy();
         if(task != null && task.getStatus() != AsyncTask.Status.FINISHED){
             task.cancel(false);
+        }
+        if(favourTask != null && favourTask.getStatus() != AsyncTask.Status.FINISHED){
+            favourTask.cancel(false);
+        }
+        if(favourTaskNot != null && favourTaskNot.getStatus() != AsyncTask.Status.FINISHED){
+            favourTaskNot.cancel(false);
         }
     }
 }

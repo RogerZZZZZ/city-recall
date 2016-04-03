@@ -61,6 +61,7 @@
 
                 <LinearLayout
                     android:id="@+id/favour_layout"
+                    android:visibility="gone"
                     android:padding="4dp"
                     android:background="@drawable/comment_layout_border"
                     android:layout_width="wrap_content"
@@ -80,6 +81,28 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/favour_layout_not"
+                    android:padding="4dp"
+                    android:background="@drawable/comment_layout_border"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="12dp"
+                        android:src="@drawable/iconfont_notlike"
+                        android:layout_height="12dp" />
+
+                    <TextView
+                        android:layout_marginLeft="5dp"
+                        android:id="@+id/favour_btn_not"
+                        android:textSize="13dp"
+                        android:text="10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_marginLeft="20dp"
