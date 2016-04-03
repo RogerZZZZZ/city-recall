@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -15,11 +16,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
 import com.example.rogerzzzz.cityrecall.utils.ImageCacheUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,15 +29,14 @@ import java.util.List;
  * Created by rogerzzzz on 16/3/31.
  */
 public class PreviewPhotoActivity extends Activity implements View.OnClickListener{
-    private ArrayList<NetworkImageView> list = null;
+//    private ArrayList<NetworkImageView> list = null;
+    private ArrayList<ImageView> list = null;
     private MyPageAdapter adapter;
     private int pageIndex = 0;
     private int pageCount = 0;
     private ViewPager viewPager;
     private TextView mTitle_tv;
-    private ProgressBar progressBar;
     private RequestQueue requestQueue;
-    private ImageLoader imageLoader;
     private Button backBtn;
     private List<String> picList;
 
@@ -48,10 +47,8 @@ public class PreviewPhotoActivity extends Activity implements View.OnClickListen
         setContentView(R.layout.preview_photo_activity);
         getIntentData();
         requestQueue = Volley.newRequestQueue(this.getApplicationContext());
-        imageLoader = new ImageLoader(requestQueue, new ImageCacheUtils());
         mTitle_tv = (TextView) findViewById(R.id.title_des_text);
         mTitle_tv.getPaint().setFakeBoldText(true);
-        progressBar = (ProgressBar) findViewById(R.id.pb_loading);
         viewPager = (ViewPager) findViewById(R.id.viewpager_photo);
         viewPager.setOnPageChangeListener(pageChangeListener);
         backBtn = (Button) findViewById(R.id.back);
@@ -62,6 +59,7 @@ public class PreviewPhotoActivity extends Activity implements View.OnClickListen
         }
 
         adapter = new MyPageAdapter(list);
+        viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(pageIndex);
 
         if(pageCount > 0){
@@ -69,7 +67,7 @@ public class PreviewPhotoActivity extends Activity implements View.OnClickListen
         }
 
         if(pageIndex == 0){
-            downloadImage(0);
+            downloadImage(pageIndex);
         }
     }
 
@@ -85,9 +83,9 @@ public class PreviewPhotoActivity extends Activity implements View.OnClickListen
     @SuppressLint({"NewApi", "InlinedApi"})
     private void initListView(){
         if(list == null){
-            list = new ArrayList<NetworkImageView>();
+            list = new ArrayList<ImageView>();
         }
-        NetworkImageView img = new NetworkImageView(this);
+        ImageView img = new ImageView(this);
         img.setBackgroundColor(0xff000000);
         img.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         img.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -113,24 +111,10 @@ public class PreviewPhotoActivity extends Activity implements View.OnClickListen
         }
     };
 
-    synchronized private void downloadImage(int index){
-        progressBar.setVisibility(View.VISIBLE);
+    private void downloadImage(int index){
         String imageUrl = picList.get(index);
-        list.get(index).setImageUrl(imageUrl, imageLoader);
-        imageLoader.get(imageUrl, new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                if(response.getBitmap() != null){
-                    progressBar.setVisibility(View.GONE);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+        Picasso.with(PreviewPhotoActivity.this).load(imageUrl).into(list.get(index));
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -149,11 +133,11 @@ public class PreviewPhotoActivity extends Activity implements View.OnClickListen
 
     private class MyPageAdapter extends PagerAdapter {
 
-        private ArrayList<NetworkImageView> listViews;// content
+        private ArrayList<ImageView> listViews;// content
 
         private int size;// 页数
 
-        public MyPageAdapter(ArrayList<NetworkImageView> listViews) {// 构造函数
+        public MyPageAdapter(ArrayList<ImageView> listViews) {// 构造函数
             // 初始化viewpager的时候给的一个页面
             this.listViews = listViews;
             size = listViews == null ? 0 : listViews.size();
@@ -177,6 +161,7 @@ public class PreviewPhotoActivity extends Activity implements View.OnClickListen
         public Object instantiateItem(View arg0, int arg1) {// 返回view对象
             try {
                 ((ViewPager) arg0).addView(listViews.get(arg1 % size), 0);
+                Log.d("adapter","asd");
 
             } catch (Exception e) {
             }

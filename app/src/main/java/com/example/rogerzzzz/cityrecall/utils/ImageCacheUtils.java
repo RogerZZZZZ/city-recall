@@ -28,4 +28,5 @@ public class ImageCacheUtils implements ImageLoader.ImageCache{
             imageCache.put(url, bitmap);
         }
     }
+
 }

@@ -45,12 +45,12 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
     private CloudItem cloudItem;
     private String picUrl;
     private List<String> picList;
+    private MyTask task;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.status_detail);
-
         init();
     }
 
@@ -107,7 +107,8 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
                 if(e == null){
                     AVFile avFile = avObjects.get(0).getAVFile("avatar");
                     final String url = avFile.getUrl();
-                    new MyTask(url).execute();
+                    task = new MyTask(url);
+                    task.execute();
                 }else{
                     e.printStackTrace();
                 }
@@ -130,6 +131,14 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(task != null && task.getStatus() != AsyncTask.Status.FINISHED){
+            task.cancel(false);
+        }
     }
 
     private void setGridView(List<String> list){
@@ -171,7 +180,7 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         }
     }
 
-    private class MyTask extends AsyncTask<String, Void, String>{
+    private class MyTask extends AsyncTask<String, Void, Void>{
         private String url = "";
         private Bitmap bitmap;
         public MyTask(String url){
@@ -179,19 +188,14 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
+        protected Void doInBackground(String... strings) {
             bitmap = BitmapHelper.getBitmap(url);
             return null;
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
             potrait_pic.setImageBitmap(bitmap);
         }
     }
@@ -202,6 +206,14 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
             intent.putExtra("picUrl", picUrl);
             intent.putExtra("position", position);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(task != null && task.getStatus() != AsyncTask.Status.FINISHED){
+            task.cancel(false);
         }
     }
 }

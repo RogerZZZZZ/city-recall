@@ -88,6 +88,7 @@
     <orderEntry type="library" exported="" name="okhttp-2.6.0-leancloud" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="AMap_Search_V3.2.1_20160308" level="project" />
+    <orderEntry type="library" exported="" name="picasso-2.5.2" level="project" />
     <orderEntry type="library" exported="" name="AMap_Navi_v1.7.0.1_20160203" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="AMap_Location_V2.4.0_20160308" level="project" />

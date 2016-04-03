@@ -5,12 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
 import com.example.rogerzzzz.cityrecall.R;
-import com.example.rogerzzzz.cityrecall.utils.ImageCacheUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -19,13 +17,11 @@ import java.util.List;
  */
 public class DetailPicGridviewAdapter extends BaseAdapter{
     private Context context;
-    private ImageLoader imageLoader;
     private List<String> imageItems;
 
     public DetailPicGridviewAdapter(Context context, List<String> imageItems){
         this.context = context;
         this.imageItems = imageItems;
-        imageLoader = new ImageLoader(Volley.newRequestQueue(context), new ImageCacheUtils());
     }
 
     @Override
@@ -47,9 +43,8 @@ public class DetailPicGridviewAdapter extends BaseAdapter{
     public View getView(int position, View view, ViewGroup viewGroup) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         view = layoutInflater.inflate(R.layout.photo_layout, null);
-        NetworkImageView imageView = (NetworkImageView) view.findViewById(R.id.ItemImage);
-        imageView.setDefaultImageResId(R.drawable.ic_launcher);
-        imageView.setImageUrl(imageItems.get(position), imageLoader);
+        ImageView imageView = (ImageView) view.findViewById(R.id.ItemImage);
+        Picasso.with(context).load(imageItems.get(position)).centerCrop().resize(50, 50).into(imageView);
         return view;
     }
 }
