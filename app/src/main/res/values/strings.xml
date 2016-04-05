@@ -8,4 +8,9 @@
     <string name="generic_server_down">连接服务器失败~！</string>
     <string name="generic_error">网络异常,请稍后再试~！</string>
 
+    <string name="ptr_pull_to_refresh">下拉刷新</string>
+    <string name="ptr_release_to_refresh">释放刷新</string>
+    <string name="ptr_refreshing">正在刷新</string>
+    <string name="ptr_last_updated">Updated: %1$s</string>
+
 </resources>

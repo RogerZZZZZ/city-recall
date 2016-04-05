@@ -55,32 +55,33 @@ import java.util.Map;
  * Created by rogerzzzz on 16/3/18.
  */
 public class HomePageActivity extends SlidingFragmentActivity implements LocationSource, AMapLocationListener, AMap.OnMapClickListener,
-        AMap.InfoWindowAdapter, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, CloudSearch.OnCloudSearchListener, View.OnClickListener{
-    private MapView mapView;
-    private AMap aMap;
+        AMap.InfoWindowAdapter, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, CloudSearch.OnCloudSearchListener, View.OnClickListener {
+    public  double                    longtitude;
+    public  double                    latitude;
+    private MapView                   mapView;
+    private AMap                      aMap;
     private OnLocationChangedListener mListener;
-    private AMapLocationClient mLocationClient;
-    private AMapLocationClientOption mLocationOption;
-    private LatLonPoint lp;
-    private CloudSearch cloudSearch;
-    private CloudSearch.Query query;
-    private CloudOverlay cloudOverlay;
-    private List<CloudItem> mCloudItems;
-    private ProgressDialog progressDialog;
-    private Marker mCloudIDMarker;
-    private String TAG = "CityRecall";
-    private ArrayList<CloudItem> items = new ArrayList<CloudItem>();
-    private String tableId = ServerParameter.CLOUDMAP_DIY_TABLEID;
-    private Marker detailMarker;
-    private Marker mlastMarker;
-    private RelativeLayout mPoiDetail;
-    private TextView mPoiName, mPoiAddress, mPoiFavour;
-    private LinearLayout jumpLayout;
-    private String keyWord = ServerParameter.CLOUD_SERVICE_KEYWORD;
-    private boolean isInitNearbySearch = false;
+    private AMapLocationClient        mLocationClient;
+    private AMapLocationClientOption  mLocationOption;
+    private LatLonPoint               lp;
+    private CloudSearch               cloudSearch;
+    private CloudSearch.Query         query;
+    private CloudOverlay              cloudOverlay;
+    private List<CloudItem>           mCloudItems;
+    private ProgressDialog            progressDialog;
+    private Marker                    mCloudIDMarker;
+    private Marker                    detailMarker;
+    private Marker                    mlastMarker;
+    private RelativeLayout            mPoiDetail;
+    private TextView                  mPoiName, mPoiAddress, mPoiFavour;
+    private LinearLayout              jumpLayout;
 
-    public double longtitude;
-    public double latitude;
+    private String               TAG     = "CityRecall";
+    private ArrayList<CloudItem> items   = new ArrayList<CloudItem>();
+    private String               tableId = ServerParameter.CLOUDMAP_DIY_TABLEID;
+
+    private String  keyWord            = ServerParameter.CLOUD_SERVICE_KEYWORD;
+    private boolean isInitNearbySearch = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,7 +95,7 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         UserUtils.initCloudService(HomePageActivity.this);
     }
 
-    private void initLeftMenu(){
+    private void initLeftMenu() {
         Fragment leftMenu = new HomePageLeftMenu();
         setBehindContentView(R.layout.left_menu_frame);
         getSupportFragmentManager().beginTransaction().replace(R.id.id_left_menu_frame, leftMenu).commit();
@@ -107,8 +108,8 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         slidingMenu.setFadeDegree(0.35f);
     }
 
-    private void initMap(){
-        if(aMap == null){
+    private void initMap() {
+        if (aMap == null) {
             aMap = mapView.getMap();
             MyLocationStyle myLocationStyle = new MyLocationStyle();
             myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
@@ -134,8 +135,8 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         }
     }
 
-    private void showProgressDialog(){
-        if(progressDialog == null) progressDialog = new ProgressDialog(this);
+    private void showProgressDialog() {
+        if (progressDialog == null) progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setIndeterminate(false);
         progressDialog.setCancelable(true);
@@ -143,8 +144,8 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         progressDialog.show();
     }
 
-    private void dismissProgressDialog(){
-        if(progressDialog != null){
+    private void dismissProgressDialog() {
+        if (progressDialog != null) {
             progressDialog.dismiss();
         }
     }
@@ -193,7 +194,7 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         mapView.onSaveInstanceState(outState);
     }
 
-    public void showLeftMenu(View view){
+    public void showLeftMenu(View view) {
         getSlidingMenu().showMenu();
     }
 
@@ -201,7 +202,7 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     public void activate(OnLocationChangedListener onLocationChangedListener) {
         aMap.clear();
         mListener = onLocationChangedListener;
-        if(mLocationClient == null){
+        if (mLocationClient == null) {
             mLocationClient = new AMapLocationClient(this);
             mLocationOption = new AMapLocationClientOption();
             mLocationClient.setLocationListener(this);
@@ -214,7 +215,7 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     @Override
     public void deactivate() {
         mListener = null;
-        if(mLocationClient != null){
+        if (mLocationClient != null) {
             mLocationClient.stopLocation();
             mLocationClient.onDestroy();
         }
@@ -223,17 +224,17 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        if(mListener != null && aMapLocation != null){
-            if(aMapLocation != null && aMapLocation.getErrorCode() == 0){
+        if (mListener != null && aMapLocation != null) {
+            if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
                 mListener.onLocationChanged(aMapLocation);
                 longtitude = aMapLocation.getLongitude();
                 latitude = aMapLocation.getLatitude();
-                if(!isInitNearbySearch){
+                if (!isInitNearbySearch) {
                     lp = new LatLonPoint(latitude, longtitude);
                     searchByBound();
                     isInitNearbySearch = true;
                 }
-            }else{
+            } else {
                 String errText = "定位失败，" + aMapLocation.getErrorCode() + ":" + aMapLocation.getErrorInfo();
                 Log.e("AmapErr", errText);
             }
@@ -253,31 +254,31 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     @Override
     public void onMapClick(LatLng latLng) {
         whetherToShowDetailInfo(false);
-        if(mlastMarker != null){
+        if (mlastMarker != null) {
             resetLastMarker();
         }
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if(marker.getObject() != null){
+        if (marker.getObject() != null) {
             whetherToShowDetailInfo(true);
-            try{
+            try {
                 CloudItem mCurrentPoi = (CloudItem) marker.getObject();
-                if(mlastMarker == null){
+                if (mlastMarker == null) {
                     mlastMarker = marker;
-                }else{
+                } else {
                     resetLastMarker();
                     mlastMarker = marker;
                 }
                 detailMarker = marker;
                 detailMarker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.poi_marker_pressed)));
                 setPoiItemDisplayContent(mCurrentPoi);
-            }catch (Exception e){
+            } catch (Exception e) {
                 //Todo handle exception
                 e.printStackTrace();
             }
-        }else{
+        } else {
             whetherToShowDetailInfo(false);
             resetLastMarker();
         }
@@ -285,29 +286,29 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     }
 
     private void setPoiItemDisplayContent(final CloudItem mCurrentPoi) {
-        Iterator iterator =  mCurrentPoi.getCustomfield().entrySet().iterator();
-        while(iterator.hasNext()){
+        Iterator iterator = mCurrentPoi.getCustomfield().entrySet().iterator();
+        while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             Object key = entry.getKey();
             Object val = entry.getValue();
             //Todo favour parameter
-            if(key.equals("content")){
+            if (key.equals("content")) {
                 mPoiAddress.setText(val.toString());
-            }else if(key.equals("username")){
+            } else if (key.equals("username")) {
                 mPoiName.setText(val.toString());
             }
         }
     }
 
-    private void whetherToShowDetailInfo(boolean isToShow){
-        if(isToShow){
+    private void whetherToShowDetailInfo(boolean isToShow) {
+        if (isToShow) {
             mPoiDetail.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mPoiDetail.setVisibility(View.GONE);
         }
     }
 
-    private void resetLastMarker(){
+    private void resetLastMarker() {
         mlastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_gcoding)));
         mlastMarker = null;
     }
@@ -329,18 +330,18 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     @Override
     public void onCloudSearched(CloudResult result, int code) {
         dismissProgressDialog();
-        if(code == 1000){
-            if(result != null && result.getQuery() != null){
-                if(result.getQuery().equals(query)){
+        if (code == 1000) {
+            if (result != null && result.getQuery() != null) {
+                if (result.getQuery().equals(query)) {
                     mCloudItems = result.getClouds();
-                    if(mCloudItems != null && mCloudItems.size() > 0){
+                    if (mCloudItems != null && mCloudItems.size() > 0) {
                         cloudOverlay = new CloudOverlay(aMap, mCloudItems, getResources());
                         cloudOverlay.removeFromMap();
                         cloudOverlay.addToMap();
-                        for(CloudItem item : mCloudItems){
+                        for (CloudItem item : mCloudItems) {
                             items.add(item);
                         }
-                        if(query.getBound().getShape().equals(CloudSearch.SearchBound.BOUND_SHAPE)){
+                        if (query.getBound().getShape().equals(CloudSearch.SearchBound.BOUND_SHAPE)) {
                             aMap.addCircle(new CircleOptions().center(new LatLng(lp.getLatitude(), lp.getLongitude()))
                                     .radius(5000).strokeColor(Color.BLACK)
                                     .strokeWidth(3));
@@ -348,14 +349,14 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
                                     new LatLng(lp.getLatitude(),
                                             lp.getLongitude()), 12));
                         }
-                    }else{
+                    } else {
                         ToastUtils.showToast(this, "无结果", Toast.LENGTH_SHORT);
                     }
                 }
-            }else{
+            } else {
                 ToastUtils.showToast(this, "无结果", Toast.LENGTH_SHORT);
             }
-        }else{
+        } else {
             ToastUtils.showToast(this, "无结果", Toast.LENGTH_SHORT);
         }
     }
@@ -363,24 +364,24 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     @Override
     public void onCloudItemDetailSearched(CloudItemDetail item, int code) {
         dismissProgressDialog();
-        if(code == 1000 && item != null){
-            if(mCloudIDMarker != null){
+        if (code == 1000 && item != null) {
+            if (mCloudIDMarker != null) {
                 mCloudIDMarker.destroy();
             }
             LatLng position = AMapUtil.convertToLatLng(item.getLatLonPoint());
             aMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(position, 18, 0, 30)));
             mCloudIDMarker = aMap.addMarker(new MarkerOptions().position(position)
-                        .title(item.getTitle())
-                        .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_gcoding))));
+                    .title(item.getTitle())
+                    .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_gcoding))));
             items.add(item);
-        }else{
+        } else {
             ToastUtils.showToast(HomePageActivity.this, code + "", Toast.LENGTH_SHORT);
         }
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             finish();
         }
         return super.onKeyDown(keyCode, event);
@@ -388,7 +389,7 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.jump_layout:
                 Intent intent = new Intent(HomePageActivity.this, StatusDetailActivity.class);
                 intent.putExtra("detailObject", (Parcelable) mlastMarker.getObject());

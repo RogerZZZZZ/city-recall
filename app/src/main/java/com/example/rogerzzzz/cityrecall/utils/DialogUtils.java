@@ -16,7 +16,7 @@ import com.example.rogerzzzz.cityrecall.R;
  * Created by rogerzzzz on 16/3/18.
  */
 public class DialogUtils {
-    public static Dialog createLoadingDialog(Context context){
+    public static Dialog createLoadingDialog(Context context) {
         ProgressDialog progressDialog = new ProgressDialog(context, R.style.DialogCommon);
         return progressDialog;
     }
@@ -27,9 +27,9 @@ public class DialogUtils {
     * @param title 标题名称，内容为空即不设置标题
     * @param msg 提示信息
      */
-    public static AlertDialog showMsgDialog(Context context, String title, String msg){
+    public static AlertDialog showMsgDialog(Context context, String title, String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        if(!TextUtils.isEmpty(title)){
+        if (!TextUtils.isEmpty(title)) {
             builder.setTitle(title);
         }
         AlertDialog dialog = builder.setMessage(msg).setNegativeButton("确定", null).show();
@@ -43,9 +43,9 @@ public class DialogUtils {
     * @param msg
     * @param onClickListener 确定按钮监听
     */
-    public static AlertDialog showConfirmDialog(Context context, String title, String msg, DialogInterface.OnClickListener onClickListener){
+    public static AlertDialog showConfirmDialog(Context context, String title, String msg, DialogInterface.OnClickListener onClickListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        if(TextUtils.isEmpty(title)){
+        if (TextUtils.isEmpty(title)) {
             builder.setTitle(title);
         }
         AlertDialog dialog = builder.setMessage(msg)
@@ -67,7 +67,7 @@ public class DialogUtils {
      *            确定按钮监听
      * @return
      */
-    public static AlertDialog showListDialog(Context context, String title, String[] items, DialogInterface.OnClickListener onClickListener){
+    public static AlertDialog showListDialog(Context context, String title, String[] items, DialogInterface.OnClickListener onClickListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (!TextUtils.isEmpty(title)) {
             builder.setTitle(title);
@@ -144,12 +144,12 @@ public class DialogUtils {
      */
     public static void showImagePickDialog(final Activity activity) {
         String title = "选择获取图片的方式";
-        String[] items = new String[] {"拍照","从相册中选择"};
+        String[] items = new String[]{"拍照", "从相册中选择"};
         showListDialog(activity, title, items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                switch (i){
+                switch (i) {
                     case 0:
                         ImageUtils.openCameraImage(activity);
                         break;
@@ -161,17 +161,17 @@ public class DialogUtils {
         });
     }
 
-    public static void showImage(Context context, Uri uri){
+    public static void showImage(Context context, Uri uri) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(uri, "image/*");
         context.startActivity(intent);
     }
 
     // Dialog Builder 模式
-    public static class MyBuilder{
+    public static class MyBuilder {
         private Context context;
 
-        public MyBuilder(Context context){
+        public MyBuilder(Context context) {
             this.context = context;
         }
 

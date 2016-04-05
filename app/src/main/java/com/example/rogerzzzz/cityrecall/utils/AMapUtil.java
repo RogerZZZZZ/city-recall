@@ -16,6 +16,9 @@ import java.util.List;
  * Created by rogerzzzz on 16/3/28.
  */
 public class AMapUtil {
+    public static final String HtmlBlack = "#000000";
+    public static final String HtmlGray  = "#808080";
+
     /**
      * 判断edittext是否null
      */
@@ -91,9 +94,6 @@ public class AMapUtil {
         Date date = new Date(time);
         return df.format(date);
     }
-
-    public static final String HtmlBlack = "#000000";
-    public static final String HtmlGray = "#808080";
 
     public static String getFriendlyTime(int second) {
         if (second > 3600) {

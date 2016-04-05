@@ -12,7 +12,7 @@ import com.avos.avoscloud.AVObject;
 public class MainActivity extends ActionBarActivity {
 
     private MapView mapView;
-    private AMap aMap;
+    private AMap    aMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +26,13 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    private void initMap(){
-        if(aMap == null){
+    private void initMap() {
+        if (aMap == null) {
             aMap = mapView.getMap();
         }
     }
 
-    private void initCloudService(){
+    private void initCloudService() {
         AVOSCloud.initialize(this, "vbq8HEM7nninw4GP4K3IkNiW-gzGzoHsz", "WruY52lpBmOthvNASpSPJrM3");
         AVObject testOj = new AVObject("TestOj");
         testOj.put("foo", "bar");

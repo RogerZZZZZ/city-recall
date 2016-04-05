@@ -28,9 +28,9 @@ import java.util.Locale;
  * Created by rogerzzzz on 16/3/18.
  */
 public class ImageUtils {
-    public static final int GET_IMAGE_BY_CAMERA = 5001;
+    public static final int GET_IMAGE_BY_CAMERA  = 5001;
     public static final int GET_IMAGE_FROM_PHONE = 5002;
-    public static final int CROP_IMAGE = 5003;
+    public static final int CROP_IMAGE           = 5003;
     public static Uri imageUriFromCamera;
     public static Uri cropImageUri;
 
@@ -123,6 +123,7 @@ public class ImageUtils {
 
     /**
      * 根据Uri获取图片绝对路径，解决Android4.4以上版本Uri转换
+     *
      * @param context
      * @param imageUri
      */
@@ -156,7 +157,7 @@ public class ImageUtils {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
                 String selection = MediaStore.Images.Media._ID + "=?";
-                String[] selectionArgs = new String[] { split[1] };
+                String[] selectionArgs = new String[]{split[1]};
                 return getDataColumn(context, contentUri, selection, selectionArgs);
             }
         }
@@ -178,7 +179,7 @@ public class ImageUtils {
     private static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor = null;
         String column = MediaStore.Images.Media.DATA;
-        String[] projection = { column };
+        String[] projection = {column};
         try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
             if (cursor != null && cursor.moveToFirst()) {
@@ -226,7 +227,7 @@ public class ImageUtils {
 
     public static void saveFile(Context context, Bitmap bm, String fileName) throws IOException {
         String storageState = Environment.getExternalStorageState();
-        if(!storageState.equals(Environment.MEDIA_MOUNTED)) {
+        if (!storageState.equals(Environment.MEDIA_MOUNTED)) {
             ToastUtils.showToast(context, "未检测到SD卡", Toast.LENGTH_SHORT);
 
             return;

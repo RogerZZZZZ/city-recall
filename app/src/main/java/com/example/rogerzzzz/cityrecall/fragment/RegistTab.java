@@ -30,14 +30,14 @@ import java.util.regex.Pattern;
 /**
  * Created by rogerzzzz on 16/3/20.
  */
-public class RegistTab extends Fragment implements View.OnClickListener{
+public class RegistTab extends Fragment implements View.OnClickListener {
     private EditText username;
     private EditText password;
     private EditText confirmPassword;
     private EditText emailAddress;
-    private Button confirmBtn;
-    private Button confirmBtnNotReady;
-    private View mView;
+    private Button   confirmBtn;
+    private Button   confirmBtnNotReady;
+    private View     mView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class RegistTab extends Fragment implements View.OnClickListener{
         return mView;
     }
 
-    private void init(){
+    private void init() {
         final Pattern pattern = Pattern.compile(RegExp.PASSWORD_VERIFY);
 
         username = (EditText) mView.findViewById(R.id.username);
@@ -71,10 +71,10 @@ public class RegistTab extends Fragment implements View.OnClickListener{
             @Override
             public void afterTextChanged(Editable editable) {
                 Matcher matcher = pattern.matcher(password.getText());
-                if(!TextUtils.isEmpty(username.getText()) && matcher.find() && password.getText().toString().equals(confirmPassword.getText().toString())){
+                if (!TextUtils.isEmpty(username.getText()) && matcher.find() && password.getText().toString().equals(confirmPassword.getText().toString())) {
                     confirmBtnNotReady.setVisibility(View.GONE);
                     confirmBtn.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     confirmBtnNotReady.setVisibility(View.VISIBLE);
                     confirmBtn.setVisibility(View.GONE);
                 }
@@ -84,7 +84,7 @@ public class RegistTab extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.confirm_regist:
                 sendRegistRequest();
                 break;
@@ -92,12 +92,12 @@ public class RegistTab extends Fragment implements View.OnClickListener{
 
     }
 
-    private void sendRegistRequest(){
+    private void sendRegistRequest() {
         AVUser user;
         String usernameStr = username.getText().toString();
         String passwordStr = password.getText().toString();
         String emailAddressStr = "";
-        if(!TextUtils.isEmpty(emailAddress.getText().toString())){
+        if (!TextUtils.isEmpty(emailAddress.getText().toString())) {
             emailAddressStr = emailAddress.getText().toString();
         }
         UserUtils.initCloudService(getActivity());
@@ -124,9 +124,9 @@ public class RegistTab extends Fragment implements View.OnClickListener{
                 } else {
                     //fail
                     Log.i("code-->", e.getCode() + "");
-                    if(e.getCode() == 202){
+                    if (e.getCode() == 202) {
                         DialogUtils.showMsgDialog(getActivity(), "提示", "用户名已经被注册，请更换用户名在注册一次！");
-                    }else if(e.getCode() == 125){
+                    } else if (e.getCode() == 125) {
                         DialogUtils.showMsgDialog(getActivity(), "提示", "邮箱已经被使用，请使用其他邮箱！");
                     }
                 }

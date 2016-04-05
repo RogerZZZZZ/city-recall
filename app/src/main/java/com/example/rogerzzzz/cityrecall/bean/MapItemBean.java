@@ -12,32 +12,32 @@ public class MapItemBean {
     private String username;
     private String content;
 
-    @JSONField(name="_name")
+    @JSONField(name = "_name")
     public String get_name() {
         return _name;
     }
 
-    @JSONField(name="_name")
+    @JSONField(name = "_name")
     public void set_name(String _name) {
         this._name = _name;
     }
 
-    @JSONField(name="_location")
+    @JSONField(name = "_location")
     public String get_location() {
         return _location;
     }
 
-    @JSONField(name="_location")
+    @JSONField(name = "_location")
     public void set_location(String _location) {
         this._location = _location;
     }
 
-    @JSONField(name="_address")
+    @JSONField(name = "_address")
     public String get_address() {
         return _address;
     }
 
-    @JSONField(name="_address")
+    @JSONField(name = "_address")
     public void set_address(String _address) {
         this._address = _address;
     }

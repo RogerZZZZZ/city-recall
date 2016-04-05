@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.Window;
 
@@ -19,10 +18,12 @@ import java.util.List;
 /**
  * Created by rogerzzzz on 16/3/20.
  */
-public class RegistActivity extends FragmentActivity implements View.OnClickListener{
-    private NoScrollViewPager viewPager;
+public class RegistActivity extends FragmentActivity implements View.OnClickListener {
+
+    private NoScrollViewPager    viewPager;
     private FragmentPagerAdapter fragmentPagerAdapter;
     private List<Fragment> mFragment = new ArrayList<Fragment>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +33,7 @@ public class RegistActivity extends FragmentActivity implements View.OnClickList
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         new TitleBuilder(this)
                 .setLeftText("返回")
                 .setLeftOnClickListener(this)
@@ -45,7 +46,7 @@ public class RegistActivity extends FragmentActivity implements View.OnClickList
         mFragment.add(tab);
         mFragment.add(tabOptional);
 
-        fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()){
+        fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 return mFragment.get(position);
@@ -61,7 +62,7 @@ public class RegistActivity extends FragmentActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.titlebar_tv_left:
                 finish();
         }

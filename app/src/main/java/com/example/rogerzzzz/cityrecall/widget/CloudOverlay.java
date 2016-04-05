@@ -22,8 +22,8 @@ import java.util.List;
  */
 public class CloudOverlay {
     private List<CloudItem> mPois;
-    private AMap mAMap;
-    private Resources resources;
+    private AMap            mAMap;
+    private Resources       resources;
     private ArrayList<Marker> mPoiMarks = new ArrayList<Marker>();
 
     public CloudOverlay(AMap amap, List<CloudItem> pois, Resources resources) {

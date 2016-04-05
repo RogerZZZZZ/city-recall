@@ -15,10 +15,10 @@ import java.util.List;
 /**
  * Created by rogerzzzz on 16/3/18.
  */
-public class EmotionGvAdapter extends BaseAdapter{
-    private Context context;
+public class EmotionGvAdapter extends BaseAdapter {
+    private Context      context;
     private List<String> emotionNames;
-    private int itemWidth;
+    private int          itemWidth;
 
     public EmotionGvAdapter(Context context, List<String> emotionNames, int itemWidth) {
         this.context = context;
@@ -45,10 +45,10 @@ public class EmotionGvAdapter extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView iv = new ImageView(context);
         LayoutParams params = new LayoutParams(itemWidth, itemWidth);
-        iv.setPadding(itemWidth/8, itemWidth/8, itemWidth/8, itemWidth/8);
+        iv.setPadding(itemWidth / 8, itemWidth / 8, itemWidth / 8, itemWidth / 8);
         iv.setLayoutParams(params);
 
-        if(position == getCount() - 1) {
+        if (position == getCount() - 1) {
             iv.setImageResource(R.drawable.emotion_delete_icon);
         } else {
             String emotionName = emotionNames.get(position);

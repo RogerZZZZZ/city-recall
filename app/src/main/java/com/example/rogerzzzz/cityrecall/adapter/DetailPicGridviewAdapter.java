@@ -15,11 +15,11 @@ import java.util.List;
 /**
  * Created by rogerzzzz on 16/3/30.
  */
-public class DetailPicGridviewAdapter extends BaseAdapter{
-    private Context context;
+public class DetailPicGridviewAdapter extends BaseAdapter {
+    private Context      context;
     private List<String> imageItems;
 
-    public DetailPicGridviewAdapter(Context context, List<String> imageItems){
+    public DetailPicGridviewAdapter(Context context, List<String> imageItems) {
         this.context = context;
         this.imageItems = imageItems;
     }

@@ -25,69 +25,12 @@ import java.util.List;
 /**
  * Created by rogerzzzz on 16/3/31.
  */
-public class PreviewPhotoActivity extends Activity implements View.OnClickListener{
-//    private ArrayList<NetworkImageView> list = null;
-    private ArrayList<ImageView> list = null;
+public class PreviewPhotoActivity extends Activity implements View.OnClickListener {
+
     private MyPageAdapter adapter;
-    private int pageIndex = 0;
-    private int pageCount = 0;
-    private ViewPager viewPager;
-    private TextView mTitle_tv;
-    private RequestQueue requestQueue;
-    private Button backBtn;
-    private List<String> picList;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.preview_photo_activity);
-        getIntentData();
-        requestQueue = Volley.newRequestQueue(this.getApplicationContext());
-        mTitle_tv = (TextView) findViewById(R.id.title_des_text);
-        mTitle_tv.getPaint().setFakeBoldText(true);
-        viewPager = (ViewPager) findViewById(R.id.viewpager_photo);
-        viewPager.setOnPageChangeListener(pageChangeListener);
-        backBtn = (Button) findViewById(R.id.back);
-        backBtn.setOnClickListener(this);
-        pageCount = picList.size();
-        for(int i = 0; i < pageCount; i++){
-            initListView();
-        }
-
-        adapter = new MyPageAdapter(list);
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(pageIndex);
-
-        if(pageCount > 0){
-            mTitle_tv.setText((pageIndex +  1) + "/" + pageCount);
-        }
-
-        if(pageIndex == 0){
-            downloadImage(pageIndex);
-        }
-    }
-
-    private void getIntentData(){
-        Intent intent = getIntent();
-        if(intent == null){
-            return;
-        }
-        picList = Arrays.asList(intent.getStringExtra("picUrl").split(","));
-        pageIndex = intent.getIntExtra("position", 0);
-    }
-
-    @SuppressLint({"NewApi", "InlinedApi"})
-    private void initListView(){
-        if(list == null){
-            list = new ArrayList<ImageView>();
-        }
-        ImageView img = new ImageView(this);
-        img.setBackgroundColor(0xff000000);
-        img.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        img.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        list.add(img);
-    }
+    private ArrayList<ImageView> list      = null;
+    private int                  pageIndex = 0;
+    private int                  pageCount = 0;
 
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
@@ -107,8 +50,65 @@ public class PreviewPhotoActivity extends Activity implements View.OnClickListen
 
         }
     };
+    private ViewPager    viewPager;
+    private TextView     mTitle_tv;
+    private RequestQueue requestQueue;
+    private Button       backBtn;
+    private List<String> picList;
 
-    private void downloadImage(int index){
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.preview_photo_activity);
+        getIntentData();
+        requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+        mTitle_tv = (TextView) findViewById(R.id.title_des_text);
+        mTitle_tv.getPaint().setFakeBoldText(true);
+        viewPager = (ViewPager) findViewById(R.id.viewpager_photo);
+        viewPager.setOnPageChangeListener(pageChangeListener);
+        backBtn = (Button) findViewById(R.id.back);
+        backBtn.setOnClickListener(this);
+        pageCount = picList.size();
+        for (int i = 0; i < pageCount; i++) {
+            initListView();
+        }
+
+        adapter = new MyPageAdapter(list);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(pageIndex);
+
+        if (pageCount > 0) {
+            mTitle_tv.setText((pageIndex + 1) + "/" + pageCount);
+        }
+
+        if (pageIndex == 0) {
+            downloadImage(pageIndex);
+        }
+    }
+
+    private void getIntentData() {
+        Intent intent = getIntent();
+        if (intent == null) {
+            return;
+        }
+        picList = Arrays.asList(intent.getStringExtra("picUrl").split(","));
+        pageIndex = intent.getIntExtra("position", 0);
+    }
+
+    @SuppressLint({"NewApi", "InlinedApi"})
+    private void initListView() {
+        if (list == null) {
+            list = new ArrayList<ImageView>();
+        }
+        ImageView img = new ImageView(this);
+        img.setBackgroundColor(0xff000000);
+        img.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        img.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        list.add(img);
+    }
+
+    private void downloadImage(int index) {
         String imageUrl = picList.get(index);
         Picasso.with(PreviewPhotoActivity.this).load(imageUrl).into(list.get(index));
         adapter.notifyDataSetChanged();
@@ -116,7 +116,7 @@ public class PreviewPhotoActivity extends Activity implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.back:
                 Intent intent = new Intent(PreviewPhotoActivity.this, StatusDetailActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -158,7 +158,7 @@ public class PreviewPhotoActivity extends Activity implements View.OnClickListen
         public Object instantiateItem(View arg0, int arg1) {// 返回view对象
             try {
                 ((ViewPager) arg0).addView(listViews.get(arg1 % size), 0);
-                Log.d("adapter","asd");
+                Log.d("adapter", "asd");
 
             } catch (Exception e) {
             }

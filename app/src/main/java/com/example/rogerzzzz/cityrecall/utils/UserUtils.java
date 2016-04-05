@@ -19,7 +19,7 @@ import java.util.UUID;
 public class UserUtils {
     public static int registFlag = -1;
 
-    public static void initCloudService(Context context){
+    public static void initCloudService(Context context) {
         AVOSCloud.initialize(context, "vbq8HEM7nninw4GP4K3IkNiW-gzGzoHsz", "WruY52lpBmOthvNASpSPJrM3");
     }
 
@@ -29,26 +29,26 @@ public class UserUtils {
     * @param password
     * @param emailAddress
      */
-    public static AVUser userRegist(String username, String password, String emailAddress, final Context context){
+    public static AVUser userRegist(String username, String password, String emailAddress, final Context context) {
         AVUser user = new AVUser();
         user.setUsername(username);
         user.setPassword(password);
-        if(!emailAddress.equals("")) user.setEmail(emailAddress);
+        if (!emailAddress.equals("")) user.setEmail(emailAddress);
         return user;
     }
 
     //judge whether user is in state of login
-    public static boolean isUserLogin(){
+    public static boolean isUserLogin() {
         AVUser currentUser = AVUser.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
     //user logout
-    public static void userLogout(){
+    public static void userLogout() {
         AVUser.logOut();
     }
 
@@ -57,7 +57,7 @@ public class UserUtils {
         ArrayList<String> arrayList = new ArrayList<String>();
         int arrLen = uriArrayList.size();
 
-        for(int i = 0; i < arrLen; i++){
+        for (int i = 0; i < arrLen; i++) {
             String picPath = ImageUtils.getImageAbsolutePath(context, uriArrayList.get(i));
             String randomStr = UUID.randomUUID().toString();
             arrayList.add(randomStr);

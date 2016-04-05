@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -35,22 +34,22 @@ import java.util.Map;
 /**
  * Created by rogerzzzz on 16/3/29.
  */
-public class StatusDetailActivity extends Activity implements View.OnClickListener{
-    private GridView mgridView;
-    private TextView username_tv;
-    private TextView content_tv;
-    private TextView address_tv;
-    private ImageView potrait_pic;
+public class StatusDetailActivity extends Activity implements View.OnClickListener {
+    private GridView     mgridView;
+    private TextView     username_tv;
+    private TextView     content_tv;
+    private TextView     address_tv;
+    private ImageView    potrait_pic;
     private LinearLayout favour_layout;
     private LinearLayout not_favour_layout;
     private LinearLayout comment_layout;
-    private TextView time_tv;
-    private CloudItem cloudItem;
-    private String picUrl;
+    private TextView     time_tv;
+    private CloudItem    cloudItem;
+    private String       picUrl;
     private List<String> picList;
-    private MyTask task;
-    private FavourTask favourTask;
-    private FavourTask favourTaskNot;
+    private MyTask       task;
+    private FavourTask   favourTask;
+    private FavourTask   favourTaskNot;
 
     private String username;
     private String id;
@@ -63,7 +62,7 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         init();
     }
 
-    private void init(){
+    private void init() {
         new TitleBuilder(this)
                 .setTitleText("详情")
                 .setLeftText("返回")
@@ -86,7 +85,7 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         comment_layout.setOnClickListener(this);
 
         cloudItem = getIntent().getParcelableExtra("detailObject");
-        if(cloudItem == null){
+        if (cloudItem == null) {
             this.finish();
             return;
         }
@@ -96,13 +95,13 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         String content = "";
         String createTime = cloudItem.getCreatetime();
         Iterator iterator = cloudItem.getCustomfield().entrySet().iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             Object key = entry.getKey();
             Object val = entry.getValue();
-            if(key.equals("content")){
+            if (key.equals("content")) {
                 content = val.toString();
-            }else if(key.equals("username")){
+            } else if (key.equals("username")) {
                 username = val.toString();
             }
         }
@@ -116,12 +115,12 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         query.findInBackground(new FindCallback<AVUser>() {
             @Override
             public void done(List<AVUser> avObjects, AVException e) {
-                if(e == null){
+                if (e == null) {
                     AVFile avFile = avObjects.get(0).getAVFile("avatar");
                     final String url = avFile.getUrl();
                     task = new MyTask(url);
                     task.execute();
-                }else{
+                } else {
                     e.printStackTrace();
                 }
             }
@@ -139,13 +138,13 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         mainQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> avObjects, AVException e) {
-                if(e == null){
-                    if(avObjects.size() != 0){
+                if (e == null) {
+                    if (avObjects.size() != 0) {
                         not_favour_layout.setVisibility(View.GONE);
                         favour_layout.setVisibility(View.VISIBLE);
                         favourObject = avObjects.get(0);
                     }
-                }else{
+                } else {
                     e.printStackTrace();
                 }
             }
@@ -157,13 +156,13 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         query_pic.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> avObjects, AVException e) {
-                if(e == null && avObjects.size() > 0){
+                if (e == null && avObjects.size() > 0) {
                     String picWallUrl = avObjects.get(0).get("picString").toString();
                     picUrl = picWallUrl;
                     List<String> list = Arrays.asList(picWallUrl.split(","));
                     picList = list;
                     setGridView(list);
-                }else{
+                } else {
                     e.printStackTrace();
                 }
             }
@@ -173,12 +172,12 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
     @Override
     protected void onStop() {
         super.onStop();
-        if(task != null && task.getStatus() != AsyncTask.Status.FINISHED){
+        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
             task.cancel(false);
         }
     }
 
-    private void setGridView(List<String> list){
+    private void setGridView(List<String> list) {
         int size = list.size();
         int length = 60;
         DisplayMetrics dm = new DisplayMetrics();
@@ -189,7 +188,7 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(gridviewWidth, LinearLayout.LayoutParams.MATCH_PARENT);
         mgridView.setLayoutParams(params);
-        mgridView .setColumnWidth(itemWith);
+        mgridView.setColumnWidth(itemWith);
         mgridView.setHorizontalSpacing(5);
         mgridView.setStretchMode(GridView.NO_STRETCH);
         mgridView.setNumColumns(size);
@@ -206,23 +205,26 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.titlebar_tv_left:
                 finish();
                 break;
             case R.id.comment_layout:
+                Intent intent = new Intent(StatusDetailActivity.this, CommentActivity.class);
+                intent.putExtra("statusId", id);
+                startActivity(intent);
                 break;
             case R.id.favour_layout_not:
                 favourTask = new FavourTask(0);
                 favourTask.execute();
                 break;
             case R.id.favour_layout:
-                if(favourObject != null){
+                if (favourObject != null) {
                     favourTaskNot = new FavourTask(1, favourObject);
-                }else{
+                } else {
                     favourTaskNot = new FavourTask(1);
                 }
-                if(favourTaskNot != null && favourTaskNot.getStatus() != AsyncTask.Status.RUNNING){
+                if (favourTaskNot != null && favourTaskNot.getStatus() != AsyncTask.Status.RUNNING) {
                     favourTaskNot.execute();
                 }
                 break;
@@ -231,10 +233,34 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         }
     }
 
-    private class MyTask extends AsyncTask<String, Void, Void>{
+    private void showImage(int position) {
+        if (picList.size() != 0) {
+            Intent intent = new Intent(StatusDetailActivity.this, PreviewPhotoActivity.class);
+            intent.putExtra("picUrl", picUrl);
+            intent.putExtra("position", position);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
+            task.cancel(false);
+        }
+        if (favourTask != null && favourTask.getStatus() != AsyncTask.Status.FINISHED) {
+            favourTask.cancel(false);
+        }
+        if (favourTaskNot != null && favourTaskNot.getStatus() != AsyncTask.Status.FINISHED) {
+            favourTaskNot.cancel(false);
+        }
+    }
+
+    private class MyTask extends AsyncTask<String, Void, Void> {
         private String url = "";
         private Bitmap bitmap;
-        public MyTask(String url){
+
+        public MyTask(String url) {
             this.url = url;
         }
 
@@ -251,19 +277,19 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         }
     }
 
-    private class FavourTask extends AsyncTask<String, Void, Void>{
+    private class FavourTask extends AsyncTask<String, Void, Void> {
         private int flag; //1:cancel 0: favour
         private AVObject temObject = null;
-        private AVQuery<AVObject> statusFavours;
-        private AVQuery<AVObject> individualFavous;
+        private AVQuery<AVObject>       statusFavours;
+        private AVQuery<AVObject>       individualFavous;
         private List<AVQuery<AVObject>> queries;
-        private AVQuery<AVObject> mainQuery;
+        private AVQuery<AVObject>       mainQuery;
 
-        public FavourTask(int flag){
+        public FavourTask(int flag) {
             this.flag = flag;
         }
 
-        public FavourTask(int flag, AVObject temObject){
+        public FavourTask(int flag, AVObject temObject) {
             this.temObject = temObject;
             this.flag = flag;
         }
@@ -282,22 +308,22 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
 
         @Override
         protected Void doInBackground(String... strings) {
-            if(flag == 1){
+            if (flag == 1) {
                 //cancel
-                if(temObject != null){
+                if (temObject != null) {
                     temObject.deleteInBackground();
-                }else {
+                } else {
                     mainQuery = AVQuery.and(queries);
                     mainQuery.findInBackground(new FindCallback<AVObject>() {
                         @Override
                         public void done(List<AVObject> avObjects, AVException e) {
-                            if(e == null && avObjects.size() != 0){
+                            if (e == null && avObjects.size() != 0) {
                                 avObjects.get(0).deleteInBackground();
                             }
                         }
                     });
                 }
-            } else{
+            } else {
                 //favour
                 AVObject post = new AVObject("Favour");
                 post.put("username", username);
@@ -310,38 +336,15 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if(flag == 1){
+            if (flag == 1) {
                 //cancel
                 favour_layout.setVisibility(View.GONE);
                 not_favour_layout.setVisibility(View.VISIBLE);
-            } else{
+            } else {
                 //favour
                 favour_layout.setVisibility(View.VISIBLE);
                 not_favour_layout.setVisibility(View.GONE);
             }
-        }
-    }
-
-    private void showImage(int position){
-        if(picList.size() != 0){
-            Intent intent = new Intent(StatusDetailActivity.this, PreviewPhotoActivity.class);
-            intent.putExtra("picUrl", picUrl);
-            intent.putExtra("position", position);
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(task != null && task.getStatus() != AsyncTask.Status.FINISHED){
-            task.cancel(false);
-        }
-        if(favourTask != null && favourTask.getStatus() != AsyncTask.Status.FINISHED){
-            favourTask.cancel(false);
-        }
-        if(favourTaskNot != null && favourTaskNot.getStatus() != AsyncTask.Status.FINISHED){
-            favourTaskNot.cancel(false);
         }
     }
 }

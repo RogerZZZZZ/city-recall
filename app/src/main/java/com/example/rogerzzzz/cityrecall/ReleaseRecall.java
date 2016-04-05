@@ -68,28 +68,27 @@ import java.util.Map;
  */
 public class ReleaseRecall extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener, LocationSource, AMapLocationListener {
 
-    private EditText et_write_status;
-    private WrapHeightGridView gv_write_status;
-    private ImageView iv_image;
-    private ImageView iv_emoji;
-    private ImageView iv_add;
-    private TextView titlebar_tv_left;
-    private TextView titlebar_tv_right;
-    private LinearLayout ll_emotion_dashboard;
-    private ViewPager vp_emotion_dashboard;
-    private ProgressDialog progressDialog;
-    private WriteStatusGridImgsAdapter statusGridImgsAdapter;
-    private ArrayList<Uri> imgUri = new ArrayList<Uri>();
-    private EmotionPagerAdapter emotionPagerAdapter;
-    private TextView address_tv;
-
-    private MapView mapView;
-    private AMap aMap;
-    private OnLocationChangedListener mListener;
-    private AMapLocationClient mLocationClient;
-    private AMapLocationClientOption mLocationOption;
     public double longtitude = 0;
-    public double latitude = 0;
+    public double latitude   = 0;
+    private EditText                   et_write_status;
+    private WrapHeightGridView         gv_write_status;
+    private ImageView                  iv_image;
+    private ImageView                  iv_emoji;
+    private ImageView                  iv_add;
+    private TextView                   titlebar_tv_left;
+    private TextView                   titlebar_tv_right;
+    private LinearLayout               ll_emotion_dashboard;
+    private ViewPager                  vp_emotion_dashboard;
+    private ProgressDialog             progressDialog;
+    private WriteStatusGridImgsAdapter statusGridImgsAdapter;
+    private EmotionPagerAdapter        emotionPagerAdapter;
+    private TextView                   address_tv;
+    private MapView                    mapView;
+    private AMap                       aMap;
+    private OnLocationChangedListener  mListener;
+    private AMapLocationClient         mLocationClient;
+    private AMapLocationClientOption   mLocationOption;
+    private ArrayList<Uri> imgUri = new ArrayList<Uri>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,8 +142,8 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
         iv_emoji.setOnClickListener(this);
     }
 
-    private void initMap(){
-        if(aMap == null){
+    private void initMap() {
+        if (aMap == null) {
             aMap = mapView.getMap();
             MyLocationStyle myLocationStyle = new MyLocationStyle();
             aMap.setMyLocationStyle(myLocationStyle);
@@ -166,7 +165,7 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
             return;
         }
 
-        if(address_tv.getText().toString().equals("正在定位")){
+        if (address_tv.getText().toString().equals("正在定位")) {
             ToastUtils.showToast(this, "定位没有完成", Toast.LENGTH_SHORT);
             return;
         }
@@ -182,7 +181,7 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                     @Override
                     public void onResponse(String response) {
                         final String twitterID = JSON.parseObject(response).get("_id").toString();
-                        new Thread(){
+                        new Thread() {
                             @Override
                             public void run() {
                                 super.run();
@@ -411,12 +410,12 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        if(mListener != null && aMapLocation != null){
-            if(aMapLocation != null && aMapLocation.getErrorCode() == 0){
+        if (mListener != null && aMapLocation != null) {
+            if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
                 latitude = aMapLocation.getLatitude();
                 longtitude = aMapLocation.getLongitude();
                 address_tv.setText(aMapLocation.getAddress());
-            }else{
+            } else {
                 String errText = "定位失败，" + aMapLocation.getErrorCode() + ":" + aMapLocation.getErrorInfo();
                 Log.e("AmapErr", errText);
             }
@@ -426,7 +425,7 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
         mListener = onLocationChangedListener;
-        if(mLocationClient == null){
+        if (mLocationClient == null) {
             mLocationClient = new AMapLocationClient(this);
             mLocationOption = new AMapLocationClientOption();
             mLocationClient.setLocationListener(this);
@@ -439,7 +438,7 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
     @Override
     public void deactivate() {
         mListener = null;
-        if(mLocationClient != null){
+        if (mLocationClient != null) {
             mLocationClient.stopLocation();
             mLocationClient.onDestroy();
         }

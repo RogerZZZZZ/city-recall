@@ -12,12 +12,12 @@ import com.example.rogerzzzz.cityrecall.R;
  * Created by rogerzzzz on 16/3/17.
  */
 public class TitleBuilder {
-    private View viewTitle;
-    private TextView tvTitle;
+    private View      viewTitle;
+    private TextView  tvTitle;
     private ImageView ivLeft;
     private ImageView ivRight;
-    private TextView tvLeft;
-    private TextView tvRight;
+    private TextView  tvLeft;
+    private TextView  tvRight;
 
     public TitleBuilder(Activity context) {
         viewTitle = context.findViewById(R.id.rl_titlebar);

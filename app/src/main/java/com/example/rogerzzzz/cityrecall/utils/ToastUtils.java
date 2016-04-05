@@ -9,10 +9,10 @@ import android.widget.Toast;
 public class ToastUtils {
     private static Toast toast;
 
-    public static void showToast(Context context, CharSequence text, int duration){
-        if(toast == null){
+    public static void showToast(Context context, CharSequence text, int duration) {
+        if (toast == null) {
             toast = Toast.makeText(context, text, duration);
-        }else{
+        } else {
             toast.setText(text);
             toast.setDuration(duration);
         }

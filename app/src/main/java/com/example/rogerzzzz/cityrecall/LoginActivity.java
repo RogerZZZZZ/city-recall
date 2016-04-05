@@ -20,11 +20,12 @@ import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 /**
  * Created by rogerzzzz on 16/3/20.
  */
-public class LoginActivity extends Activity implements View.OnClickListener{
-    private Button loginBtn;
+public class LoginActivity extends Activity implements View.OnClickListener {
+    private Button   loginBtn;
     private TextView registerBtn;
     private EditText username_et;
     private EditText password_et;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +43,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()){
+        switch (view.getId()) {
             case R.id.confirm_login:
                 userlogin();
                 break;
@@ -53,7 +54,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         }
     }
 
-    private void userlogin(){
+    private void userlogin() {
         String username = username_et.getText().toString();
         String password = password_et.getText().toString();
         UserUtils.initCloudService(LoginActivity.this);

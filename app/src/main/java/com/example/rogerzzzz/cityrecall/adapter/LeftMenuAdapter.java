@@ -14,11 +14,11 @@ import com.example.rogerzzzz.cityrecall.R;
  */
 public class LeftMenuAdapter extends BaseAdapter {
     private Context context;
-    private int resourceId;
-    private int[] settingIcons = new int[]{R.drawable.iconfont_detail, R.drawable.iconfont_detailcollected, R.drawable.iconfont_setting, R.drawable.iconfont_write, R.drawable.iconfont_logout};
+    private int     resourceId;
+    private int[]    settingIcons = new int[]{R.drawable.iconfont_detail, R.drawable.iconfont_detailcollected, R.drawable.iconfont_setting, R.drawable.iconfont_write, R.drawable.iconfont_logout};
     private String[] settingNames = new String[]{"个人信息", "个人收藏", "设置", "发送新动态", "登出"};
 
-    public LeftMenuAdapter(Context context, int viewResourseId){
+    public LeftMenuAdapter(Context context, int viewResourseId) {
         this.context = context;
         this.resourceId = viewResourseId;
     }
@@ -41,7 +41,7 @@ public class LeftMenuAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
         final ViewHolder viewHolder;
-        if(convertView == null){
+        if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = View.inflate(context, R.layout.left_menu_item, null);
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.menu_item_img);
@@ -54,8 +54,8 @@ public class LeftMenuAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public static class ViewHolder{
+    public static class ViewHolder {
         public ImageView imageView;
-        public TextView textView;
+        public TextView  textView;
     }
 }

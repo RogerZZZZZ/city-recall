@@ -23,10 +23,10 @@ import java.util.ArrayList;
  * Created by rogerzzzz on 16/3/17.
  */
 public class WriteStatusGridImgsAdapter extends BaseAdapter {
-    private Context context;
+    private Context        context;
     private ArrayList<Uri> datas;
-    private GridView gv;
-    private Activity activity;
+    private GridView       gv;
+    private Activity       activity;
 
     public WriteStatusGridImgsAdapter(Context context, ArrayList<Uri> datas, GridView gv, Activity activity) {
         this.context = context;
@@ -71,7 +71,7 @@ public class WriteStatusGridImgsAdapter extends BaseAdapter {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, width);
         holder.iv_image.setLayoutParams(params);
 
-        if(position < getCount() - 1) {
+        if (position < getCount() - 1) {
             // set data
             Uri item = getItem(position);
             String path = ImageUtils.getImageAbsolutePath(activity, item);

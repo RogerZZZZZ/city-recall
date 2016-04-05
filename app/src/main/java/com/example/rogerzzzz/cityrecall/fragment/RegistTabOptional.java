@@ -14,9 +14,9 @@ import com.example.rogerzzzz.cityrecall.WelcomPageActivity;
 /**
  * Created by rogerzzzz on 16/3/20.
  */
-public class RegistTabOptional extends Fragment implements View.OnClickListener{
+public class RegistTabOptional extends Fragment implements View.OnClickListener {
     private Button successBtn;
-    private View mView;
+    private View   mView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
