@@ -10,10 +10,17 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.example.rogerzzzz.cityrecall.adapter.CommentAdapter;
 import com.example.rogerzzzz.cityrecall.utils.TitleBuilder;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.widget.PullToRefreshListView;
+
+import java.util.List;
 
 /**
  * Created by rogerzzzz on 16/3/31.
@@ -21,6 +28,7 @@ import com.example.rogerzzzz.cityrecall.widget.PullToRefreshListView;
 public class CommentActivity extends Activity implements View.OnClickListener {
     private final int idEdit   = 1;
     private final int idDelete = 2;
+    private String statusId;
     private TextView              titlebar_left;
     private PullToRefreshListView listView;
     private CommentAdapter        commentAdapter;
@@ -46,30 +54,33 @@ public class CommentActivity extends Activity implements View.OnClickListener {
         listView.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                commentAdapter.loadData();
                 listView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         listView.onRefreshComplete();
+                        onCreate(null);
                     }
                 }, 2000);
             }
         });
 
-        commentAdapter = new CommentAdapter(CommentActivity.this);
-        commentAdapter.loadData();
-        listView.setAdapter(commentAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        statusId = getIntent().getStringExtra("statusId");
+        //query comment result
+        AVQuery<AVObject> query = new AVQuery<AVObject>("Comment");
+        query.whereEqualTo("statusId", statusId);
+        query.findInBackground(new FindCallback<AVObject>() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                CommentAdapter.ViewHolder viewHolder = (CommentAdapter.ViewHolder) adapterView.getTag();
-                if (viewHolder.name != null) {
-                    ToastUtils.showToast(CommentActivity.this, viewHolder.name.getText(), Toast.LENGTH_SHORT);
+            public void done(List<AVObject> avObjects, AVException e) {
+                if(e == null){
+                    AVUser currentUser = AVUser.getCurrentUser();
+                    commentAdapter = new CommentAdapter(CommentActivity.this, avObjects, currentUser.getUsername());
+                    listView.setAdapter(commentAdapter);
+                    registerForContextMenu(listView);
+                }else{
+                    e.printStackTrace();
                 }
             }
         });
-        registerForContextMenu(listView);
     }
 
     @Override

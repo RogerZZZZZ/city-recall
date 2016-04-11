@@ -5,58 +5,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVObject;
 import com.example.rogerzzzz.cityrecall.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by rogerzzzz on 16/4/5.
  */
-public class CommentAdapter extends BaseAdapter {
-    private ArrayList<String> items;
+public class CommentAdapter extends BaseAdapter{
     private Activity          activity;
+    private List<AVObject> commentList;
+    private String currentUsername;
 
-    public CommentAdapter(Activity activity) {
+    public CommentAdapter(Activity activity, List<AVObject> commentList, String currentUsername) {
         this.activity = activity;
-    }
-
-
-    public void loadData() {
-        items = new ArrayList<String>();
-
-        items.add("Ajax Amsterdam");
-        items.add("Barcelona");
-        items.add("Manchester United");
-        items.add("Chelsea");
-        items.add("Real Madrid");
-        items.add("Bayern Munchen");
-        items.add("Internazionale");
-        items.add("Valencia");
-        items.add("Arsenal");
-        items.add("AS Roma");
-        items.add("Tottenham Hotspur");
-        items.add("PSV");
-        items.add("Olympique Lyon");
-        items.add("AC Milan");
-        items.add("Dortmund");
-        items.add("Schalke 04");
-        items.add("Twente");
-        items.add("Porto");
-        items.add("Juventus");
-
-        notifyDataSetChanged();
+        this.commentList = commentList;
+        this.currentUsername = currentUsername;
     }
 
     @Override
     public int getCount() {
-        return items.size();
+        return commentList.size();
     }
 
     @Override
-    public Object getItem(int i) {
-        return items.get(i);
+    public AVObject getItem(int i) {
+        return commentList.get(i);
     }
 
     @Override
@@ -65,25 +44,54 @@ public class CommentAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
-        String record = (String) getItem(position);
+        final AVObject commentItem = getItem(position);
         LayoutInflater inflater = activity.getLayoutInflater();
         ViewHolder viewHolder = new ViewHolder();
 
         if (convertView == null) {
             rowView = inflater.inflate(R.layout.comment_list_item, null);
-            viewHolder.name = (TextView) rowView.findViewById(R.id.textView1);
+            viewHolder.content = (TextView) rowView.findViewById(R.id.content);
+            viewHolder.username_tv = (TextView) rowView.findViewById(R.id.username);
+            viewHolder.replyUsername_tv = (TextView) rowView.findViewById(R.id.reply_username);
+            viewHolder.replyLayout = (LinearLayout) rowView.findViewById(R.id.reply_layout);
+            viewHolder.commentBtn = (ImageView) rowView.findViewById(R.id.commentBtn);
+            viewHolder.deleteBtn = (ImageView) rowView.findViewById(R.id.deleteBtn);
+
+//            viewHolder.commentBtn.setOnClickListener();
+            viewHolder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    commentItem.deleteInBackground();
+                    commentList.remove(position);
+                    notifyDataSetChanged();
+                }
+            });
+
             rowView.setTag(viewHolder);
         }
 
         final ViewHolder holder = (ViewHolder) rowView.getTag();
-        holder.name.setText(record);
+        holder.content.setText(commentItem.get("content").toString());
+        holder.username_tv.setText(commentItem.get("from").toString());
+        if(commentItem.get("to") != null){
+            holder.replyLayout.setVisibility(View.VISIBLE);
+            holder.replyUsername_tv.setText(commentItem.get("to").toString());
+        }
+        if(commentItem.get("from").toString().equals(currentUsername)){
+            holder.deleteBtn.setVisibility(View.VISIBLE);
+        }
         return rowView;
     }
 
     public class ViewHolder {
-        public String   id;
-        public TextView name;
+        public String       id;
+        public TextView     username_tv;
+        public TextView     replyUsername_tv;
+        public TextView     content;
+        public LinearLayout replyLayout;
+        public ImageView    commentBtn;
+        public ImageView  deleteBtn;
     }
 }

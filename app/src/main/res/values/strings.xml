@@ -13,4 +13,6 @@
     <string name="ptr_refreshing">正在刷新</string>
     <string name="ptr_last_updated">Updated: %1$s</string>
 
+    <string name="reply_comment">回复</string>
+
 </resources>
