@@ -6,6 +6,7 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class CommentActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_comment);
         init();
 
@@ -75,6 +77,15 @@ public class CommentActivity extends Activity implements View.OnClickListener {
                     AVUser currentUser = AVUser.getCurrentUser();
                     commentAdapter = new CommentAdapter(CommentActivity.this, avObjects, currentUser.getUsername());
                     listView.setAdapter(commentAdapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            int index = listView.getFirstVisiblePosition();
+                            View v = listView.getChildAt(i);
+                            int top = (v == null) ? 0 : v.getTop();
+                            listView.setSelectionFromTop(index, top);
+                        }
+                    });
                     registerForContextMenu(listView);
                 }else{
                     e.printStackTrace();

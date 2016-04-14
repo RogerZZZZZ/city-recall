@@ -25,4 +25,14 @@ public class WelcomPageActivity extends Activity {
         }
         startActivity(intent);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <include layout="@layout/include_titlebar"/>
 
     <LinearLayout
+        android:layout_below="@+id/rl_titlebar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
@@ -17,4 +18,38 @@
 
         </LinearLayout>
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/comment_edit_layout"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp">
+
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <EditText
+                android:background="@drawable/comment_layout_border"
+                android:id="@+id/comment_editText"
+                android:hint="@string/comment_hint"
+                android:paddingLeft="5dp"
+                android:layout_weight="4"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent" />
+
+            <Button
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/comment_send_btn"
+                android:background="@color/orange"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="50dp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+</RelativeLayout>

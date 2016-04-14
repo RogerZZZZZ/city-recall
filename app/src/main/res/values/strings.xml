@@ -15,4 +15,7 @@
 
     <string name="reply_comment">回复</string>
 
+    <string name="comment_hint">评论</string>
+    <string name="comment_send_btn">发送</string>
+
 </resources>

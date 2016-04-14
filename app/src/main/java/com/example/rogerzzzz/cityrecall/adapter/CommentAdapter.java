@@ -1,12 +1,14 @@
 package com.example.rogerzzzz.cityrecall.adapter;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVObject;
@@ -17,10 +19,11 @@ import java.util.List;
 /**
  * Created by rogerzzzz on 16/4/5.
  */
-public class CommentAdapter extends BaseAdapter{
+public class CommentAdapter extends BaseAdapter implements View.OnClickListener{
     private Activity          activity;
     private List<AVObject> commentList;
     private String currentUsername;
+    private RelativeLayout relativeLayout;
 
     public CommentAdapter(Activity activity, List<AVObject> commentList, String currentUsername) {
         this.activity = activity;
@@ -44,13 +47,16 @@ public class CommentAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         View rowView = convertView;
+        final View parentView;
         final AVObject commentItem = getItem(position);
         LayoutInflater inflater = activity.getLayoutInflater();
         ViewHolder viewHolder = new ViewHolder();
 
         if (convertView == null) {
+            parentView = inflater.inflate(R.layout.activity_comment, null);
+            relativeLayout = (RelativeLayout) parentView.findViewById(R.id.comment_edit_layout);
             rowView = inflater.inflate(R.layout.comment_list_item, null);
             viewHolder.content = (TextView) rowView.findViewById(R.id.content);
             viewHolder.username_tv = (TextView) rowView.findViewById(R.id.username);
@@ -59,7 +65,7 @@ public class CommentAdapter extends BaseAdapter{
             viewHolder.commentBtn = (ImageView) rowView.findViewById(R.id.commentBtn);
             viewHolder.deleteBtn = (ImageView) rowView.findViewById(R.id.deleteBtn);
 
-//            viewHolder.commentBtn.setOnClickListener();
+            viewHolder.commentBtn.setOnClickListener(this);
             viewHolder.deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -85,6 +91,16 @@ public class CommentAdapter extends BaseAdapter{
         return rowView;
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.commentBtn:
+                relativeLayout.setVisibility(View.VISIBLE);
+                Log.d("commentBtn", "click");
+                break;
+        }
+    }
+
     public class ViewHolder {
         public String       id;
         public TextView     username_tv;
@@ -92,6 +108,6 @@ public class CommentAdapter extends BaseAdapter{
         public TextView     content;
         public LinearLayout replyLayout;
         public ImageView    commentBtn;
-        public ImageView  deleteBtn;
+        public ImageView    deleteBtn;
     }
 }
