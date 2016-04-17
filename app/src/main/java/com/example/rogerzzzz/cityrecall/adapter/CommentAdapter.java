@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVObject;
+import com.example.rogerzzzz.cityrecall.CommentActivity;
 import com.example.rogerzzzz.cityrecall.R;
 
 import java.util.List;
@@ -49,14 +50,12 @@ public class CommentAdapter extends BaseAdapter implements View.OnClickListener{
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
         View rowView = convertView;
-        final View parentView;
         final AVObject commentItem = getItem(position);
         LayoutInflater inflater = activity.getLayoutInflater();
         ViewHolder viewHolder = new ViewHolder();
 
         if (convertView == null) {
-            parentView = inflater.inflate(R.layout.activity_comment, null);
-            relativeLayout = (RelativeLayout) parentView.findViewById(R.id.comment_edit_layout);
+            relativeLayout = (RelativeLayout) ((CommentActivity) activity).findViewById(R.id.comment_edit_layout);
             rowView = inflater.inflate(R.layout.comment_list_item, null);
             viewHolder.content = (TextView) rowView.findViewById(R.id.content);
             viewHolder.username_tv = (TextView) rowView.findViewById(R.id.username);
