@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVObject;
 import com.example.rogerzzzz.cityrecall.CommentActivity;
 import com.example.rogerzzzz.cityrecall.R;
+import com.example.rogerzzzz.cityrecall.utils.L;
 
 import java.util.List;
 
@@ -25,6 +26,12 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
     private List<AVObject> commentList;
     private String currentUsername;
     private RelativeLayout relativeLayout;
+    private onRecycleViewItemClickListener mItemClickListener;
+
+    //define onItemClickListener interface
+    public static interface onRecycleViewItemClickListener{
+        void onItemClickListener(int position);
+    }
 
     public CommentItemAdapter(Activity activity, List<AVObject> commentList, String currentUsername){
         this.activity = activity;
@@ -34,14 +41,29 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        MyViewHolder holder = new MyViewHolder(LayoutInflater.from(activity).inflate(R.layout.comment_list_item, viewGroup, false));
+        View view = LayoutInflater.from(activity).inflate(R.layout.comment_list_item, viewGroup, false);
+        MyViewHolder holder = new MyViewHolder(view);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mItemClickListener != null){
+                    L.d("-->" + v.getVerticalScrollbarPosition());
+                    mItemClickListener.onItemClickListener(v.getVerticalScrollbarPosition());
+                }
+            }
+        });
         return holder;
+    }
+
+    public void setOnItemClickListener(onRecycleViewItemClickListener listener){
+        this.mItemClickListener = listener;
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final AVObject commentItem = commentList.get(position);
         relativeLayout = (RelativeLayout) ((CommentActivity) activity).findViewById(R.id.comment_edit_layout);
+        L.d(commentItem.get("content").toString());
 
         holder.content.setText(commentItem.get("content").toString());
         holder.username_tv.setText(commentItem.get("from").toString());
