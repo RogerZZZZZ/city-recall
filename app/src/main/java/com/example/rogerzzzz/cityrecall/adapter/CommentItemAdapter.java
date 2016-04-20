@@ -8,13 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVObject;
-import com.example.rogerzzzz.cityrecall.CommentActivity;
 import com.example.rogerzzzz.cityrecall.R;
-import com.example.rogerzzzz.cityrecall.utils.L;
 
 import java.util.List;
 
@@ -25,7 +22,6 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
     private Activity activity;
     private List<AVObject> commentList;
     private String currentUsername;
-    private RelativeLayout relativeLayout;
     private onRecycleViewItemClickListener mItemClickListener;
 
     //define onItemClickListener interface
@@ -43,15 +39,6 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(activity).inflate(R.layout.comment_list_item, viewGroup, false);
         MyViewHolder holder = new MyViewHolder(view);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mItemClickListener != null){
-                    L.d("-->" + v.getVerticalScrollbarPosition());
-                    mItemClickListener.onItemClickListener(v.getVerticalScrollbarPosition());
-                }
-            }
-        });
         return holder;
     }
 
@@ -62,11 +49,11 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final AVObject commentItem = commentList.get(position);
-        relativeLayout = (RelativeLayout) ((CommentActivity) activity).findViewById(R.id.comment_edit_layout);
-        L.d(commentItem.get("content").toString());
 
         holder.content.setText(commentItem.get("content").toString());
         holder.username_tv.setText(commentItem.get("from").toString());
+        holder.position = position;
+
         if(commentItem.get("to") != null){
             holder.replyLayout.setVisibility(View.VISIBLE);
             holder.replyUsername_tv.setText(commentItem.get("to").toString());
@@ -94,8 +81,7 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.commentBtn:
-                relativeLayout.setVisibility(View.VISIBLE);
-                Log.d("commentBtn", "click");
+//                relativeLayout.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -108,6 +94,7 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
         public LinearLayout replyLayout;
         public ImageView commentBtn;
         public ImageView deleteBtn;
+        public int position;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -117,11 +104,15 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
             replyLayout = (LinearLayout) itemView.findViewById(R.id.reply_layout);
             commentBtn = (ImageView) itemView.findViewById(R.id.commentBtn);
             deleteBtn = (ImageView) itemView.findViewById(R.id.deleteBtn);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-
+            if(mItemClickListener != null){
+                Log.d("debug", "content:"+content+"--position"+position);
+                mItemClickListener.onItemClickListener(position);
+            }
         }
     }
 }

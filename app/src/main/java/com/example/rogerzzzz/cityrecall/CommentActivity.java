@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
@@ -14,7 +15,6 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
-import com.example.rogerzzzz.cityrecall.adapter.CommentAdapter;
 import com.example.rogerzzzz.cityrecall.adapter.CommentItemAdapter;
 import com.example.rogerzzzz.cityrecall.utils.TitleBuilder;
 
@@ -24,13 +24,12 @@ import java.util.List;
  * Created by rogerzzzz on 16/3/31.
  */
 public class CommentActivity extends Activity implements View.OnClickListener {
-    private     String             statusId;
-    private     TextView           titlebar_left;
-    private     CommentAdapter     commentAdapter;
-    private     RelativeLayout     relativeLayout;
-    private     RecyclerView       recyclerView;
-    private     CommentItemAdapter commentItemAdapter;
-    private     LinearLayoutManager       recycleLinearLayoutManager;
+    private String              statusId;
+    private TextView            titlebar_left;
+    private LinearLayout        relativeLayout;
+    private RecyclerView        recyclerView;
+    private CommentItemAdapter  commentItemAdapter;
+    private LinearLayoutManager recycleLinearLayoutManager;
 
 
     @Override
@@ -39,6 +38,7 @@ public class CommentActivity extends Activity implements View.OnClickListener {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_comment);
         recycleLinearLayoutManager = new LinearLayoutManager(this);
+        recycleLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         init();
     }
 
@@ -51,7 +51,7 @@ public class CommentActivity extends Activity implements View.OnClickListener {
         titlebar_left = (TextView) findViewById(R.id.titlebar_tv_left);
         recyclerView = (RecyclerView) findViewById(R.id.pull_to_refresh_recycle);
 
-        relativeLayout = (RelativeLayout) findViewById(R.id.comment_edit_layout);
+        relativeLayout = (LinearLayout) findViewById(R.id.comment_edit_layout);
 
         titlebar_left.setOnClickListener(this);
 
@@ -68,12 +68,12 @@ public class CommentActivity extends Activity implements View.OnClickListener {
                     commentItemAdapter.setOnItemClickListener(new CommentItemAdapter.onRecycleViewItemClickListener() {
                         @Override
                         public void onItemClickListener(int position) {
-                            recyclerView.smoothScrollToPosition(position);
+                            Log.d("--->", position + "");
+                            recyclerView.scrollToPosition(position);
                         }
                     });
-                    recyclerView.setLayoutManager(recycleLinearLayoutManager);
                     recyclerView.setAdapter(commentItemAdapter);
-
+                    recyclerView.setLayoutManager(recycleLinearLayoutManager);
                 }else{
                     e.printStackTrace();
                 }

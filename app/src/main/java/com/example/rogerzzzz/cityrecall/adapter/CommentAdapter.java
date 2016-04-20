@@ -8,11 +8,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVObject;
-import com.example.rogerzzzz.cityrecall.CommentActivity;
 import com.example.rogerzzzz.cityrecall.R;
 
 import java.util.List;
@@ -24,7 +22,6 @@ public class CommentAdapter extends BaseAdapter implements View.OnClickListener{
     private Activity          activity;
     private List<AVObject> commentList;
     private String currentUsername;
-    private RelativeLayout relativeLayout;
 
     public CommentAdapter(Activity activity, List<AVObject> commentList, String currentUsername) {
         this.activity = activity;
@@ -55,7 +52,6 @@ public class CommentAdapter extends BaseAdapter implements View.OnClickListener{
         ViewHolder viewHolder = new ViewHolder();
 
         if (convertView == null) {
-            relativeLayout = (RelativeLayout) ((CommentActivity) activity).findViewById(R.id.comment_edit_layout);
             rowView = inflater.inflate(R.layout.comment_list_item, null);
             viewHolder.content = (TextView) rowView.findViewById(R.id.content);
             viewHolder.username_tv = (TextView) rowView.findViewById(R.id.username);
@@ -94,7 +90,6 @@ public class CommentAdapter extends BaseAdapter implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.commentBtn:
-                relativeLayout.setVisibility(View.VISIBLE);
                 Log.d("commentBtn", "click");
                 break;
         }
