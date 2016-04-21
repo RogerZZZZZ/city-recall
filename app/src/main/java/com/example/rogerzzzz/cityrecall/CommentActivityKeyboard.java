@@ -9,7 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
@@ -17,6 +17,7 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.example.rogerzzzz.cityrecall.adapter.CommentItemAdapter;
+import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.widget.XhsKeyBoard.SimpleCommonUtils;
 import com.example.rogerzzzz.cityrecall.widget.XhsKeyBoard.data.ImMsgBean;
 import com.example.rogerzzzz.cityrecall.widget.XhsKeyBoard.widget.AutoHeightBehavior;
@@ -48,11 +49,17 @@ public class CommentActivityKeyboard extends AppCompatActivity implements FuncLa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_comment_keyboard);
         ButterKnife.bind(this);
         toolbar.setTitle("评论列表");
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtils.showToast(CommentActivityKeyboard.this, "test", Toast.LENGTH_SHORT);
+            }
+        });
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(linearLayoutManager.VERTICAL);
         initView();

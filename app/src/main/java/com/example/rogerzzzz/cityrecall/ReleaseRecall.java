@@ -239,7 +239,13 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                         mapItemBean.set_address(address_tv.getText().toString());
                         mapItemBean.setContent(comment);
                         mapItemBean.set_location(longtitude + "," + latitude);
-                        mapItemBean.setUsername(currentUser.getUsername());
+                        if(UserUtils.isUserLogin()){
+                            mapItemBean.setUsername(currentUser.getUsername());
+                        }else{
+                            Log.d("Intent", "else");
+                            Intent intent = new Intent(ReleaseRecall.this, WelcomPageActivity.class);
+                            startActivity(intent);
+                        }
                         String data = JSON.toJSONString(mapItemBean);
                         map.put("data", data);
                         return map;

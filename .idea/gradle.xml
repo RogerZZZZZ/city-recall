@@ -10,7 +10,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/sjEmotions" />
+            <option value="$PROJECT_DIR$/emoticonkeyboard" />
+            <option value="$PROJECT_DIR$/reclib-qq" />
             <option value="$PROJECT_DIR$/slidelibrary" />
           </set>
         </option>
@@ -18,7 +19,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/sjEmotions" />
+            <option value="$PROJECT_DIR$/emoticonkeyboard" />
+            <option value="$PROJECT_DIR$/reclib-qq" />
             <option value="$PROJECT_DIR$/slidelibrary" />
           </set>
         </option>

@@ -4,7 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CityRecall.iml" filepath="$PROJECT_DIR$/CityRecall.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sjEmotions/sjEmotions.iml" filepath="$PROJECT_DIR$/sjEmotions/sjEmotions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/emoticonkeyboard/emoticonkeyboard.iml" filepath="$PROJECT_DIR$/emoticonkeyboard/emoticonkeyboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/reclib-qq/reclib-qq.iml" filepath="$PROJECT_DIR$/reclib-qq/reclib-qq.iml" />
       <module fileurl="file://$PROJECT_DIR$/slidelibrary/slidelibrary.iml" filepath="$PROJECT_DIR$/slidelibrary/slidelibrary.iml" />
     </modules>
   </component>

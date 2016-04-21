@@ -210,7 +210,7 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
                 finish();
                 break;
             case R.id.comment_layout:
-                Intent intent = new Intent(StatusDetailActivity.this, CommentActivityKeyboard.class);
+                Intent intent = new Intent(StatusDetailActivity.this, CommentActivity.class);
                 intent.putExtra("statusId", id);
                 startActivity(intent);
                 break;
