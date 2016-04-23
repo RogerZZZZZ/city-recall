@@ -43,6 +43,9 @@ public class CommentActivity extends Activity implements View.OnClickListener, F
     private String              statusId;
     private CommentItemAdapter  commentItemAdapter;
     private LinearLayoutManager recycleLinearLayoutManager;
+    private String commentTmpContent;
+    private String commentToUser;
+    private String commentFromUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +119,7 @@ public class CommentActivity extends Activity implements View.OnClickListener, F
         query.whereEqualTo("statusId", statusId);
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
-            public void done(List<AVObject> avObjects, AVException e) {
+            public void done(final List<AVObject> avObjects, AVException e) {
                 if(e == null){
                     AVUser currentUser = AVUser.getCurrentUser();
                     commentItemAdapter = new CommentItemAdapter(CommentActivity.this, avObjects, currentUser.getUsername());
@@ -125,6 +128,16 @@ public class CommentActivity extends Activity implements View.OnClickListener, F
                         public void onItemClickListener(int position) {
                             Log.d("--->", position + "");
                             recyclerView.scrollToPosition(position);
+                        }
+                    });
+                    commentItemAdapter.setSendCommentClickListener(new CommentItemAdapter.sendCommentClickListener() {
+                        @Override
+                        public void onButtonClickListener(int position) {
+                            Log.d("outside", position+"");
+                            AVObject tmpObject = avObjects.get(position);
+                            commentTmpContent = tmpObject.get("content").toString();
+                            commentFromUser = tmpObject.get("from").toString();
+                            ekBar.getEtChat().setHint("回复" + commentFromUser + ":");
                         }
                     });
                     recyclerView.setAdapter(commentItemAdapter);

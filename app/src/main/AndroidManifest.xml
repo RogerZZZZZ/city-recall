@@ -36,8 +36,6 @@
                   android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
         <activity android:name=".PreviewPhotoActivity"
                   android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
-        <activity android:name=".CommentActivityKeyboard"
-                  android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
         <activity android:name=".CommentActivity"
                   android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"
                   android:windowSoftInputMode="adjustResize"/>

@@ -114,6 +114,12 @@ public class CommentActivityKeyboard extends AppCompatActivity implements FuncLa
                             recyclerView.scrollToPosition(position);
                         }
                     });
+                    commentItemAdapter.setSendCommentClickListener(new CommentItemAdapter.sendCommentClickListener() {
+                        @Override
+                        public void onButtonClickListener(int position) {
+                            Log.d("outside", position+"");
+                        }
+                    });
                     recyclerView.setAdapter(commentItemAdapter);
                     recyclerView.setLayoutManager(linearLayoutManager);
                 }else{
@@ -155,16 +161,6 @@ public class CommentActivityKeyboard extends AppCompatActivity implements FuncLa
     public void onMaxParentHeightChange(int i) {
 
     }
-
-    private void scrollToBottom() {
-        recyclerView.post(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
-    }
-
 
     //Todo send comment func
     private void OnSendBtnClick(String msg) {
