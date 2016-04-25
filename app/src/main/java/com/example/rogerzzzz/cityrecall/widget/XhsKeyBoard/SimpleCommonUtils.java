@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.example.rogerzzzz.cityrecall.widget.XhsKeyBoard.widget.SimpleAppsGrid
 import com.sj.emoji.DefEmoticons;
 import com.sj.emoji.EmojiBean;
 import com.sj.emoji.EmojiDisplay;
+
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -92,6 +94,16 @@ public class SimpleCommonUtils {
         PageSetAdapter pageSetAdapter = new PageSetAdapter();
 
         addEmojiPageSetEntity(pageSetAdapter, context, emoticonClickListener);
+
+        addXhsPageSetEntity(pageSetAdapter, context, emoticonClickListener);
+
+        addWechatPageSetEntity(pageSetAdapter, context, emoticonClickListener);
+
+        addGoodGoodStudyPageSetEntity(pageSetAdapter, context, emoticonClickListener);
+
+        addKaomojiPageSetEntity(pageSetAdapter, context, emoticonClickListener);
+
+        addTestPageSetEntity(pageSetAdapter, context);
 
         return pageSetAdapter;
     }
@@ -221,7 +233,8 @@ public class SimpleCommonUtils {
      * @param emoticonClickListener
      */
     public static void addKaomojiPageSetEntity(PageSetAdapter pageSetAdapter, Context context, EmoticonClickListener emoticonClickListener) {
-        EmoticonPageSetEntity kaomojiPageSetEntity = new EmoticonPageSetEntity.Builder()
+        EmoticonPageSetEntity kaomojiPageSetEntity
+                = new EmoticonPageSetEntity.Builder()
                 .setLine(3)
                 .setRow(3)
                 .setEmoticonList(ParseDataUtils.parseKaomojiData(context))
@@ -341,6 +354,8 @@ public class SimpleCommonUtils {
                 content,
                 EmoticonsKeyboardUtils.getFontHeight(tv_content),
                 null);
+        Log.d("spannable", String.valueOf(spannable));
         tv_content.setText(spannable);
     }
 }
+

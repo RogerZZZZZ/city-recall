@@ -256,6 +256,11 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private class MyTask extends AsyncTask<String, Void, Void> {
         private String url = "";
         private Bitmap bitmap;

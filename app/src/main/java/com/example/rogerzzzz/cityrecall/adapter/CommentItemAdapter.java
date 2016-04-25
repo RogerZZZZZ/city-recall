@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.avos.avoscloud.AVObject;
 import com.example.rogerzzzz.cityrecall.R;
+import com.example.rogerzzzz.cityrecall.widget.XhsKeyBoard.QqUtils;
 
 import java.util.List;
 
@@ -72,7 +73,8 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final AVObject commentItem = commentList.get(position);
-        holder.content.setText(commentItem.get("content").toString());
+        if(commentItem.get("content").toString().equals("") || commentItem.get("content") == null) return;
+        setContent(holder.content, commentItem.get("content").toString());
         holder.username_tv.setText(commentItem.get("from").toString());
         holder.position = position;
 
@@ -83,6 +85,10 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
         if(commentItem.get("from").toString().equals(currentUsername)){
             holder.deleteBtn.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setContent(TextView tv_content, String content){
+        QqUtils.spannableEmoticonFilter(tv_content, content);
     }
 
     @Override
