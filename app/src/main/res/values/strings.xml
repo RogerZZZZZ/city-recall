@@ -13,8 +13,12 @@
     <string name="comment_hint">评论</string>
     <string name="comment_send_btn">发送</string>
 
-    <style name="XhsEmoticonsKeyboardTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="XhsEmoticonsKeyboardTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="XhsEmoticonsKeyboardTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="XhsEmoticonsKeyboardTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

@@ -1,11 +1,12 @@
 package com.example.rogerzzzz.cityrecall;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -51,7 +52,6 @@ import com.example.rogerzzzz.cityrecall.utils.DialogUtils;
 import com.example.rogerzzzz.cityrecall.utils.DisplayUtils;
 import com.example.rogerzzzz.cityrecall.utils.ImageUtils;
 import com.example.rogerzzzz.cityrecall.utils.StringUtils;
-import com.example.rogerzzzz.cityrecall.utils.TitleBuilder;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.utils.VolleyErrorHelper;
@@ -63,27 +63,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by rogerzzzz on 16/3/17.
  */
-public class ReleaseRecall extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener, LocationSource, AMapLocationListener {
+public class ReleaseRecall extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, LocationSource, AMapLocationListener {
 
     public double longtitude = 0;
     public double latitude   = 0;
-    private EditText                   et_write_status;
-    private WrapHeightGridView         gv_write_status;
-    private ImageView                  iv_image;
-    private ImageView                  iv_emoji;
-    private ImageView                  iv_add;
-    private TextView                   titlebar_tv_left;
-    private TextView                   titlebar_tv_right;
-    private LinearLayout               ll_emotion_dashboard;
-    private ViewPager                  vp_emotion_dashboard;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.et_write_status)
+    EditText et_write_status;
+    @Bind(R.id.gv_write_status)
+    WrapHeightGridView gv_write_status;
+    @Bind(R.id.iv_image)
+    ImageView iv_image;
+    @Bind(R.id.iv_add)
+    ImageView iv_add;
+    @Bind(R.id.iv_emoji)
+    ImageView iv_emoji;
+    @Bind(R.id.ll_emotion_dashboard)
+    LinearLayout ll_emotion_dashboard;
+    @Bind(R.id.vp_emotion_dashboard)
+    ViewPager vp_emotion_dashboard;
+    @Bind(R.id.location_tv)
+    TextView address_tv;
+    @Bind(R.id.map)
+    MapView mapView;
     private ProgressDialog             progressDialog;
     private WriteStatusGridImgsAdapter statusGridImgsAdapter;
     private EmotionPagerAdapter        emotionPagerAdapter;
-    private TextView                   address_tv;
-    private MapView                    mapView;
     private AMap                       aMap;
     private OnLocationChangedListener  mListener;
     private AMapLocationClient         mLocationClient;
@@ -94,49 +106,31 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.release_recall);
-        mapView = (MapView) findViewById(R.id.map);
+        ButterKnife.bind(this);
         mapView.onCreate(savedInstanceState);
-
         initView();
         initMap();
         initEmotion();
     }
 
     private void initView() {
-        //标题栏
-        new TitleBuilder(this)
-                .setTitleText("新动态")
-                .setLeftText("取消")
-                .setLeftOnClickListener(this)
-                .setRightText("发送")
-                .setRightOnClickListener(this)
-                .build();
-        //顶部
-        titlebar_tv_left = (TextView) findViewById(R.id.titlebar_tv_left);
-        titlebar_tv_right = (TextView) findViewById(R.id.titlebar_tv_right);
-        //输入框
-        et_write_status = (EditText) findViewById(R.id.et_write_status);
-        //添加的九宫格图片
-        gv_write_status = (WrapHeightGridView) findViewById(R.id.gv_write_status);
-        //底部添加栏
-        iv_image = (ImageView) findViewById(R.id.iv_image);
-        iv_add = (ImageView) findViewById(R.id.iv_add);
-        iv_emoji = (ImageView) findViewById(R.id.iv_emoji);
-        //表情选择面板
-        ll_emotion_dashboard = (LinearLayout) findViewById(R.id.ll_emotion_dashboard);
-        vp_emotion_dashboard = (ViewPager) findViewById(R.id.vp_emotion_dashboard);
+        toolbar.setTitle("评论列表");
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.icon_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         //进度条
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("发送中..");
         //定位
-        address_tv = (TextView) findViewById(R.id.location_tv);
-
         statusGridImgsAdapter = new WriteStatusGridImgsAdapter(this, imgUri, gv_write_status, ReleaseRecall.this);
         gv_write_status.setAdapter(statusGridImgsAdapter);
         gv_write_status.setOnItemClickListener(this);
 
-        titlebar_tv_left.setOnClickListener(this);
-        titlebar_tv_right.setOnClickListener(this);
         iv_image.setOnClickListener(this);
         iv_add.setOnClickListener(this);
         iv_emoji.setOnClickListener(this);
@@ -326,9 +320,6 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.titlebar_tv_left:
-                finish();
-                break;
             case R.id.titlebar_tv_right:
                 try {
                     sendStatus();
@@ -376,6 +367,7 @@ public class ReleaseRecall extends Activity implements View.OnClickListener, Ada
                 StringBuilder stringBuilder = new StringBuilder(et_write_status.getText().toString());
                 stringBuilder.insert(curPosition, emotionName);
 
+                //Todo 表情文字处理
 //                et_write_status.setText(StringUtils.);
                 // 特殊文字处理,将表情等转换一下
                 et_write_status.setText(StringUtils.getWeiboContent(

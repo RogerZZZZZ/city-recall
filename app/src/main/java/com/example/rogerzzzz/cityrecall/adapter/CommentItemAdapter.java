@@ -79,7 +79,11 @@ public class CommentItemAdapter extends RecyclerView.Adapter<CommentItemAdapter.
         holder.position = position;
 
         if(commentItem.get("to") != null){
-            holder.replyLayout.setVisibility(View.VISIBLE);
+            if(commentItem.get("to").toString().equals("")){
+                holder.replyLayout.setVisibility(View.GONE);
+            }else{
+                holder.replyLayout.setVisibility(View.VISIBLE);
+            }
             holder.replyUsername_tv.setText(commentItem.get("to").toString());
         }
         if(commentItem.get("from").toString().equals(currentUsername)){

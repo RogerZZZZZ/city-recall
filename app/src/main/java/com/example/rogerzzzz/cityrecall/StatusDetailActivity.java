@@ -1,10 +1,11 @@
 package com.example.rogerzzzz.cityrecall;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,7 +23,6 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.example.rogerzzzz.cityrecall.adapter.DetailPicGridviewAdapter;
 import com.example.rogerzzzz.cityrecall.utils.BitmapHelper;
-import com.example.rogerzzzz.cityrecall.utils.TitleBuilder;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 
 import java.util.ArrayList;
@@ -31,26 +31,40 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by rogerzzzz on 16/3/29.
  */
-public class StatusDetailActivity extends Activity implements View.OnClickListener {
-    private GridView     mgridView;
-    private TextView     username_tv;
-    private TextView     content_tv;
-    private TextView     address_tv;
-    private ImageView    potrait_pic;
-    private LinearLayout favour_layout;
-    private LinearLayout not_favour_layout;
-    private LinearLayout comment_layout;
-    private TextView     time_tv;
+public class StatusDetailActivity extends AppCompatActivity implements View.OnClickListener {
+    @Bind(R.id.toolbar)
+    Toolbar      toolbar;
+    @Bind(R.id.grid)
+    GridView     mgridView;
+    @Bind(R.id.username)
+    TextView     username_tv;
+    @Bind(R.id.content)
+    TextView     content_tv;
+    @Bind(R.id.potrait_pic)
+    ImageView    potrait_pic;
+    @Bind(R.id.favour_layout)
+    LinearLayout favour_layout;
+    @Bind(R.id.favour_layout_not)
+    LinearLayout not_favour_layout;
+    @Bind(R.id.comment_layout)
+    LinearLayout comment_layout;
+    @Bind(R.id.time)
+    TextView     time_tv;
+    @Bind(R.id.location_tv)
+    TextView     address_tv;
+
     private CloudItem    cloudItem;
     private String       picUrl;
     private List<String> picList;
     private MyTask       task;
     private FavourTask   favourTask;
     private FavourTask   favourTaskNot;
-
     private String username;
     private String id;
     private AVObject favourObject = null;
@@ -59,26 +73,21 @@ public class StatusDetailActivity extends Activity implements View.OnClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.status_detail);
+        ButterKnife.bind(this);
+        toolbar.setTitle("详情");
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.icon_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         init();
     }
 
     private void init() {
-        new TitleBuilder(this)
-                .setTitleText("详情")
-                .setLeftText("返回")
-                .setLeftOnClickListener(this)
-                .build();
         UserUtils.initCloudService(this);
-
-        username_tv = (TextView) findViewById(R.id.username);
-        content_tv = (TextView) findViewById(R.id.content);
-        potrait_pic = (ImageView) findViewById(R.id.potrait_pic);
-        favour_layout = (LinearLayout) findViewById(R.id.favour_layout);
-        not_favour_layout = (LinearLayout) findViewById(R.id.favour_layout_not);
-        comment_layout = (LinearLayout) findViewById(R.id.comment_layout);
-        time_tv = (TextView) findViewById(R.id.time);
-        mgridView = (GridView) findViewById(R.id.grid);
-        address_tv = (TextView) findViewById(R.id.location_tv);
 
         favour_layout.setOnClickListener(this);
         not_favour_layout.setOnClickListener(this);

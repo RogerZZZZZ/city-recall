@@ -1,13 +1,15 @@
 package com.example.rogerzzzz.cityrecall;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.avos.avoscloud.AVException;
@@ -33,7 +35,7 @@ import sj.keyboard.widget.FuncLayout;
 /**
  * Created by rogerzzzz on 16/3/31.
  */
-public class CommentActivity extends Activity implements View.OnClickListener, FuncLayout.OnFuncKeyBoardListener{
+public class CommentActivity extends AppCompatActivity implements View.OnClickListener, FuncLayout.OnFuncKeyBoardListener{
     @Bind(R.id.pull_to_refresh_recycle)
     RecyclerView recyclerView;
     @Bind(R.id.toolbar)
@@ -44,20 +46,68 @@ public class CommentActivity extends Activity implements View.OnClickListener, F
     private CommentItemAdapter  commentItemAdapter;
     private LinearLayoutManager recycleLinearLayoutManager;
     private String commentTmpContent;
-    private String commentToUser;
+    private String commentToUser = "";
     private String commentFromUser;
     private SendCommentTask msendCommentTask;
     private List<AVObject> adapterList;
+    private AVUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
         ButterKnife.bind(this);
+        currentUser = AVUser.getCurrentUser();
+        commentFromUser = currentUser.getUsername();
         toolbar.setTitle("评论列表");
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.icon_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         recycleLinearLayoutManager = new LinearLayoutManager(this);
         recycleLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         init();
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_settings:
+                        commentToUser = "";
+                        ekBar.getEtChat().setHint("点击输入文字");
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main2, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void init() {
@@ -126,7 +176,6 @@ public class CommentActivity extends Activity implements View.OnClickListener, F
             public void done(final List<AVObject> avObjects, AVException e) {
                 if(e == null){
                     adapterList = avObjects;
-                    final AVUser currentUser = AVUser.getCurrentUser();
                     commentItemAdapter = new CommentItemAdapter(CommentActivity.this, adapterList, currentUser.getUsername());
                     commentItemAdapter.setOnItemClickListener(new CommentItemAdapter.onRecycleViewItemClickListener() {
                         @Override

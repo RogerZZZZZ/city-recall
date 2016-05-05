@@ -1,6 +1,10 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppBaseTheme" parent="android:Theme.Light"></style>
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <item name="android:colorPrimary">@color/confirm_regist_correct</item>
+        <item name="android:statusBarColor">@color/orange</item>
+        <item name="android:textColorPrimary">@color/orange</item>
+    </style>
 
     <style name="AppTheme" parent="AppBaseTheme">
 
@@ -182,6 +186,19 @@
     <style name="XhsEmoticonsKeyboardTheme.NoTitle">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/orange</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="XhsEmoticonsKeyboardTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
     </style>
 
 </resources>
