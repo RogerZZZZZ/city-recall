@@ -21,4 +21,16 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
+    <string name="subtitle">Subtitle</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="menu_title">Menu Title</string>
+    <string name="page">Page</string>
+    <string name="tab">Tab</string>
+    <string name="search">Search</string>
+    <string name="menu1">Tab Count 1</string>
+    <string name="menu2">Tab Count 2</string>
+    <string name="menu3">Tab Count 3</string>
+    <string name="menu4">Tab Count 4</string>
+
 </resources>

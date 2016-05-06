@@ -1,4 +1,5 @@
-package com.example.rogerzzzz.cityrecall;
+package com.example.rogerzzzz.cityrecall.fragment;
+
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -6,10 +7,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,12 +39,14 @@ import com.amap.api.services.cloud.CloudResult;
 import com.amap.api.services.cloud.CloudSearch;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
+import com.example.rogerzzzz.cityrecall.HomePageActivity;
+import com.example.rogerzzzz.cityrecall.R;
+import com.example.rogerzzzz.cityrecall.StatusDetailActivity;
 import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.utils.AMapUtil;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.widget.CloudOverlay;
-import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,10 +54,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by rogerzzzz on 16/3/18.
+ * Created by rogerzzzz on 16/5/6.
  */
-public class HomePageActivity extends SlidingFragmentActivity implements LocationSource, AMapLocationListener, AMap.OnMapClickListener,
-        AMap.InfoWindowAdapter, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, CloudSearch.OnCloudSearchListener, View.OnClickListener {
+public class HomePageMapFragment extends Fragment implements LocationSource, AMapLocationListener, AMap.OnMapClickListener,
+        AMap.InfoWindowAdapter, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, CloudSearch.OnCloudSearchListener, View.OnClickListener{
+
     public  double                    longtitude;
     public  double                    latitude;
     private MapView                   mapView;
@@ -71,7 +77,8 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     private Marker                    mlastMarker;
     private RelativeLayout            mPoiDetail;
     private TextView                  mPoiName, mPoiAddress, mPoiFavour;
-    private LinearLayout              jumpLayout;
+    private View globalView;
+    private LinearLayout jumpLayout;
 
     private String               TAG     = "CityRecall";
     private ArrayList<CloudItem> items   = new ArrayList<CloudItem>();
@@ -81,31 +88,17 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     private boolean isInitNearbySearch = false;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_homepage);
-        mapView = (MapView) findViewById(R.id.map);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        globalView = inflater.inflate(R.layout.activity_homepage, container, false);
+        mapView = (MapView) globalView.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
-//        initLeftMenu();
         initMap();
-        UserUtils.initCloudService(HomePageActivity.this);
+        UserUtils.initCloudService(getActivity());
+
+        return globalView;
     }
 
-//    private void initLeftMenu() {
-//        Fragment leftMenu = new HomePageLeftMenu();
-//        setBehindContentView(R.layout.left_menu_frame);
-//        getSupportFragmentManager().beginTransaction().replace(R.id.id_left_menu_frame, leftMenu).commit();
-//        SlidingMenu slidingMenu = getSlidingMenu();
-//        slidingMenu.setMode(SlidingMenu.LEFT);
-//        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-//        slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-//        slidingMenu.setShadowDrawable(R.drawable.shadow);
-//        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-//        slidingMenu.setFadeDegree(0.35f);
-//    }
-
-    private void initMap() {
+    private void initMap(){
         if (aMap == null) {
             aMap = mapView.getMap();
             MyLocationStyle myLocationStyle = new MyLocationStyle();
@@ -120,20 +113,20 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
             aMap.setOnMarkerClickListener(this);
             aMap.setInfoWindowAdapter(this);
             aMap.setOnInfoWindowClickListener(this);
-            mPoiDetail = (RelativeLayout) findViewById(R.id.poi_detail);
-            mPoiName = (TextView) findViewById(R.id.poi_name);
-            mPoiAddress = (TextView) findViewById(R.id.poi_address);
-            mPoiFavour = (TextView) findViewById(R.id.poi_favour);
-            jumpLayout = (LinearLayout) findViewById(R.id.jump_layout);
+            mPoiDetail = (RelativeLayout) globalView.findViewById(R.id.poi_detail);
+            mPoiName = (TextView) globalView.findViewById(R.id.poi_name);
+            mPoiAddress = (TextView) globalView.findViewById(R.id.poi_address);
+            mPoiFavour = (TextView) globalView.findViewById(R.id.poi_favour);
+            jumpLayout = (LinearLayout) globalView.findViewById(R.id.jump_layout);
             jumpLayout.setOnClickListener(this);
 
-            cloudSearch = new CloudSearch(this);
+            cloudSearch = new CloudSearch(getContext());
             cloudSearch.setOnCloudSearchListener(this);
         }
     }
 
     private void showProgressDialog() {
-        if (progressDialog == null) progressDialog = new ProgressDialog(this);
+        if (progressDialog == null) progressDialog = new ProgressDialog(getContext());
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setIndeterminate(false);
         progressDialog.setCancelable(true);
@@ -162,61 +155,32 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         } catch (AMapException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         mapView.onPause();
         deactivate();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         mapView.onResume();
         whetherToShowDetailInfo(false);
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
-    }
-
-    public void showLeftMenu(View view) {
-        getSlidingMenu().showMenu();
-    }
-
-    @Override
-    public void activate(OnLocationChangedListener onLocationChangedListener) {
-        aMap.clear();
-        mListener = onLocationChangedListener;
-        if (mLocationClient == null) {
-            mLocationClient = new AMapLocationClient(this);
-            mLocationOption = new AMapLocationClientOption();
-            mLocationClient.setLocationListener(this);
-            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-            mLocationClient.setLocationOption(mLocationOption);
-            mLocationClient.startLocation();
-        }
-    }
-
-    @Override
-    public void deactivate() {
-        mListener = null;
-        if (mLocationClient != null) {
-            mLocationClient.stopLocation();
-            mLocationClient.onDestroy();
-        }
-        mLocationClient = null;
     }
 
     @Override
@@ -246,6 +210,107 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
     @Override
     public View getInfoContents(Marker marker) {
         return null;
+    }
+
+    @Override
+    public void activate(OnLocationChangedListener onLocationChangedListener) {
+        aMap.clear();
+        mListener = onLocationChangedListener;
+        if (mLocationClient == null) {
+            mLocationClient = new AMapLocationClient(getContext());
+            mLocationOption = new AMapLocationClientOption();
+            mLocationClient.setLocationListener(this);
+            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+            mLocationClient.setLocationOption(mLocationOption);
+            mLocationClient.startLocation();
+        }
+    }
+
+    @Override
+    public void deactivate() {
+        mListener = null;
+        if (mLocationClient != null) {
+            mLocationClient.stopLocation();
+            mLocationClient.onDestroy();
+        }
+        mLocationClient = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.jump_layout:
+                Intent intent = new Intent(getActivity(), StatusDetailActivity.class);
+                intent.putExtra("detailObject", (Parcelable) mlastMarker.getObject());
+                startActivity(intent);
+                break;
+        }
+    }
+
+    @Override
+    public void onCloudSearched(CloudResult result, int code) {
+        dismissProgressDialog();
+        if (code == 1000) {
+            if (result != null && result.getQuery() != null) {
+                if (result.getQuery().equals(query)) {
+                    mCloudItems = result.getClouds();
+                    if (mCloudItems != null && mCloudItems.size() > 0) {
+                        cloudOverlay = new CloudOverlay(aMap, mCloudItems, getResources());
+                        cloudOverlay.removeFromMap();
+                        cloudOverlay.addToMap();
+                        for (CloudItem item : mCloudItems) {
+                            items.add(item);
+                        }
+                        if (query.getBound().getShape().equals(CloudSearch.SearchBound.BOUND_SHAPE)) {
+                            aMap.addCircle(new CircleOptions().center(new LatLng(lp.getLatitude(), lp.getLongitude()))
+                                    .radius(5000).strokeColor(Color.BLACK)
+                                    .strokeWidth(3));
+                            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(lp.getLatitude(),
+                                            lp.getLongitude()), 12));
+                        }
+                    } else {
+                        ToastUtils.showToast(getActivity(), "无结果", Toast.LENGTH_SHORT);
+                    }
+                }
+            } else {
+                ToastUtils.showToast(getActivity(), "无结果", Toast.LENGTH_SHORT);
+            }
+        } else {
+            ToastUtils.showToast(getActivity(), "无结果", Toast.LENGTH_SHORT);
+        }
+    }
+
+    @Override
+    public void onCloudItemDetailSearched(CloudItemDetail item, int code) {
+        dismissProgressDialog();
+        if (code == 1000 && item != null) {
+            if (mCloudIDMarker != null) {
+                mCloudIDMarker.destroy();
+            }
+            LatLng position = AMapUtil.convertToLatLng(item.getLatLonPoint());
+            aMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(position, 18, 0, 30)));
+            mCloudIDMarker = aMap.addMarker(new MarkerOptions().position(position)
+                    .title(item.getTitle())
+                    .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_gcoding))));
+            items.add(item);
+        } else {
+            ToastUtils.showToast(getActivity(), code + "", Toast.LENGTH_SHORT);
+        }
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        String tile = marker.getTitle();
+        for (CloudItem item : items) {
+            if (tile.equals(item.getTitle())) {
+                Intent intent = new Intent(getActivity(),
+                        HomePageActivity.class);
+                intent.putExtra("clouditem", item);
+                startActivity(intent);
+                break;
+            }
+        }
     }
 
     @Override
@@ -282,6 +347,14 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         return true;
     }
 
+    private void whetherToShowDetailInfo(boolean isToShow) {
+        if (isToShow) {
+            mPoiDetail.setVisibility(View.VISIBLE);
+        } else {
+            mPoiDetail.setVisibility(View.GONE);
+        }
+    }
+
     private void setPoiItemDisplayContent(final CloudItem mCurrentPoi) {
         Iterator iterator = mCurrentPoi.getCustomfield().entrySet().iterator();
         while (iterator.hasNext()) {
@@ -297,101 +370,8 @@ public class HomePageActivity extends SlidingFragmentActivity implements Locatio
         }
     }
 
-    private void whetherToShowDetailInfo(boolean isToShow) {
-        if (isToShow) {
-            mPoiDetail.setVisibility(View.VISIBLE);
-        } else {
-            mPoiDetail.setVisibility(View.GONE);
-        }
-    }
-
     private void resetLastMarker() {
         mlastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_gcoding)));
         mlastMarker = null;
-    }
-
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        String tile = marker.getTitle();
-        for (CloudItem item : items) {
-            if (tile.equals(item.getTitle())) {
-                Intent intent = new Intent(HomePageActivity.this,
-                        HomePageActivity.class);
-                intent.putExtra("clouditem", item);
-                startActivity(intent);
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void onCloudSearched(CloudResult result, int code) {
-        dismissProgressDialog();
-        if (code == 1000) {
-            if (result != null && result.getQuery() != null) {
-                if (result.getQuery().equals(query)) {
-                    mCloudItems = result.getClouds();
-                    if (mCloudItems != null && mCloudItems.size() > 0) {
-                        cloudOverlay = new CloudOverlay(aMap, mCloudItems, getResources());
-                        cloudOverlay.removeFromMap();
-                        cloudOverlay.addToMap();
-                        for (CloudItem item : mCloudItems) {
-                            items.add(item);
-                        }
-                        if (query.getBound().getShape().equals(CloudSearch.SearchBound.BOUND_SHAPE)) {
-                            aMap.addCircle(new CircleOptions().center(new LatLng(lp.getLatitude(), lp.getLongitude()))
-                                    .radius(5000).strokeColor(Color.BLACK)
-                                    .strokeWidth(3));
-                            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(lp.getLatitude(),
-                                            lp.getLongitude()), 12));
-                        }
-                    } else {
-                        ToastUtils.showToast(this, "无结果", Toast.LENGTH_SHORT);
-                    }
-                }
-            } else {
-                ToastUtils.showToast(this, "无结果", Toast.LENGTH_SHORT);
-            }
-        } else {
-            ToastUtils.showToast(this, "无结果", Toast.LENGTH_SHORT);
-        }
-    }
-
-    @Override
-    public void onCloudItemDetailSearched(CloudItemDetail item, int code) {
-        dismissProgressDialog();
-        if (code == 1000 && item != null) {
-            if (mCloudIDMarker != null) {
-                mCloudIDMarker.destroy();
-            }
-            LatLng position = AMapUtil.convertToLatLng(item.getLatLonPoint());
-            aMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(position, 18, 0, 30)));
-            mCloudIDMarker = aMap.addMarker(new MarkerOptions().position(position)
-                    .title(item.getTitle())
-                    .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_gcoding))));
-            items.add(item);
-        } else {
-            ToastUtils.showToast(HomePageActivity.this, code + "", Toast.LENGTH_SHORT);
-        }
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.jump_layout:
-                Intent intent = new Intent(HomePageActivity.this, StatusDetailActivity.class);
-                intent.putExtra("detailObject", (Parcelable) mlastMarker.getObject());
-                startActivity(intent);
-                break;
-        }
     }
 }

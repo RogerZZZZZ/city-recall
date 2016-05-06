@@ -36,7 +36,6 @@ dependencies {
     compile project(':reclib-qq')
     compile project(':emoticonkeyboard')
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    //    compile 'com.github.w446108264:XhsEmoticonsKeyboard:2.0.2'
     compile files('libs/AMap_2DMap_V2.8.1_20160202.jar')
     compile files('libs/AMap_Navi_v1.7.0.1_20160203.jar')
     compile files('libs/AMap_Search_V3.2.1_20160308.jar')

@@ -19,7 +19,7 @@ public class WelcomPageActivity extends Activity {
         UserUtils.initCloudService(WelcomPageActivity.this);
         isLogin = UserUtils.isUserLogin();
         if (isLogin != false) {
-            intent = new Intent(WelcomPageActivity.this, HomePageActivity.class);
+            intent = new Intent(WelcomPageActivity.this, HomeActivity.class);
         } else {
             intent = new Intent(WelcomPageActivity.this, LoginActivity.class);
         }
