@@ -1,1 +1,1 @@
-include ':app', ':slidelibrary', ':emoticonkeyboard', ':reclib-qq'
+include ':app', ':emoticonkeyboard', ':reclib-qq', ':materialList'

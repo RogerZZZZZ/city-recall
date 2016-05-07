@@ -66,7 +66,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 if (e == null) {
                     //Todo successful
                     ToastUtils.showToast(LoginActivity.this, "login success", Toast.LENGTH_SHORT);
-                    Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                     startActivity(intent);
                 } else {
                     //Todo fail

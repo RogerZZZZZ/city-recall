@@ -22,7 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVObject;
-import com.example.rogerzzzz.cityrecall.MainActivity;
+import com.example.rogerzzzz.cityrecall.HomeActivity;
 import com.example.rogerzzzz.cityrecall.R;
 import com.example.rogerzzzz.cityrecall.enity.Emotion;
 
@@ -71,7 +71,7 @@ public class StringUtils {
 
                                 //Todo Mainactivity ---> UserInfoActivity
 
-                                Intent intent = new Intent(context, MainActivity.class);
+                                Intent intent = new Intent(context, HomeActivity.class);
                                 intent.putExtra("userName", key.substring(1));
                                 context.startActivity(intent);
                             } else if (key.startsWith("#")) {

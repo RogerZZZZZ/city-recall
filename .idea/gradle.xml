@@ -11,8 +11,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/emoticonkeyboard" />
+            <option value="$PROJECT_DIR$/materialList" />
             <option value="$PROJECT_DIR$/reclib-qq" />
-            <option value="$PROJECT_DIR$/slidelibrary" />
           </set>
         </option>
         <option name="myModules">
@@ -20,8 +20,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/emoticonkeyboard" />
+            <option value="$PROJECT_DIR$/materialList" />
             <option value="$PROJECT_DIR$/reclib-qq" />
-            <option value="$PROJECT_DIR$/slidelibrary" />
           </set>
         </option>
       </GradleProjectSettings>

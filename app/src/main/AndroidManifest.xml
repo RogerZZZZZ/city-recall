@@ -33,9 +33,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
-        <activity
             android:name=".ReleaseRecall"
             android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
         <activity
@@ -43,9 +40,6 @@
             android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
-        <activity
-            android:name=".HomePageActivity"
             android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
         <activity
             android:name=".StatusDetailActivity"
@@ -59,8 +53,7 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".HomeActivity"
-            android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"
-            android:windowSoftInputMode="adjustResize"/>
+            android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
     </application>
 
 </manifest>

@@ -39,7 +39,7 @@ import com.amap.api.services.cloud.CloudResult;
 import com.amap.api.services.cloud.CloudSearch;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
-import com.example.rogerzzzz.cityrecall.HomePageActivity;
+import com.example.rogerzzzz.cityrecall.HomeActivity;
 import com.example.rogerzzzz.cityrecall.R;
 import com.example.rogerzzzz.cityrecall.StatusDetailActivity;
 import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
@@ -305,7 +305,7 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
         for (CloudItem item : items) {
             if (tile.equals(item.getTitle())) {
                 Intent intent = new Intent(getActivity(),
-                        HomePageActivity.class);
+                        HomeActivity.class);
                 intent.putExtra("clouditem", item);
                 startActivity(intent);
                 break;

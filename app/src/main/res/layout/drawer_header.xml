@@ -14,17 +14,12 @@
         android:layout_width="fill_parent"
         android:layout_height="100dp">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/menu_item_img"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/potrait_bg"
-            android:gravity="center"
-            android:textColor="@android:color/white" />
+            android:layout_marginTop="10dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"/>
 
     </LinearLayout>
 
@@ -34,7 +29,7 @@
         android:id="@+id/username_tv"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="16dp"
+        android:layout_margin="20dp"
         android:text="Your Name Here"
         android:textColor="@android:color/white"/>
 </FrameLayout>

@@ -4,39 +4,6 @@
     android:background="#F8F8FF"
     android:layout_height="match_parent">
 
-    <!--<RelativeLayout-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="55dp"-->
-        <!--android:background="#F8F8FF" >-->
-
-        <!--<ImageButton-->
-            <!--android:id="@+id/id_iv_left"-->
-            <!--android:layout_width="21dp"-->
-            <!--android:layout_height="21dp"-->
-            <!--android:layout_alignParentLeft="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:layout_marginTop="17dp"-->
-            <!--android:onClick="showLeftMenu"-->
-            <!--android:background="@drawable/showright_selector" />-->
-
-        <!--<TextView-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="fill_parent"-->
-            <!--android:gravity="center"-->
-            <!--android:text="城市记忆"-->
-            <!--android:textColor="#303030"-->
-            <!--android:textSize="20sp"-->
-            <!--android:textStyle="bold" />-->
-
-    <!--</RelativeLayout>-->
-
-    <!--<View-->
-        <!--android:background="#D3D3D3"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="1dp">-->
-        <!--</View>-->
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
