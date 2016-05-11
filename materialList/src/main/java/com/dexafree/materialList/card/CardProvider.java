@@ -14,7 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -40,6 +40,7 @@ public class CardProvider<T extends CardProvider> extends Observable {
     private String mTitle;
     private String mSubtitle;
     private String mDescription;
+    private String favourNum;
     private boolean mDividerVisible;
     private boolean mFullWidthDivider;
     private int mTitleGravity;
@@ -206,6 +207,28 @@ public class CardProvider<T extends CardProvider> extends Observable {
     @NonNull
     public T setTitle(@StringRes final int title) {
         return setTitle(getContext().getString(title));
+    }
+
+    /**
+     * set the favour number
+     *
+     * @param favourNum to set.
+     * @return the renderer.
+     */
+    @NonNull
+    public T setFavourNum(@StringRes final String favourNum){
+        this.favourNum = favourNum;
+        notifyDataSetChanged();
+        return (T) this;
+    }
+
+    /**
+     * get the favour num
+     *
+     * @return the total of favourNum.
+     */
+    public String getFavourNum(){
+        return this.favourNum;
     }
 
     /**
@@ -715,6 +738,8 @@ public class CardProvider<T extends CardProvider> extends Observable {
             }
         }
 
+
+
         // Divider
         final View divider = findViewById(view, R.id.divider, View.class);
         if (divider != null) {
@@ -749,6 +774,13 @@ public class CardProvider<T extends CardProvider> extends Observable {
                 action.setProvider(this);
                 action.onRender(actionViewRaw, card);
             }
+        }
+
+        //favour
+        final TextView favourView = findViewById(view, R.id.favourNum, TextView.class);
+        if(favourView != null){
+            favourView.setText(getFavourNum());
+            favourView.setTextColor(getDescriptionColor());
         }
     }
 

@@ -20,6 +20,7 @@ import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.example.rogerzzzz.cityrecall.adapter.DetailPicGridviewAdapter;
 import com.example.rogerzzzz.cityrecall.utils.BitmapHelper;
@@ -58,6 +59,10 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
     TextView     time_tv;
     @Bind(R.id.location_tv)
     TextView     address_tv;
+    @Bind(R.id.favour_btn)
+    TextView favourBtn_tv;
+    @Bind(R.id.favour_btn_not)
+    TextView favourBtn_not_tv;
 
     private CloudItem    cloudItem;
     private String       picUrl;
@@ -159,6 +164,18 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
             }
         });
 
+        AVQuery<AVObject> favourNumQuery = new AVQuery<>("Favour");
+        favourNumQuery.whereEqualTo("statusId", id);
+        favourNumQuery.countInBackground(new CountCallback() {
+            @Override
+            public void done(int i, AVException e) {
+                if(e == null){
+                    favourBtn_tv.setText(i + "");
+                    favourBtn_not_tv.setText(i + "");
+                }
+            }
+        });
+
         //init picture wall module
         AVQuery<AVObject> query_pic = new AVQuery<AVObject>("ReCall");
         query_pic.whereEqualTo("mapItemId", id);
@@ -170,7 +187,9 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
                     picUrl = picWallUrl;
                     List<String> list = Arrays.asList(picWallUrl.split(","));
                     picList = list;
-                    setGridView(list);
+                    if(list.size() > 0 && !picWallUrl.equals("")){
+                        setGridView(list);
+                    }
                 } else {
                     e.printStackTrace();
                 }
@@ -224,10 +243,18 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
                 startActivity(intent);
                 break;
             case R.id.favour_layout_not:
+                int favourNum = Integer.parseInt(favourBtn_tv.getText().toString());
+                favourNum++;
+                favourBtn_tv.setText(favourNum+"");
+                favourBtn_not_tv.setText(favourNum+"");
                 favourTask = new FavourTask(0);
                 favourTask.execute();
                 break;
             case R.id.favour_layout:
+                int favourNum1 = Integer.parseInt(favourBtn_tv.getText().toString());
+                favourNum1--;
+                favourBtn_tv.setText(favourNum1+"");
+                favourBtn_not_tv.setText(favourNum1+"");
                 if (favourObject != null) {
                     favourTaskNot = new FavourTask(1, favourObject);
                 } else {

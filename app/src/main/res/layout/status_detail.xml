@@ -91,7 +91,7 @@
                         android:layout_marginLeft="5dp"
                         android:id="@+id/favour_btn"
                         android:textSize="13dp"
-                        android:text="10"
+                        android:text=""
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -113,7 +113,7 @@
                         android:layout_marginLeft="5dp"
                         android:id="@+id/favour_btn_not"
                         android:textSize="13dp"
-                        android:text="10"
+                        android:text=""
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
