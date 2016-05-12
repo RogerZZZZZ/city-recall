@@ -108,6 +108,8 @@ public class HomeActivity extends AppCompatActivity {
                 menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
                     case R.id.detail_icon:
+                        Intent detailIntent = new Intent(HomeActivity.this, PersonalPageActivity.class);
+                        startActivity(detailIntent);
                         break;
                     case R.id.detailcollect_icon:
                         break;

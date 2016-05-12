@@ -124,6 +124,8 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
         address_tv.setText(address);
         time_tv.setText(createTime);
 
+        potrait_pic.setOnClickListener(this);
+
         AVQuery<AVUser> query = AVUser.getQuery();
         query.whereEqualTo("username", username);
         query.findInBackground(new FindCallback<AVUser>() {
@@ -263,6 +265,11 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
                 if (favourTaskNot != null && favourTaskNot.getStatus() != AsyncTask.Status.RUNNING) {
                     favourTaskNot.execute();
                 }
+                break;
+            case R.id.potrait_pic:
+                Intent personalPageIntent = new Intent(StatusDetailActivity.this, PersonalPageActivity.class);
+                personalPageIntent.putExtra("username", username);
+                startActivity(personalPageIntent);
                 break;
             default:
                 break;

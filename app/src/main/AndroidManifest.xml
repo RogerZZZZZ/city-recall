@@ -54,6 +54,9 @@
         <activity
             android:name=".HomeActivity"
             android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
+        <activity
+            android:name=".PersonalPageActivity"
+            android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
     </application>
 
 </manifest>

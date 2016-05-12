@@ -305,7 +305,6 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                         favourQuery.countInBackground(new CountCallback() {
                             @Override
                             public void done(int i, AVException e) {
-                                Log.d("favoruNUm", i+"");
                                 //with pics
                                 if(!finalPicWallUrl.equals("")){
                                     String picString = finalList.get(0);
