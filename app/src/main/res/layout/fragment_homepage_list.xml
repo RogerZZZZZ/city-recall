@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
+              xmlns:fab="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
@@ -19,4 +20,49 @@
         android:layout_height="fill_parent">
     </com.dexafree.materialList.view.MaterialListView>
 
-</LinearLayout>
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/bottom_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        fab:menu_colorNormal="@color/orange"
+        fab:menu_colorPressed="@color/orange_dark"
+        fab:menu_colorRipple="@color/orange_alpha"
+        fab:menu_labels_ellipsize="end"
+        fab:menu_labels_singleLine="true"
+        fab:menu_backgroundColor="#ccffffff">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_refresh"
+            fab:fab_size="mini"
+            style="@style/MenuButtonsStyle"
+            fab:fab_label="刷新" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_send"
+            fab:fab_size="mini"
+            style="@style/MenuButtonsStyle"
+            fab:fab_label="创建新的记忆" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_order"
+            fab:fab_size="mini"
+            style="@style/MenuButtonsStyle"
+            fab:fab_label="热度排序" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+</RelativeLayout>

@@ -28,9 +28,10 @@
     <string name="page">Page</string>
     <string name="tab">Tab</string>
     <string name="search">Search</string>
-    <string name="menu1">Tab Count 1</string>
-    <string name="menu2">Tab Count 2</string>
-    <string name="menu3">Tab Count 3</string>
-    <string name="menu4">Tab Count 4</string>
+
+    <string name="setting_scape">搜索范围</string>
+    <string name="setting_total">每次显示条目数</string>
+
+    <string name="makesure">确定</string>
 
 </resources>

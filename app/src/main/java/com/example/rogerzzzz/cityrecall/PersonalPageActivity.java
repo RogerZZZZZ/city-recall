@@ -28,7 +28,6 @@ import com.dexafree.materialList.card.action.TextViewAction;
 import com.dexafree.materialList.listeners.RecyclerItemClickListener;
 import com.dexafree.materialList.view.MaterialListView;
 import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
-import com.example.rogerzzzz.cityrecall.utils.L;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.widget.HeaderView;
@@ -132,7 +131,6 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
                         List<String> list = Arrays.asList(picWallUrl.split(","));
                         String mapId = object.get("mapItemId").toString();
                         String content = object.get("content").toString();
-                        L.d(content);
                         final String finalPicWallUrl = picWallUrl;
                         final List<String> finalList = list;
                         final String finalMapId = mapId;

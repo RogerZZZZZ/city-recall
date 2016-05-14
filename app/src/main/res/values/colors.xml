@@ -49,4 +49,7 @@
     <color name="tab_text_color_selected">#fff</color>
     <color name="tab_indicator">#90CAF9</color>
 
+    <color name="default_background_color">@color/material_blue_grey_800</color>
+    <color name="default_background_range_color">@color/orange</color>
+
 </resources>

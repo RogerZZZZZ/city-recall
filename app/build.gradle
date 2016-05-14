@@ -62,4 +62,5 @@ dependencies {
     compile 'com.github.w446108264:AndroidEmoji:1.0.0'
     compile 'com.android.support:support-v4:23.3.0'
     compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.github.clans:fab:1.6.3'
 }

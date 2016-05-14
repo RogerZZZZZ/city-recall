@@ -3,10 +3,12 @@ package com.example.rogerzzzz.cityrecall.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -79,6 +81,10 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
     private TextView                  mPoiName, mPoiAddress, mPoiFavour;
     private View globalView;
     private LinearLayout jumpLayout;
+    private int seachScape;
+    private int seachNum;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     private String               TAG     = "CityRecall";
     private ArrayList<CloudItem> items   = new ArrayList<CloudItem>();
@@ -93,9 +99,16 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
         mapView = (MapView) globalView.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         initMap();
+        initSetting();
         UserUtils.initCloudService(getActivity());
 
         return globalView;
+    }
+
+    private void initSetting(){
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        seachScape = sharedPreferences.getInt("seachScape", 3000);
+        seachNum = sharedPreferences.getInt("seachNum", 10);
     }
 
     private void initMap(){
@@ -144,7 +157,7 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
         showProgressDialog();
         items.clear();
         CloudSearch.SearchBound bound = new CloudSearch.SearchBound(new LatLonPoint(
-                lp.getLatitude(), lp.getLongitude()), 4000);
+                lp.getLatitude(), lp.getLongitude()), seachScape);
         try {
             query = new CloudSearch.Query(tableId, keyWord, bound);
             query.setPageSize(10);
@@ -263,7 +276,7 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
                         }
                         if (query.getBound().getShape().equals(CloudSearch.SearchBound.BOUND_SHAPE)) {
                             aMap.addCircle(new CircleOptions().center(new LatLng(lp.getLatitude(), lp.getLongitude()))
-                                    .radius(5000).strokeColor(Color.BLACK)
+                                    .radius(seachScape).strokeColor(Color.BLACK)
                                     .strokeWidth(3));
                             aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(lp.getLatitude(),

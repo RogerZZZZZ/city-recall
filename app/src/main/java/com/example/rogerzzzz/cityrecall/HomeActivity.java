@@ -108,12 +108,14 @@ public class HomeActivity extends AppCompatActivity {
                 menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
                     case R.id.detail_icon:
-                        Intent detailIntent = new Intent(HomeActivity.this, PersonalPageActivity.class);
-                        startActivity(detailIntent);
+//                        Intent detailIntent = new Intent(HomeActivity.this, PersonalPageActivity.class);
+//                        startActivity(detailIntent);
                         break;
                     case R.id.detailcollect_icon:
                         break;
                     case R.id.setting_icon:
+                        Intent setting_intent = new Intent(HomeActivity.this, SettingActivity.class);
+                        startActivity(setting_intent);
                         break;
                     case R.id.write_icon:
                         Intent intentWrite = new Intent(HomeActivity.this, ReleaseRecall.class);

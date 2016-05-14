@@ -3,8 +3,11 @@ package com.example.rogerzzzz.cityrecall.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -46,6 +49,8 @@ import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.widget.CloudOverlay;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,7 +64,7 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
  * Created by rogerzzzz on 16/5/6.
  */
 public class HomePageListFragment extends Fragment implements LocationSource, AMapLocationListener,
-        AMap.InfoWindowAdapter, CloudSearch.OnCloudSearchListener{
+        AMap.InfoWindowAdapter, CloudSearch.OnCloudSearchListener, View.OnClickListener{
 
     public  double                    longtitude;
     public  double                    latitude;
@@ -77,6 +82,18 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
     private ProgressDialog            progressDialog;
     private View globalView;
     private List<Card> cards = new ArrayList<>();
+    private int               seachScape;
+    private int               seachNum;
+    private SharedPreferences sharedPreferences;
+
+    private FloatingActionMenu bottomMenu;
+    private FloatingActionButton fab1;
+    private FloatingActionButton fab2;
+    private FloatingActionButton fab3;
+
+    private Handler mUiHandler = new Handler();
+
+    private List<FloatingActionMenu> menus = new ArrayList<>();
 
     private String               TAG     = "CityRecall";
     private ArrayList<CloudItem> items   = new ArrayList<CloudItem>();
@@ -92,10 +109,52 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
         mapView.onCreate(savedInstanceState);
         materialListView = (MaterialListView) globalView.findViewById(R.id.materail_listview);
         initMap();
+        initBottomMenu();
+        initSetting();
         initMaterailList();
         UserUtils.initCloudService(getActivity());
 
         return globalView;
+    }
+
+    private void initBottomMenu(){
+        bottomMenu = (FloatingActionMenu) globalView.findViewById(R.id.bottom_menu);
+        fab1 = (FloatingActionButton) globalView.findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton) globalView.findViewById(R.id.fab2);
+        fab3 = (FloatingActionButton) globalView.findViewById(R.id.fab3);
+        bottomMenu.setClosedOnTouchOutside(true);
+        bottomMenu.hideMenuButton(false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        menus.add(bottomMenu);
+
+        fab1.setOnClickListener(this);
+        fab2.setOnClickListener(this);
+        fab3.setOnClickListener(this);
+
+        mUiHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                bottomMenu.showMenuButton(true);
+            }
+        }, 400);
+
+        bottomMenu.setOnMenuButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomMenu.toggle(true);
+            }
+        });
+    }
+
+    private void initSetting(){
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        seachScape = sharedPreferences.getInt("seachScape", 3000);
+        seachNum = sharedPreferences.getInt("seachNum", 10);
     }
 
     private void initMaterailList(){
@@ -151,7 +210,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
         showProgressDialog();
         items.clear();
         CloudSearch.SearchBound bound = new CloudSearch.SearchBound(new LatLonPoint(
-                lp.getLatitude(), lp.getLongitude()), 4000);
+                lp.getLatitude(), lp.getLongitude()), seachScape);
         try {
             query = new CloudSearch.Query(tableId, keyWord, bound);
             query.setPageSize(10);
@@ -198,7 +257,6 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                 latitude = aMapLocation.getLatitude();
                 if (!isInitNearbySearch) {
                     lp = new LatLonPoint(latitude, longtitude);
-                    Log.d("location", latitude + ": " + longtitude);
                     searchByBound();
                     isInitNearbySearch = true;
                 }
@@ -384,6 +442,20 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
             startActivity(intent) ;
         } else {
             ToastUtils.showToast(getActivity(), code + "", Toast.LENGTH_SHORT);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fab1:
+                break;
+            case R.id.fab2:
+                fab2.setVisibility(View.GONE);
+                break;
+            case R.id.fab3:
+                fab2.setVisibility(View.VISIBLE);
+                break;
         }
     }
 }
