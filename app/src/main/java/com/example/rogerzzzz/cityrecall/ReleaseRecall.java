@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -39,6 +42,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
@@ -53,10 +57,13 @@ import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.utils.DialogUtils;
 import com.example.rogerzzzz.cityrecall.utils.DisplayUtils;
 import com.example.rogerzzzz.cityrecall.utils.ImageUtils;
+import com.example.rogerzzzz.cityrecall.utils.L;
 import com.example.rogerzzzz.cityrecall.utils.StringUtils;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.utils.VolleyErrorHelper;
+import com.example.rogerzzzz.cityrecall.widget.UPlayer;
+import com.example.rogerzzzz.cityrecall.widget.URecorder;
 import com.example.rogerzzzz.cityrecall.widget.WrapHeightGridView;
 
 import java.io.FileNotFoundException;
@@ -64,6 +71,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -76,25 +84,35 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
     public double longtitude = 0;
     public double latitude   = 0;
     @Bind(R.id.toolbar)
-    Toolbar toolbar;
+    Toolbar            toolbar;
     @Bind(R.id.et_write_status)
-    EditText et_write_status;
+    EditText           et_write_status;
     @Bind(R.id.gv_write_status)
     WrapHeightGridView gv_write_status;
     @Bind(R.id.iv_image)
-    ImageView iv_image;
+    ImageView          iv_image;
     @Bind(R.id.iv_add)
-    ImageView iv_add;
+    ImageView          iv_add;
     @Bind(R.id.iv_emoji)
-    ImageView iv_emoji;
+    ImageView          iv_emoji;
     @Bind(R.id.ll_emotion_dashboard)
-    LinearLayout ll_emotion_dashboard;
+    LinearLayout       ll_emotion_dashboard;
     @Bind(R.id.vp_emotion_dashboard)
-    ViewPager vp_emotion_dashboard;
+    ViewPager          vp_emotion_dashboard;
     @Bind(R.id.location_tv)
-    TextView address_tv;
+    TextView           address_tv;
     @Bind(R.id.map)
-    MapView mapView;
+    MapView            mapView;
+    @Bind(R.id.recordBtn)
+    Button             recordBtn;
+    @Bind(R.id.stopRecordingBtn)
+    Button stopRecordingBtn;
+    @Bind(R.id.playBtn)
+    Button playBtn;
+    @Bind(R.id.stopPlayingBtn)
+    Button stopPlayingBtn;
+    @Bind(R.id.rootLayout)
+    LinearLayout rootLayout;
     private ProgressDialog             progressDialog;
     private WriteStatusGridImgsAdapter statusGridImgsAdapter;
     private EmotionPagerAdapter        emotionPagerAdapter;
@@ -103,6 +121,10 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
     private AMapLocationClient         mLocationClient;
     private AMapLocationClientOption   mLocationOption;
     private ArrayList<Uri> imgUri = new ArrayList<Uri>();
+    private String path = null;
+    private URecorder recorder;
+    private UPlayer   player;
+    private boolean isRecorded = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,9 +132,25 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.release_recall);
         ButterKnife.bind(this);
         mapView.onCreate(savedInstanceState);
+        initRecordingModule();
         initView();
         initMap();
         initEmotion();
+    }
+
+    private void initRecordingModule(){
+        String randomStr = UUID.randomUUID().toString();
+        path = Environment.getExternalStorageDirectory().getAbsolutePath();
+        path += "/ione.pcm";
+        L.d(path);
+
+        recorder = new URecorder(path);
+        player = new UPlayer(path);
+
+        recordBtn.setOnClickListener(this);
+        stopRecordingBtn.setOnClickListener(this);
+        playBtn.setOnClickListener(this);
+        stopPlayingBtn.setOnClickListener(this);
     }
 
     private void initView() {
@@ -232,24 +270,59 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
                                     query.findInBackground(new FindCallback<AVObject>() {
                                         @Override
                                         public void done(List<AVObject> avObjects, AVException e) {
-                                            String urlString = "";
-                                            if (e == null && avObjects.size() > 0) {
-                                                urlString = StringUtils.arrayListToString(avObjects);
+                                            if (e == null) {
+                                                try {
+                                                    String urlString;
+                                                    if(avObjects.size() == 0){
+                                                        urlString = "";
+                                                    }else{
+                                                        urlString = StringUtils.arrayListToString(avObjects);
+
+                                                    }
+                                                    final String finalUrlString = urlString;
+                                                    if(isRecorded){
+                                                        final AVFile file = AVFile.withAbsoluteLocalPath("record", path);
+                                                        file.saveInBackground(new SaveCallback() {
+                                                            @Override
+                                                            public void done(AVException e) {
+                                                                String recordUrl = file.getUrl();
+                                                                AVObject recallItem = new AVObject("ReCall");
+                                                                recallItem.put("username", currentUser.getUsername());
+                                                                recallItem.put("content", comment);
+                                                                recallItem.put("picString", finalUrlString);
+                                                                recallItem.put("mapItemId", twitterID);
+                                                                recallItem.put("radioPath", recordUrl);
+                                                                recallItem.saveInBackground(new SaveCallback() {
+                                                                    @Override
+                                                                    public void done(AVException e) {
+                                                                        progressDialog.dismiss();
+                                                                        ReleaseRecall.this.finish();
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }else{
+                                                        L.d("no record");
+                                                        AVObject recallItem = new AVObject("ReCall");
+                                                        recallItem.put("username", currentUser.getUsername());
+                                                        recallItem.put("content", comment);
+                                                        recallItem.put("picString", finalUrlString);
+                                                        recallItem.put("mapItemId", twitterID);
+                                                        recallItem.put("radioPath", "");
+                                                        recallItem.saveInBackground(new SaveCallback() {
+                                                            @Override
+                                                            public void done(AVException e) {
+                                                                progressDialog.dismiss();
+                                                                ReleaseRecall.this.finish();
+                                                            }
+                                                        });
+                                                    }
+                                                } catch (FileNotFoundException e1) {
+                                                    e1.printStackTrace();
+                                                }
                                             } else if (e != null) {
                                                 Log.d("失败", e.getMessage());
                                             }
-                                            AVObject recallItem = new AVObject("ReCall");
-                                            recallItem.put("username", currentUser.getUsername());
-                                            recallItem.put("content", comment);
-                                            recallItem.put("picString", urlString);
-                                            recallItem.put("mapItemId", twitterID);
-                                            recallItem.saveInBackground(new SaveCallback() {
-                                                @Override
-                                                public void done(AVException e) {
-                                                    progressDialog.dismiss();
-                                                    ReleaseRecall.this.finish();
-                                                }
-                                            });
                                         }
                                     });
                                 } catch (FileNotFoundException e) {
@@ -378,6 +451,31 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.iv_add:
+                break;
+            case R.id.recordBtn:
+                isRecorded = true;
+                recorder.start();
+                recordBtn.setVisibility(View.GONE);
+                stopRecordingBtn.setVisibility(View.VISIBLE);
+                Snackbar.make(rootLayout, "开始录音", Snackbar.LENGTH_SHORT).show();
+                break;
+            case R.id.stopRecordingBtn:
+                recorder.stop();
+                stopRecordingBtn.setVisibility(View.GONE);
+                playBtn.setVisibility(View.VISIBLE);
+                Snackbar.make(rootLayout, "录音结束", Snackbar.LENGTH_SHORT).show();
+                break;
+            case R.id.playBtn:
+                player.start();
+                playBtn.setVisibility(View.GONE);
+                stopPlayingBtn.setVisibility(View.VISIBLE);
+                Snackbar.make(rootLayout, "播放录音", Snackbar.LENGTH_SHORT).show();
+                break;
+            case R.id.stopPlayingBtn:
+                player.stop();
+                playBtn.setVisibility(View.VISIBLE);
+                stopPlayingBtn.setVisibility(View.GONE);
+                Snackbar.make(rootLayout, "停止播放", Snackbar.LENGTH_SHORT).show();
                 break;
             default:
                 break;

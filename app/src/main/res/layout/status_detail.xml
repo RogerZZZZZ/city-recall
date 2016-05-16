@@ -195,6 +195,30 @@
                         android:layout_height="fill_parent"></GridView>
                     </LinearLayout>
                 </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:id="@+id/recordArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/playBtn"
+                    android:background="@drawable/icon_play"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"/>
+
+                <Button
+                    android:id="@+id/stopPlayingBtn"
+                    android:visibility="gone"
+                    android:background="@drawable/icon_stop"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"/>
+            </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
 </LinearLayout>

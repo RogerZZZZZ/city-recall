@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +26,7 @@ import com.avos.avoscloud.FindCallback;
 import com.example.rogerzzzz.cityrecall.adapter.DetailPicGridviewAdapter;
 import com.example.rogerzzzz.cityrecall.utils.BitmapHelper;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
+import com.example.rogerzzzz.cityrecall.widget.UPlayer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +65,12 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
     TextView favourBtn_tv;
     @Bind(R.id.favour_btn_not)
     TextView favourBtn_not_tv;
+    @Bind(R.id.recordArea)
+    LinearLayout recordArea;
+    @Bind(R.id.playBtn)
+    Button playBtn;
+    @Bind(R.id.stopPlayingBtn)
+    Button stopPlayingBtn;
 
     private CloudItem    cloudItem;
     private String       picUrl;
@@ -73,6 +81,7 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
     private String username;
     private String id;
     private AVObject favourObject = null;
+    private UPlayer uPlayer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,6 +106,8 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
         favour_layout.setOnClickListener(this);
         not_favour_layout.setOnClickListener(this);
         comment_layout.setOnClickListener(this);
+        playBtn.setOnClickListener(this);
+        stopPlayingBtn.setOnClickListener(this);
 
         cloudItem = getIntent().getParcelableExtra("detailObject");
         if (cloudItem == null) {
@@ -197,6 +208,32 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
                 }
             }
         });
+
+        //init record module
+        AVQuery<AVObject> query_record = new AVQuery<>("ReCall");
+        query_pic.whereEqualTo("mapItemId", id);
+        query_pic.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException e) {
+                if (e == null && avObjects.size() > 0) {
+                    String radioPath = avObjects.get(0).get("radioPath").toString();
+                    uPlayer = new UPlayer(radioPath);
+                    if(radioPath != null && !radioPath.equals("")){
+                        recordArea.setVisibility(View.VISIBLE);
+                        playBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                playBtn.setVisibility(View.GONE);
+                                stopPlayingBtn.setVisibility(View.VISIBLE);
+                                uPlayer.start();
+                            }
+                        });
+                    }
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -270,6 +307,11 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
                 Intent personalPageIntent = new Intent(StatusDetailActivity.this, PersonalPageActivity.class);
                 personalPageIntent.putExtra("username", username);
                 startActivity(personalPageIntent);
+                break;
+            case R.id.stopPlayingBtn:
+                playBtn.setVisibility(View.VISIBLE);
+                stopPlayingBtn.setVisibility(View.GONE);
+                uPlayer.stop();
                 break;
             default:
                 break;

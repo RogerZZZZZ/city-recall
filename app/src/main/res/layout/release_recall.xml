@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
+              android:id="@+id/rootLayout"
     android:background="@color/white">
 
     <android.support.design.widget.AppBarLayout
@@ -76,6 +77,41 @@
                     android:layout_height="wrap_content" />
 
                 </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/recordBtn"
+                    android:background="@drawable/icon_record"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"/>
+
+                <Button
+                    android:id="@+id/stopRecordingBtn"
+                    android:visibility="gone"
+                    android:background="@drawable/icon_stop"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"/>
+
+                <Button
+                    android:id="@+id/playBtn"
+                    android:visibility="gone"
+                    android:background="@drawable/icon_play"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"/>
+
+                <Button
+                    android:id="@+id/stopPlayingBtn"
+                    android:visibility="gone"
+                    android:background="@drawable/icon_stop"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"/>
+
+            </LinearLayout>
 
                <com.amap.api.maps2d.MapView
                    android:id="@+id/map"

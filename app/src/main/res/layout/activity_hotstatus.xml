@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/startRecording"
+        android:layout_width="wrap_content"
+        android:text="start record"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/stopRecording"
+        android:layout_width="wrap_content"
+        android:text="stop record"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/playing"
+        android:layout_width="wrap_content"
+        android:text="play record"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/stopPlaying"
+        android:layout_width="wrap_content"
+        android:text="stop playing record"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/uploadRecord"
+        android:layout_width="wrap_content"
+        android:text="upload record"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/playuploadRecord"
+        android:layout_width="wrap_content"
+        android:text="play upload record"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

@@ -43,7 +43,9 @@ import com.dexafree.materialList.card.OnActionClickListener;
 import com.dexafree.materialList.card.action.TextViewAction;
 import com.dexafree.materialList.listeners.RecyclerItemClickListener;
 import com.dexafree.materialList.view.MaterialListView;
+import com.example.rogerzzzz.cityrecall.HotStatusActivity;
 import com.example.rogerzzzz.cityrecall.R;
+import com.example.rogerzzzz.cityrecall.ReleaseRecall;
 import com.example.rogerzzzz.cityrecall.StatusDetailActivity;
 import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
@@ -449,12 +451,17 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab1:
+                getActivity().finish();
+                Intent refreshIntent = new Intent(getActivity(), getActivity().getClass());
+                startActivity(refreshIntent);
                 break;
             case R.id.fab2:
-                fab2.setVisibility(View.GONE);
+                Intent intent = new Intent(getActivity(), ReleaseRecall.class);
+                startActivity(intent);
                 break;
             case R.id.fab3:
-                fab2.setVisibility(View.VISIBLE);
+                Intent hotStatusIntent = new Intent(getActivity(), HotStatusActivity.class);
+                startActivity(hotStatusIntent);
                 break;
         }
     }
