@@ -31,6 +31,7 @@ import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.widget.HeaderView;
+import com.example.rogerzzzz.cityrecall.widget.UPlayer;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
@@ -128,6 +129,7 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
                 if(e == null && avObjects.size() > 0){
                     for(AVObject object : avObjects){
                         String picWallUrl = object.get("picString").toString();
+                        String recordUrl = object.get("radioPath").toString();
                         List<String> list = Arrays.asList(picWallUrl.split(","));
                         String mapId = object.get("mapItemId").toString();
                         String content = object.get("content").toString();
@@ -135,6 +137,7 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
                         final List<String> finalList = list;
                         final String finalMapId = mapId;
                         final String finalContent = content;
+                        final String finalRecordUrl = recordUrl;
 
                         AVQuery<AVObject> favourQuery = new AVQuery<AVObject>("Favour");
                         favourQuery.whereEqualTo("statusId", finalMapId);
@@ -144,12 +147,13 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
                                 //with pics
                                 if(!finalPicWallUrl.equals("")){
                                     String picString = finalList.get(0);
-                                    materialListView.getAdapter().add(getCardItem(1, username, finalContent, picString, finalMapId, i+""));
-                                }else if(false){
+                                    materialListView.getAdapter().add(getCardItem(1, username, finalContent, picString, finalMapId, finalRecordUrl, i+""));
+                                }else if(!finalRecordUrl.equals("") && finalRecordUrl != null){
+                                    materialListView.getAdapter().add(getCardItem(2, username, finalContent, "", finalMapId, finalRecordUrl, i+""));
                                     //Todo record
                                 }else{
                                     //with only words
-                                    materialListView.getAdapter().add(getCardItem(0, username, finalContent, "", finalMapId, i+""));
+                                    materialListView.getAdapter().add(getCardItem(0, username, finalContent, "", finalMapId, finalRecordUrl, i+""));
                                 }
                             }
                         });
@@ -167,7 +171,7 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
     *          1: Content with words and pics.
     *          2: Content with words and record.
      */
-    private Card getCardItem(int type, String username, String content, String picString, String mapItemId, String favourNum){
+    private Card getCardItem(int type, String username, String content, String picString, String mapItemId, final String recordUrl, String favourNum){
         switch (type){
             case 0:{
                 final CardProvider provider = new Card.Builder(this)
@@ -206,6 +210,27 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
 
                 provider.setFavourNum(favourNum);
 
+                return provider.endConfig().build();
+            }
+            case 2: {
+                final CardProvider provider = new Card.Builder(this)
+                        .setTag(mapItemId)
+                        .setDismissible()
+                        .withProvider(new CardProvider())
+                        .setLayout(R.layout.material_basic_case2)
+                        .setTitle(username)
+                        .setDescription(content)
+                        .addAction(R.id.left_text_button, new TextViewAction(this)
+                                .setText("播放")
+                                .setTextResourceColor(R.color.black_button)
+                                .setListener(new OnActionClickListener() {
+                                    @Override
+                                    public void onActionClicked(View view, Card card) {
+                                        UPlayer uPlayer = new UPlayer(recordUrl);
+                                        uPlayer.start();
+                                    }
+                                }));
+                provider.setFavourNum(favourNum);
                 return provider.endConfig().build();
             }
             default:{

@@ -51,6 +51,7 @@ import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.widget.CloudOverlay;
+import com.example.rogerzzzz.cityrecall.widget.UPlayer;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -356,9 +357,11 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                 public void done(List<AVObject> avObjects, AVException e) {
                     if (e == null && avObjects.size() > 0) {
                         String picWallUrl = avObjects.get(0).get("picString").toString();
+                        String recordUrl = avObjects.get(0).get("radioPath").toString();
                         List<String> list = Arrays.asList(picWallUrl.split(","));
                         final String finalPicWallUrl = picWallUrl;
                         final List<String> finalList = list;
+                        final String finalRecordUrl = recordUrl;
 
                         AVQuery<AVObject> favourQuery = new AVQuery<AVObject>("Favour");
                         favourQuery.whereEqualTo("statusId", finalMapId);
@@ -368,12 +371,13 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                                 //with pics
                                 if(!finalPicWallUrl.equals("")){
                                     String picString = finalList.get(0);
-                                    materialListView.getAdapter().add(getCardItem(1, finalUsername, finalContent, picString, finalMapId, i+""));
-                                }else if(false){
+                                    materialListView.getAdapter().add(getCardItem(1, finalUsername, finalContent, picString, finalMapId, finalRecordUrl, i+""));
+                                }else if(!finalRecordUrl.equals("") && finalRecordUrl != null){
                                     //Todo record
+                                    materialListView.getAdapter().add(getCardItem(2, finalUsername, finalContent, "", finalMapId, finalRecordUrl, i+""));
                                 }else{
                                     //with only words
-                                    materialListView.getAdapter().add(getCardItem(0, finalUsername, finalContent, "", finalMapId, i+""));
+                                    materialListView.getAdapter().add(getCardItem(0, finalUsername, finalContent, "", finalMapId, finalRecordUrl, i+""));
                                 }
                             }
                         });
@@ -389,7 +393,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
     *          1: Content with words and pics.
     *          2: Content with words and record.
      */
-    private Card getCardItem(int type, String username, String content, String picString, String mapItemId, String favourNum){
+    private Card getCardItem(int type, String username, String content, String picString, String mapItemId, final String recordUrl, String favourNum){
         switch (type){
             case 0:{
                 final CardProvider provider = new Card.Builder(getContext())
@@ -428,6 +432,27 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
 
                 provider.setFavourNum(favourNum);
 
+                return provider.endConfig().build();
+            }
+            case 2: {
+                final CardProvider provider = new Card.Builder(getContext())
+                        .setTag(mapItemId)
+                        .setDismissible()
+                        .withProvider(new CardProvider())
+                        .setLayout(R.layout.material_basic_case2)
+                        .setTitle(username)
+                        .setDescription(content)
+                        .addAction(R.id.left_text_button, new TextViewAction(getContext())
+                                .setText("播放")
+                                .setTextResourceColor(R.color.black_button)
+                                .setListener(new OnActionClickListener() {
+                                    @Override
+                                    public void onActionClicked(View view, Card card) {
+                                        UPlayer uPlayer = new UPlayer(recordUrl);
+                                        uPlayer.start();
+                                    }
+                                }));
+                provider.setFavourNum(favourNum);
                 return provider.endConfig().build();
             }
             default:{
