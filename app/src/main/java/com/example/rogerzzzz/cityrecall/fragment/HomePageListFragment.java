@@ -334,6 +334,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
     private void initCardView(){
         for(CloudItem item : mCloudItems){
             String id = item.getID();
+            final int distance = item.getDistance();
             String username = "", content = "";
             Iterator iterator = item.getCustomfield().entrySet().iterator();
             while (iterator.hasNext()) {
@@ -371,13 +372,13 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                                 //with pics
                                 if(!finalPicWallUrl.equals("")){
                                     String picString = finalList.get(0);
-                                    materialListView.getAdapter().add(getCardItem(1, finalUsername, finalContent, picString, finalMapId, finalRecordUrl, i+""));
+                                    materialListView.getAdapter().add(getCardItem(1, finalUsername, finalContent, picString, finalMapId, finalRecordUrl, distance, i+""));
                                 }else if(!finalRecordUrl.equals("") && finalRecordUrl != null){
                                     //Todo record
-                                    materialListView.getAdapter().add(getCardItem(2, finalUsername, finalContent, "", finalMapId, finalRecordUrl, i+""));
+                                    materialListView.getAdapter().add(getCardItem(2, finalUsername, finalContent, "", finalMapId, finalRecordUrl, distance, i+""));
                                 }else{
                                     //with only words
-                                    materialListView.getAdapter().add(getCardItem(0, finalUsername, finalContent, "", finalMapId, finalRecordUrl, i+""));
+                                    materialListView.getAdapter().add(getCardItem(0, finalUsername, finalContent, "", finalMapId, finalRecordUrl, distance, i+""));
                                 }
                             }
                         });
@@ -393,12 +394,11 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
     *          1: Content with words and pics.
     *          2: Content with words and record.
      */
-    private Card getCardItem(int type, String username, String content, String picString, String mapItemId, final String recordUrl, String favourNum){
+    private Card getCardItem(int type, String username, String content, String picString, String mapItemId, final String recordUrl, int distance, String favourNum){
         switch (type){
             case 0:{
                 final CardProvider provider = new Card.Builder(getContext())
                         .setTag(mapItemId)
-                        .setDismissible()
                         .withProvider(new CardProvider())
                         .setLayout(R.layout.material_basic_buttons_card)
                         .setTitle(username)
@@ -411,12 +411,12 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                                     }
                                 }));
                 provider.setFavourNum(favourNum);
+                provider.setDistance("距离你" + distance + "米");
                 return provider.endConfig().build();
             }
             case 1:{
                 final CardProvider provider = new Card.Builder(getContext())
                         .setTag(mapItemId)
-                        .setDismissible()
                         .withProvider(new CardProvider())
                         .setLayout(R.layout.material_image_with_buttons_card)
                         .setTitle(username)
@@ -431,13 +431,12 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                                 }));
 
                 provider.setFavourNum(favourNum);
-
+                provider.setDistance("距离你" + distance + "米");
                 return provider.endConfig().build();
             }
             case 2: {
                 final CardProvider provider = new Card.Builder(getContext())
                         .setTag(mapItemId)
-                        .setDismissible()
                         .withProvider(new CardProvider())
                         .setLayout(R.layout.material_basic_case2)
                         .setTitle(username)
@@ -453,6 +452,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                                     }
                                 }));
                 provider.setFavourNum(favourNum);
+                provider.setDistance("距离你" + distance + "米");
                 return provider.endConfig().build();
             }
             default:{

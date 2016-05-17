@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -41,6 +40,7 @@ public class CardProvider<T extends CardProvider> extends Observable {
     private String mSubtitle;
     private String mDescription;
     private String favourNum;
+    private String distance;
     private boolean mDividerVisible;
     private boolean mFullWidthDivider;
     private int mTitleGravity;
@@ -229,6 +229,29 @@ public class CardProvider<T extends CardProvider> extends Observable {
      */
     public String getFavourNum(){
         return this.favourNum;
+    }
+
+
+    /**
+     * set the distance
+     *
+     * @param distance
+     * @return the renderer.
+     */
+    @NonNull
+    public T setDistance(@StringRes final String distance){
+        this.distance = distance;
+        notifyDataSetChanged();
+        return (T) this;
+    }
+
+    /**
+     * get the distance
+     *
+     * @return the distance from your position
+     */
+    public String getDistance(){
+        return this.distance;
     }
 
     /**
@@ -781,6 +804,13 @@ public class CardProvider<T extends CardProvider> extends Observable {
         if(favourView != null){
             favourView.setText(getFavourNum());
             favourView.setTextColor(getDescriptionColor());
+        }
+
+        //distance
+        final TextView distanceView = findViewById(view, R.id.distance, TextView.class);
+        if(distanceView != null){
+            distanceView.setText(getDistance());
+            distanceView.setTextColor(getDescriptionColor());
         }
     }
 

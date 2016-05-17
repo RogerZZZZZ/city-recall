@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -42,13 +43,17 @@ import com.amap.api.services.cloud.CloudSearch;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.example.rogerzzzz.cityrecall.HomeActivity;
+import com.example.rogerzzzz.cityrecall.HotStatusActivity;
 import com.example.rogerzzzz.cityrecall.R;
+import com.example.rogerzzzz.cityrecall.ReleaseRecall;
 import com.example.rogerzzzz.cityrecall.StatusDetailActivity;
 import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.utils.AMapUtil;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.widget.CloudOverlay;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -78,13 +83,22 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
     private Marker                    detailMarker;
     private Marker                    mlastMarker;
     private RelativeLayout            mPoiDetail;
-    private TextView                  mPoiName, mPoiAddress, mPoiFavour;
+    private TextView                  mPoiName, mPoiAddress, mPoiDistance;
     private View globalView;
     private LinearLayout jumpLayout;
     private int seachScape;
     private int seachNum;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+
+    private FloatingActionMenu   bottomMenu;
+    private FloatingActionButton fab1;
+    private FloatingActionButton fab2;
+    private FloatingActionButton fab3;
+
+    private Handler mUiHandler = new Handler();
+
+    private List<FloatingActionMenu> menus = new ArrayList<>();
 
     private String               TAG     = "CityRecall";
     private ArrayList<CloudItem> items   = new ArrayList<CloudItem>();
@@ -99,10 +113,45 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
         mapView = (MapView) globalView.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         initMap();
+        initBottomMenu();
         initSetting();
         UserUtils.initCloudService(getActivity());
 
         return globalView;
+    }
+
+    private void initBottomMenu(){
+        bottomMenu = (FloatingActionMenu) globalView.findViewById(R.id.bottom_menu);
+        fab1 = (FloatingActionButton) globalView.findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton) globalView.findViewById(R.id.fab2);
+        fab3 = (FloatingActionButton) globalView.findViewById(R.id.fab3);
+        bottomMenu.setClosedOnTouchOutside(true);
+        bottomMenu.hideMenuButton(false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        menus.add(bottomMenu);
+
+        fab1.setOnClickListener(this);
+        fab2.setOnClickListener(this);
+        fab3.setOnClickListener(this);
+
+        mUiHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                bottomMenu.showMenuButton(true);
+            }
+        }, 400);
+
+        bottomMenu.setOnMenuButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomMenu.toggle(true);
+            }
+        });
     }
 
     private void initSetting(){
@@ -129,7 +178,7 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
             mPoiDetail = (RelativeLayout) globalView.findViewById(R.id.poi_detail);
             mPoiName = (TextView) globalView.findViewById(R.id.poi_name);
             mPoiAddress = (TextView) globalView.findViewById(R.id.poi_address);
-            mPoiFavour = (TextView) globalView.findViewById(R.id.poi_favour);
+            mPoiDistance = (TextView) globalView.findViewById(R.id.poi_distance);
             jumpLayout = (LinearLayout) globalView.findViewById(R.id.jump_layout);
             jumpLayout.setOnClickListener(this);
 
@@ -257,6 +306,19 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
                 intent.putExtra("detailObject", (Parcelable) mlastMarker.getObject());
                 startActivity(intent);
                 break;
+            case R.id.fab1:
+                getActivity().finish();
+                Intent refreshIntent = new Intent(getActivity(), getActivity().getClass());
+                startActivity(refreshIntent);
+                break;
+            case R.id.fab2:
+                Intent intent_fab2 = new Intent(getActivity(), ReleaseRecall.class);
+                startActivity(intent_fab2);
+                break;
+            case R.id.fab3:
+                Intent hotStatusIntent = new Intent(getActivity(), HotStatusActivity.class);
+                startActivity(hotStatusIntent);
+                break;
         }
     }
 
@@ -369,6 +431,10 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
     }
 
     private void setPoiItemDisplayContent(final CloudItem mCurrentPoi) {
+        //distance
+        mPoiDistance.setText("距离你" + mCurrentPoi.getDistance() + "米");
+
+        //username and content
         Iterator iterator = mCurrentPoi.getCustomfield().entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();

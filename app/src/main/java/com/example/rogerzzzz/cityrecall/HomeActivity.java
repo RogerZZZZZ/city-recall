@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -32,6 +31,7 @@ import com.example.rogerzzzz.cityrecall.fragment.HomePageListFragment;
 import com.example.rogerzzzz.cityrecall.fragment.HomePageMapFragment;
 import com.example.rogerzzzz.cityrecall.utils.BitmapHelper;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
+import com.example.rogerzzzz.cityrecall.widget.NoScrollViewPager;
 import com.example.rogerzzzz.cityrecall.widget.SlidingTabLayout;
 
 import java.util.ArrayList;
@@ -152,7 +152,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void setTabs(int count) {
-        ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
+        NoScrollViewPager vpPager = (NoScrollViewPager) findViewById(R.id.viewpager);
         ContentFragmentAdapter adapterViewPager = new ContentFragmentAdapter(getSupportFragmentManager(), this, count, mFragment);
         vpPager.setAdapter(adapterViewPager);
 
