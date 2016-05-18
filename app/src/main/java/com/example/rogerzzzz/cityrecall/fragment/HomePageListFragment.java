@@ -108,6 +108,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         globalView = inflater.inflate(R.layout.fragment_homepage_list, container, false);
+        UserUtils.initCloudService(getActivity());
         mapView = (MapView) globalView.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         materialListView = (MaterialListView) globalView.findViewById(R.id.materail_listview);
@@ -115,7 +116,6 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
         initBottomMenu();
         initSetting();
         initMaterailList();
-        UserUtils.initCloudService(getActivity());
 
         return globalView;
     }
@@ -328,6 +328,29 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
             }
         } else {
             ToastUtils.showToast(getActivity(), "无结果", Toast.LENGTH_SHORT);
+        }
+    }
+
+    private void initHotCardView(){
+        for(CloudItem item : mCloudItems){
+            String id = item.getID();
+            final int distance = item.getDistance();
+            String username = "", content = "";
+            Iterator iterator = item.getCustomfield().entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                Object key = entry.getKey();
+                Object val = entry.getValue();
+                if (key.equals("content")) {
+                    content = val.toString();
+                } else if (key.equals("username")) {
+                    username = val.toString();
+                }
+            }
+
+            String cql = "";
+
+
         }
     }
 

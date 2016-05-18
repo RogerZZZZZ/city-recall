@@ -92,9 +92,11 @@ public class HomeActivity extends AppCompatActivity {
             public void done(List<AVUser> avObjects, AVException e) {
                 if (e == null) {
                     AVFile avFile = avObjects.get(0).getAVFile("avatar");
-                    final String url = avFile.getUrl();
-                    task = new MyTask(url);
-                    task.execute();
+                    if(avFile != null){
+                        final String url = avFile.getUrl();
+                        task = new MyTask(url);
+                        task.execute();
+                    }
                 } else {
                     e.printStackTrace();
                 }

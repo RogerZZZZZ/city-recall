@@ -7,10 +7,13 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.services.cloud.CloudItemDetail;
@@ -19,8 +22,10 @@ import com.amap.api.services.cloud.CloudSearch;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.FollowCallback;
 import com.dexafree.materialList.card.Card;
 import com.dexafree.materialList.card.CardProvider;
 import com.dexafree.materialList.card.OnActionClickListener;
@@ -60,6 +65,9 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
     @Bind(R.id.materail_listview)
     MaterialListView materialListView;
 
+    @Bind(R.id.rootLayout)
+    RelativeLayout rootLayout;
+
     private boolean isHideToolbarView = false;
     private String username;
     private CloudSearch cloudSearch;
@@ -85,20 +93,120 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
                 finish();
             }
         });
-
         initUi();
+        initFollowFunction();
         initMaterailList();
         initCardView();
+        userInfo();
+    }
+
+    private void initFollowFunction(){
+        if(!username.equals(AVUser.getCurrentUser().getUsername())){
+            //initialize
+            AVQuery<AVUser> userQuery = new AVQuery<>("_User");
+            userQuery.whereEqualTo("username", username);
+            userQuery.findInBackground(new FindCallback<AVUser>() {
+                @Override
+                public void done(List<AVUser> list, AVException e) {
+                    if(e == null && list.size() > 0){
+                        final String currentUserObjectId = list.get(0).getObjectId();
+                        AVUser pageUser = list.get(0);
+                        AVQuery<AVUser> followerNameQuery = pageUser.followerQuery(pageUser.getObjectId(), AVUser.class);
+                        followerNameQuery.whereEqualTo("follower", AVUser.getCurrentUser());
+                        followerNameQuery.findInBackground(new FindCallback<AVUser>() {
+                            @Override
+                            public void done(List<AVUser> list, AVException e) {
+                                if(e == null && list.size() > 0){
+                                    toolbarHeaderView.setFollowActionStatus(true);
+                                }else if(e == null && list.size() == 0){
+                                    toolbarHeaderView.setFollowActionStatus(false);
+                                }
+
+                                //bind clicker
+                                toolbarHeaderView.bindFollowAction(new HeaderView.followAction() {
+                                    @Override
+                                    public void followAction(final TextView tv, final TextView un_tv) {
+                                        tv.setVisibility(View.GONE);
+                                        un_tv.setVisibility(View.VISIBLE);
+                                        Snackbar.make(rootLayout, "已经关注该用户", Snackbar.LENGTH_SHORT).show();
+                                        AVUser.getCurrentUser().followInBackground(currentUserObjectId, null, new FollowCallback() {
+                                            @Override
+                                            public void done(AVObject avObject, AVException e) {
+                                                if(e == null){
+                                                    tv.setVisibility(View.GONE);
+                                                    un_tv.setVisibility(View.VISIBLE);
+                                                } else if(e.getCode() == AVException.DUPLICATE_VALUE){
+                                                    Snackbar.make(rootLayout, "已经关注过了", Snackbar.LENGTH_SHORT).show();
+                                                }else{
+                                                    Snackbar.make(rootLayout, "关注失败，稍后再试", Snackbar.LENGTH_SHORT).show();
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
+                                            @Override
+                                            protected void internalDone0(Object o, AVException e) {
+                                            }
+                                        });
+                                    }
+                                });
+
+                                toolbarHeaderView.bindUnfollowAction(new HeaderView.unFollowAction() {
+                                    @Override
+                                    public void unFollowAction(final TextView tv, final TextView un_tv) {
+                                        tv.setVisibility(View.VISIBLE);
+                                        un_tv.setVisibility(View.GONE);
+                                        Snackbar.make(rootLayout, "已经取消对该用户的关注", Snackbar.LENGTH_SHORT).show();
+                                        AVUser.getCurrentUser().unfollowInBackground(currentUserObjectId, new FollowCallback() {
+                                            @Override
+                                            public void done(AVObject avObject, AVException e) {
+                                                if(e == null){
+                                                    tv.setVisibility(View.GONE);
+                                                    un_tv.setVisibility(View.VISIBLE);
+                                                }else{
+                                                    Snackbar.make(rootLayout, "关注失败，稍后再试", Snackbar.LENGTH_SHORT).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            protected void internalDone0(Object o, AVException e) {
+
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
 
     private void initUi() {
         appBarLayout.addOnOffsetChangedListener(this);
-
-        toolbarHeaderView.bindTo(username, "Last seen today at 7.00PM");
-        floatHeaderView.bindTo(username, "Last seen today at 7.00PM");
         ImageView imageView = (ImageView) findViewById(R.id.image);
-
         Picasso.with(PersonalPageActivity.this).load(R.drawable.person_bg).into(imageView);
+    }
+
+    private void userInfo(){
+        AVQuery<AVObject> query = new AVQuery<>("_User");
+        query.whereEqualTo("username", username);
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if(e == null){
+                    if(list.get(0).get("description") != null){
+                        String description = list.get(0).get("description").toString();
+                        toolbarHeaderView.bindTo(username, description);
+                        floatHeaderView.bindTo(username, description);
+                    }else{
+                        toolbarHeaderView.bindTo(username, "");
+                        floatHeaderView.bindTo(username, "");
+                    }
+                }
+            }
+        });
+
     }
 
     private void initMaterailList(){

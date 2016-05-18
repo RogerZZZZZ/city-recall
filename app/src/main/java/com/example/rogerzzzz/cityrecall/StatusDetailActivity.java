@@ -16,11 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amap.api.services.cloud.CloudItem;
+import com.avos.avoscloud.AVCloudQueryResult;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.example.rogerzzzz.cityrecall.adapter.DetailPicGridviewAdapter;
@@ -82,6 +84,7 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
     private String id;
     private AVObject favourObject = null;
     private UPlayer uPlayer;
+    private String statusObjectId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -144,9 +147,11 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
             public void done(List<AVUser> avObjects, AVException e) {
                 if (e == null) {
                     AVFile avFile = avObjects.get(0).getAVFile("avatar");
-                    final String url = avFile.getUrl();
-                    task = new MyTask(url);
-                    task.execute();
+                    if(avFile != null){
+                        final String url = avFile.getUrl();
+                        task = new MyTask(url);
+                        task.execute();
+                    }
                 } else {
                     e.printStackTrace();
                 }
@@ -197,6 +202,7 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
             public void done(List<AVObject> avObjects, AVException e) {
                 if (e == null && avObjects.size() > 0) {
                     String picWallUrl = avObjects.get(0).get("picString").toString();
+                    statusObjectId = avObjects.get(0).getObjectId();
                     picUrl = picWallUrl;
                     List<String> list = Arrays.asList(picWallUrl.split(","));
                     picList = list;
@@ -374,6 +380,7 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
         private AVQuery<AVObject>       individualFavous;
         private List<AVQuery<AVObject>> queries;
         private AVQuery<AVObject>       mainQuery;
+        private String cql;
 
         public FavourTask(int flag) {
             this.flag = flag;
@@ -394,6 +401,8 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
             queries = new ArrayList<AVQuery<AVObject>>();
             queries.add(statusFavours);
             queries.add(individualFavous);
+            int favourCount = Integer.parseInt(favourBtn_tv.getText().toString());
+            cql = "update ReCall set favourCount=" + favourCount + " where objectId = '"+ statusObjectId +"' and mapItemId='" + id + "'";
         }
 
         @Override
@@ -420,6 +429,17 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
                 post.put("statusId", id);
                 post.saveInBackground();
             }
+
+            AVQuery.doCloudQueryInBackground(cql, new CloudQueryCallback<AVCloudQueryResult>() {
+                @Override
+                public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
+                    if(e == null){
+
+                    }else{
+                        e.printStackTrace();
+                    }
+                }
+            });
             return null;
         }
 
