@@ -492,6 +492,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                 break;
             case R.id.fab3:
                 Intent hotStatusIntent = new Intent(getActivity(), HotStatusActivity.class);
+                hotStatusIntent.putExtra("position", (Parcelable) lp);
                 startActivity(hotStatusIntent);
                 break;
         }

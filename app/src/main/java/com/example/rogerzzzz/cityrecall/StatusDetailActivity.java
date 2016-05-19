@@ -165,7 +165,7 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
         AVQuery<AVObject> statusFavours = new AVQuery<AVObject>("Favour");
         statusFavours.whereEqualTo("statusId", id);
         AVQuery<AVObject> individualFavous = new AVQuery<AVObject>("Favour");
-        individualFavous.whereEqualTo("username", username);
+        individualFavous.whereEqualTo("username", AVUser.getCurrentUser().getUsername());
         List<AVQuery<AVObject>> queries = new ArrayList<AVQuery<AVObject>>();
         queries.add(statusFavours);
         queries.add(individualFavous);
