@@ -67,6 +67,15 @@
         <activity
             android:name=".HotStatusActivity"
             android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
+        <activity
+            android:name=".FriendListActivity"
+            android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
+        <activity
+            android:name=".CollectionActivity"
+            android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
+        <activity
+            android:name=".PersonalInfoActivity"
+            android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
 </application>
 
 </manifest>

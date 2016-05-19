@@ -65,7 +65,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setUpNavigationDrawer() {
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -122,6 +121,10 @@ public class HomeActivity extends AppCompatActivity {
                     case R.id.write_icon:
                         Intent intentWrite = new Intent(HomeActivity.this, ReleaseRecall.class);
                         startActivity(intentWrite);
+                        break;
+                    case R.id.followlist_icon:
+                        Intent IntentFollow = new Intent(HomeActivity.this, FriendListActivity.class);
+                        startActivity(IntentFollow);
                         break;
                     case R.id.logout_icon:
                         UserUtils.userLogout();
