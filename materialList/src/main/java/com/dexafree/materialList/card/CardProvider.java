@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.CardView;
+import android.text.SpannableString;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,16 +37,16 @@ public class CardProvider<T extends CardProvider> extends Observable {
     private Context mContext;
     private Card.Builder mBuilder;
 
-    private String mTitle;
-    private String mSubtitle;
-    private String mDescription;
-    private String favourNum;
-    private String distance;
-    private boolean mDividerVisible;
-    private boolean mFullWidthDivider;
-    private int mTitleGravity;
-    private int mSubtitleGravity;
-    private int mDescriptionGravity;
+    private String          mTitle;
+    private String          mSubtitle;
+    private SpannableString mDescription;
+    private String          favourNum;
+    private String          distance;
+    private boolean         mDividerVisible;
+    private boolean         mFullWidthDivider;
+    private int             mTitleGravity;
+    private int             mSubtitleGravity;
+    private int             mDescriptionGravity;
 
     @ColorInt
     private int mBackgroundColor = Color.WHITE;
@@ -334,7 +335,7 @@ public class CardProvider<T extends CardProvider> extends Observable {
      *
      * @return the description.
      */
-    public String getDescription() {
+    public SpannableString getDescription() {
         return mDescription;
     }
 
@@ -344,10 +345,10 @@ public class CardProvider<T extends CardProvider> extends Observable {
      * @param description to set.
      * @return the renderer.
      */
-    @NonNull
-    public T setDescription(@StringRes final int description) {
-        return setDescription(getContext().getString(description));
-    }
+//    @NonNull
+//    public T setDescription(@StringRes final int description) {
+//        return setDescription(getContext().getString(description));
+//    }
 
     /**
      * Set the description.
@@ -357,7 +358,7 @@ public class CardProvider<T extends CardProvider> extends Observable {
      */
     @NonNull
     @SuppressWarnings("unchecked")
-    public T setDescription(@NonNull final String description) {
+    public T setDescription(@NonNull final SpannableString description) {
         mDescription = description;
         notifyDataSetChanged();
         return (T) this;

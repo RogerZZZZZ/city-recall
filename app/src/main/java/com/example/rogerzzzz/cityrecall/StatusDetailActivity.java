@@ -27,6 +27,7 @@ import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.example.rogerzzzz.cityrecall.adapter.DetailPicGridviewAdapter;
 import com.example.rogerzzzz.cityrecall.utils.BitmapHelper;
+import com.example.rogerzzzz.cityrecall.utils.StringUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.widget.UPlayer;
 
@@ -134,7 +135,7 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
             }
         }
         username_tv.setText(username);
-        content_tv.setText(content);
+        content_tv.setText(StringUtils.getWeiboContent(this, null, content))    ;
         address_tv.setText(address);
         time_tv.setText(createTime);
 
@@ -151,6 +152,8 @@ public class StatusDetailActivity extends AppCompatActivity implements View.OnCl
                         final String url = avFile.getUrl();
                         task = new MyTask(url);
                         task.execute();
+                    }else{
+                        potrait_pic.setImageResource(R.drawable.icon_default);
                     }
                 } else {
                     e.printStackTrace();

@@ -95,6 +95,8 @@ public class HomeActivity extends AppCompatActivity {
                         final String url = avFile.getUrl();
                         task = new MyTask(url);
                         task.execute();
+                    }else{
+                        potrait_iv.setImageResource(R.drawable.icon_white);
                     }
                 } else {
                     e.printStackTrace();

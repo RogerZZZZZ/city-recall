@@ -11,10 +11,12 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -48,6 +50,7 @@ import com.example.rogerzzzz.cityrecall.R;
 import com.example.rogerzzzz.cityrecall.ReleaseRecall;
 import com.example.rogerzzzz.cityrecall.StatusDetailActivity;
 import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
+import com.example.rogerzzzz.cityrecall.utils.StringUtils;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.widget.CloudOverlay;
@@ -93,6 +96,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
     private FloatingActionButton fab1;
     private FloatingActionButton fab2;
     private FloatingActionButton fab3;
+    private RelativeLayout rootLayout;
 
     private Handler mUiHandler = new Handler();
 
@@ -112,6 +116,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
         mapView = (MapView) globalView.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         materialListView = (MaterialListView) globalView.findViewById(R.id.materail_listview);
+        rootLayout = (RelativeLayout) globalView.findViewById(R.id.rootLayout);
         initMap();
         initBottomMenu();
         initSetting();
@@ -331,29 +336,6 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
         }
     }
 
-    private void initHotCardView(){
-        for(CloudItem item : mCloudItems){
-            String id = item.getID();
-            final int distance = item.getDistance();
-            String username = "", content = "";
-            Iterator iterator = item.getCustomfield().entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                Object key = entry.getKey();
-                Object val = entry.getValue();
-                if (key.equals("content")) {
-                    content = val.toString();
-                } else if (key.equals("username")) {
-                    username = val.toString();
-                }
-            }
-
-            String cql = "";
-
-
-        }
-    }
-
     private void initCardView(){
         for(CloudItem item : mCloudItems){
             String id = item.getID();
@@ -418,6 +400,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
     *          2: Content with words and record.
      */
     private Card getCardItem(int type, String username, String content, String picString, String mapItemId, final String recordUrl, int distance, String favourNum){
+        SpannableString weiboContent = StringUtils.getWeiboContent(getContext(), null, content);
         switch (type){
             case 0:{
                 final CardProvider provider = new Card.Builder(getContext())
@@ -425,7 +408,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                         .withProvider(new CardProvider())
                         .setLayout(R.layout.material_basic_buttons_card)
                         .setTitle(username)
-                        .setDescription(content)
+                        .setDescription(weiboContent)
                         .addAction(R.id.favourNum, new TextViewAction(getContext())
                                 .setListener(new OnActionClickListener() {
                                     @Override
@@ -443,7 +426,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                         .withProvider(new CardProvider())
                         .setLayout(R.layout.material_image_with_buttons_card)
                         .setTitle(username)
-                        .setDescription(content)
+                        .setDescription(weiboContent)
                         .setDrawable(picString)
                         .addAction(R.id.favourNum, new TextViewAction(getContext())
                                 .setListener(new OnActionClickListener() {
@@ -463,7 +446,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                         .withProvider(new CardProvider())
                         .setLayout(R.layout.material_basic_case2)
                         .setTitle(username)
-                        .setDescription(content)
+                        .setDescription(weiboContent)
                         .addAction(R.id.left_text_button, new TextViewAction(getContext())
                                 .setText("播放")
                                 .setTextResourceColor(R.color.black_button)

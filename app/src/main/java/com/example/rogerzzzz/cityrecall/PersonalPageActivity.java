@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -33,6 +34,7 @@ import com.dexafree.materialList.card.action.TextViewAction;
 import com.dexafree.materialList.listeners.RecyclerItemClickListener;
 import com.dexafree.materialList.view.MaterialListView;
 import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
+import com.example.rogerzzzz.cityrecall.utils.StringUtils;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.widget.HeaderView;
@@ -280,6 +282,7 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
     *          2: Content with words and record.
      */
     private Card getCardItem(int type, String username, String content, String picString, String mapItemId, final String recordUrl, String favourNum){
+        SpannableString weiboContent = StringUtils.getWeiboContent(this, null, content);
         switch (type){
             case 0:{
                 final CardProvider provider = new Card.Builder(this)
@@ -288,7 +291,7 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
                         .withProvider(new CardProvider())
                         .setLayout(R.layout.material_basic_buttons_card)
                         .setTitle(username)
-                        .setDescription(content)
+                        .setDescription(weiboContent)
                         .addAction(R.id.favourNum, new TextViewAction(this)
                                 .setListener(new OnActionClickListener() {
                                     @Override
@@ -306,7 +309,7 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
                         .withProvider(new CardProvider())
                         .setLayout(R.layout.material_image_with_buttons_card)
                         .setTitle(username)
-                        .setDescription(content)
+                        .setDescription(weiboContent)
                         .setDrawable(picString)
                         .addAction(R.id.favourNum, new TextViewAction(this)
                                 .setListener(new OnActionClickListener() {
@@ -327,7 +330,7 @@ public class PersonalPageActivity extends AppCompatActivity implements AppBarLay
                         .withProvider(new CardProvider())
                         .setLayout(R.layout.material_basic_case2)
                         .setTitle(username)
-                        .setDescription(content)
+                        .setDescription(weiboContent)
                         .addAction(R.id.left_text_button, new TextViewAction(this)
                                 .setText("播放")
                                 .setTextResourceColor(R.color.black_button)
