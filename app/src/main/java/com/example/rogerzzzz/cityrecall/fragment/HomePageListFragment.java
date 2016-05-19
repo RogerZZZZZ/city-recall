@@ -48,6 +48,7 @@ import com.dexafree.materialList.view.MaterialListView;
 import com.example.rogerzzzz.cityrecall.HotStatusActivity;
 import com.example.rogerzzzz.cityrecall.R;
 import com.example.rogerzzzz.cityrecall.ReleaseRecall;
+import com.example.rogerzzzz.cityrecall.SelectPostionActivity;
 import com.example.rogerzzzz.cityrecall.StatusDetailActivity;
 import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.utils.StringUtils;
@@ -96,6 +97,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
     private FloatingActionButton fab1;
     private FloatingActionButton fab2;
     private FloatingActionButton fab3;
+    private FloatingActionButton fab4;
     private RelativeLayout rootLayout;
 
     private Handler mUiHandler = new Handler();
@@ -130,6 +132,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
         fab1 = (FloatingActionButton) globalView.findViewById(R.id.fab1);
         fab2 = (FloatingActionButton) globalView.findViewById(R.id.fab2);
         fab3 = (FloatingActionButton) globalView.findViewById(R.id.fab3);
+        fab4 = (FloatingActionButton) globalView.findViewById(R.id.fab4);
         bottomMenu.setClosedOnTouchOutside(true);
         bottomMenu.hideMenuButton(false);
     }
@@ -143,6 +146,7 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
         fab1.setOnClickListener(this);
         fab2.setOnClickListener(this);
         fab3.setOnClickListener(this);
+        fab4.setOnClickListener(this);
 
         mUiHandler.postDelayed(new Runnable() {
             @Override
@@ -494,6 +498,12 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                 Intent hotStatusIntent = new Intent(getActivity(), HotStatusActivity.class);
                 hotStatusIntent.putExtra("position", (Parcelable) lp);
                 startActivity(hotStatusIntent);
+                break;
+            case R.id.fab4:
+                Intent selectPositionIntent = new Intent(getActivity(), SelectPostionActivity.class);
+                startActivity(selectPositionIntent);
+                break;
+            default:
                 break;
         }
     }

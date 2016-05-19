@@ -64,6 +64,15 @@
             style="@style/MenuButtonsStyle"
             fab:fab_label="热度排序" />
 
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_wdistance"
+            fab:fab_size="mini"
+            style="@style/MenuButtonsStyle"
+            fab:fab_label="切换搜寻位置" />
+
     </com.github.clans.fab.FloatingActionMenu>
 
 </RelativeLayout>

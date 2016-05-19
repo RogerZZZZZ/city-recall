@@ -76,6 +76,9 @@
         <activity
             android:name=".PersonalInfoActivity"
             android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
+        <activity
+            android:name=".SelectPostionActivity"
+            android:theme="@style/XhsEmoticonsKeyboardTheme.NoTitle"/>
 </application>
 
 </manifest>

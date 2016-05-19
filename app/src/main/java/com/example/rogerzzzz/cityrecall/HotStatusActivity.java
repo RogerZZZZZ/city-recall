@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,7 @@ import com.dexafree.materialList.card.Card;
 import com.dexafree.materialList.card.CardProvider;
 import com.dexafree.materialList.card.OnActionClickListener;
 import com.dexafree.materialList.card.action.TextViewAction;
+import com.dexafree.materialList.listeners.RecyclerItemClickListener;
 import com.dexafree.materialList.view.MaterialListView;
 import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.utils.StringUtils;
@@ -49,6 +51,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 /**
  * Created by rogerzzzz on 16/5/16.
@@ -109,11 +112,31 @@ public class HotStatusActivity extends AppCompatActivity implements CloudSearch.
         initSetting();
         initMap();
         initSearchPosition();
+        initMaterailList();
     }
 
     private void initSearchPosition(){
         lp = getIntent().getParcelableExtra("position");
         searchByBound();
+    }
+
+    private void initMaterailList(){
+        materialListView.setItemAnimator(new SlideInLeftAnimator());
+        materialListView.getItemAnimator().setAddDuration(300);
+        materialListView.getItemAnimator().setRemoveDuration(300);
+
+        materialListView.addOnItemTouchListener(new RecyclerItemClickListener.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(@NonNull Card card, int position) {
+                cloudSearch.searchCloudDetailAsyn(tableId, card.getTag() + "");
+            }
+
+            @Override
+            public void onItemLongClick(@NonNull Card card, int position) {
+
+            }
+        });
     }
 
     private void initSetting(){
