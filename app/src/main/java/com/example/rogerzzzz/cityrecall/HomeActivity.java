@@ -112,8 +112,6 @@ public class HomeActivity extends AppCompatActivity {
 //                        Intent detailIntent = new Intent(HomeActivity.this, PersonalPageActivity.class);
 //                        startActivity(detailIntent);
                         break;
-                    case R.id.detailcollect_icon:
-                        break;
                     case R.id.setting_icon:
                         Intent setting_intent = new Intent(HomeActivity.this, SettingActivity.class);
                         startActivity(setting_intent);
