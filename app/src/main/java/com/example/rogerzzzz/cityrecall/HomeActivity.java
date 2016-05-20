@@ -83,6 +83,14 @@ public class HomeActivity extends AppCompatActivity {
         View headView = mNavigationView.getHeaderView(0);
         TextView username_tv = (TextView) headView.findViewById(R.id.username_tv);
         potrait_iv = (ImageView) headView.findViewById(R.id.menu_item_img);
+        potrait_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent personalPageIntent = new Intent(HomeActivity.this, PersonalPageActivity.class);
+                personalPageIntent.putExtra("username", AVUser.getCurrentUser().getUsername());
+                startActivity(personalPageIntent);
+            }
+        });
 
         AVQuery<AVUser> query = AVUser.getQuery();
         query.whereEqualTo("username", AVUser.getCurrentUser().getUsername());

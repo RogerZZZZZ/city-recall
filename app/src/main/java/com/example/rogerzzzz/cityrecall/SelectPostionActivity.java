@@ -1,12 +1,15 @@
 package com.example.rogerzzzz.cityrecall;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +24,7 @@ import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.example.rogerzzzz.cityrecall.utils.L;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,7 +32,7 @@ import butterknife.ButterKnife;
 /**
  * Created by rogerzzzz on 16/5/19.
  */
-public class SelectPostionActivity extends AppCompatActivity implements AMap.OnMapClickListener, GeocodeSearch.OnGeocodeSearchListener{
+public class SelectPostionActivity extends AppCompatActivity implements AMap.OnMapClickListener, GeocodeSearch.OnGeocodeSearchListener, View.OnClickListener{
 
     @Bind(R.id.map)
     MapView mapView;
@@ -45,6 +49,9 @@ public class SelectPostionActivity extends AppCompatActivity implements AMap.OnM
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
+    @Bind(R.id.sureBtn)
+    Button sureBtn;
+
     private AMap aMap;
     private GeocodeSearch geocodeSearch;
     private LatLng resultLatlng;
@@ -56,6 +63,9 @@ public class SelectPostionActivity extends AppCompatActivity implements AMap.OnM
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_position);
         ButterKnife.bind(this);
+        flag = getIntent().getIntExtra("flag", 0);
+        L.d("flag"+flag);
+
         toolbar.setTitle("选择位置");
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.icon_back);
@@ -69,6 +79,7 @@ public class SelectPostionActivity extends AppCompatActivity implements AMap.OnM
         initMap();
         geocodeSearch = new GeocodeSearch(this);
         geocodeSearch.setOnGeocodeSearchListener(this);
+        sureBtn.setOnClickListener(this);
     }
 
     @Override
@@ -130,5 +141,17 @@ public class SelectPostionActivity extends AppCompatActivity implements AMap.OnM
     @Override
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.sureBtn:
+                Intent intent = new Intent();
+                intent.putExtra("position", (Parcelable) resultLatlng);
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
+        }
     }
 }

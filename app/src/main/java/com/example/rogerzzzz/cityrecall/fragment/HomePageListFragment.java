@@ -26,6 +26,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MyLocationStyle;
 import com.amap.api.services.cloud.CloudItem;
@@ -51,6 +52,7 @@ import com.example.rogerzzzz.cityrecall.ReleaseRecall;
 import com.example.rogerzzzz.cityrecall.SelectPostionActivity;
 import com.example.rogerzzzz.cityrecall.StatusDetailActivity;
 import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
+import com.example.rogerzzzz.cityrecall.utils.L;
 import com.example.rogerzzzz.cityrecall.utils.StringUtils;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
@@ -330,13 +332,16 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                         initCardView();
                     } else {
                         ToastUtils.showToast(getActivity(), "无结果", Toast.LENGTH_SHORT);
+                        initCardView();
                     }
                 }
             } else {
                 ToastUtils.showToast(getActivity(), "无结果", Toast.LENGTH_SHORT);
+                initCardView();
             }
         } else {
             ToastUtils.showToast(getActivity(), "无结果", Toast.LENGTH_SHORT);
+            initCardView();
         }
     }
 
@@ -501,10 +506,26 @@ public class HomePageListFragment extends Fragment implements LocationSource, AM
                 break;
             case R.id.fab4:
                 Intent selectPositionIntent = new Intent(getActivity(), SelectPostionActivity.class);
-                startActivity(selectPositionIntent);
+                selectPositionIntent.putExtra("flag", 0);
+//                startActivity(selectPositionIntent);
+                startActivityForResult(selectPositionIntent, 1);
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 1:
+                if(resultCode == getActivity().RESULT_OK){
+                    LatLng latLng = data.getParcelableExtra("position");
+                    lp = new LatLonPoint(latLng.latitude, latLng.longitude);
+                    searchByBound();
+                    materialListView.getAdapter().clearAll();
+                }
         }
     }
 }

@@ -33,7 +33,13 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.geocoder.RegeocodeResult;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -79,7 +85,7 @@ import butterknife.ButterKnife;
 /**
  * Created by rogerzzzz on 16/3/17.
  */
-public class ReleaseRecall extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, LocationSource, AMapLocationListener {
+public class ReleaseRecall extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, LocationSource, AMapLocationListener, GeocodeSearch.OnGeocodeSearchListener {
 
     public double longtitude = 0;
     public double latitude   = 0;
@@ -124,6 +130,7 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
     private String path = null;
     private URecorder recorder;
     private UPlayer   player;
+    private GeocodeSearch geocodeSearch;
     private boolean isRecorded = false;
 
     @Override
@@ -154,6 +161,8 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
+        geocodeSearch = new GeocodeSearch(this);
+        geocodeSearch.setOnGeocodeSearchListener(this);
         toolbar.setTitle("评论列表");
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.icon_back);
@@ -195,6 +204,7 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
         iv_image.setOnClickListener(this);
         iv_add.setOnClickListener(this);
         iv_emoji.setOnClickListener(this);
+        address_tv.setOnClickListener(this);
     }
 
     @Override
@@ -246,6 +256,7 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
             ToastUtils.showToast(this, "定位没有完成", Toast.LENGTH_SHORT);
             return;
         }
+
 
         new Thread() {
             @Override
@@ -302,7 +313,6 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
                                                             }
                                                         });
                                                     }else{
-                                                        L.d("no record");
                                                         AVObject recallItem = new AVObject("ReCall");
                                                         recallItem.put("username", currentUser.getUsername());
                                                         recallItem.put("content", comment);
@@ -477,6 +487,11 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
                 stopPlayingBtn.setVisibility(View.GONE);
                 Snackbar.make(rootLayout, "停止播放", Snackbar.LENGTH_SHORT).show();
                 break;
+            case R.id.location_tv:
+                Intent selectPositionIntent = new Intent(ReleaseRecall.this, SelectPostionActivity.class);
+                selectPositionIntent.putExtra("flag", 2);
+                startActivityForResult(selectPositionIntent, 1);
+                break;
             default:
                 break;
         }
@@ -533,6 +548,14 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
                 if (resultCode != RESULT_CANCELED) {
                     imgUri.add(data.getData());
                     updateImgs();
+                }
+                break;
+            case 1:
+                if(resultCode == RESULT_OK){
+                    LatLng latLng = data.getParcelableExtra("position");
+                    latitude = latLng.latitude;
+                    longtitude = latLng.longitude;
+                    getAddress(new LatLonPoint(latitude, longtitude));
                 }
                 break;
             default:
@@ -600,5 +623,29 @@ public class ReleaseRecall extends AppCompatActivity implements View.OnClickList
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
+    }
+
+    private void getAddress(LatLonPoint latLonPoint){
+        RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 20, GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
+        geocodeSearch.getFromLocationAsyn(query);// 设置同步逆地理编码请求
+    }
+
+    @Override
+    public void onRegeocodeSearched(RegeocodeResult result, int rCode) {
+        if (rCode == 1000) {
+            if (result != null && result.getRegeocodeAddress() != null
+                    && result.getRegeocodeAddress().getFormatAddress() != null) {
+                address_tv.setText(result.getRegeocodeAddress().getFormatAddress());
+            } else {
+                Snackbar.make(rootLayout, "无结果", Snackbar.LENGTH_SHORT).show();
+            }
+        } else {
+            Snackbar.make(rootLayout, "网络出错", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+
     }
 }

@@ -50,6 +50,7 @@ import com.example.rogerzzzz.cityrecall.SelectPostionActivity;
 import com.example.rogerzzzz.cityrecall.StatusDetailActivity;
 import com.example.rogerzzzz.cityrecall.enity.ServerParameter;
 import com.example.rogerzzzz.cityrecall.utils.AMapUtil;
+import com.example.rogerzzzz.cityrecall.utils.L;
 import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 import com.example.rogerzzzz.cityrecall.widget.CloudOverlay;
@@ -326,7 +327,9 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
                 break;
             case R.id.fab4:
                 Intent selectPositionIntent = new Intent(getActivity(), SelectPostionActivity.class);
-                startActivity(selectPositionIntent);
+                selectPositionIntent.putExtra("flag", 1);
+//                startActivity(selectPositionIntent);
+                startActivityForResult(selectPositionIntent, 1);
                 break;
             default:
                 break;
@@ -463,5 +466,21 @@ public class HomePageMapFragment extends Fragment implements LocationSource, AMa
     private void resetLastMarker() {
         mlastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_gcoding)));
         mlastMarker = null;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 1:
+                if(resultCode == getActivity().RESULT_OK){
+                    LatLng latLng = data.getParcelableExtra("position");
+                    L.d("position"+latLng.latitude + ":"+latLng.longitude);
+                    lp = new LatLonPoint(latLng.latitude, latLng.longitude);
+                    searchByBound();
+                    aMap.clear();
+                }
+
+        }
     }
 }
