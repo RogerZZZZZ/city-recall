@@ -7,13 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
 import com.example.rogerzzzz.cityrecall.utils.DialogUtils;
-import com.example.rogerzzzz.cityrecall.utils.ToastUtils;
 import com.example.rogerzzzz.cityrecall.utils.UserUtils;
 
 import butterknife.Bind;
@@ -58,14 +56,14 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private void userlogin() {
         String username = username_et.getText().toString();
         String password = password_et.getText().toString();
-        UserUtils.initCloudService(LoginActivity.this);
+        UserUtils.initCloudService(LoginActivity.this);//LeanCloud的初始化
 
+        //异步登录，Android的网络请求都必须另开线程进行处理
         AVUser.logInInBackground(username, password, new LogInCallback<AVUser>() {
             @Override
             public void done(AVUser avUser, AVException e) {
                 if (e == null) {
                     //Todo successful
-                    ToastUtils.showToast(LoginActivity.this, "login success", Toast.LENGTH_SHORT);
                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                     startActivity(intent);
                 } else {
@@ -75,6 +73,5 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 }
             }
         });
-
     }
 }

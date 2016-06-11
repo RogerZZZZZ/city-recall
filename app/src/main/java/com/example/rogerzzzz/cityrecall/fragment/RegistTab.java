@@ -100,7 +100,7 @@ public class RegistTab extends Fragment implements View.OnClickListener {
         if (!TextUtils.isEmpty(emailAddress.getText().toString())) {
             emailAddressStr = emailAddress.getText().toString();
         }
-        UserUtils.initCloudService(getActivity());
+        UserUtils.initCloudService(getActivity());//LeanCloud初始化
         user = UserUtils.userRegist(usernameStr, passwordStr, emailAddressStr, getActivity());
         user.signUpInBackground(new SignUpCallback() {
             /*

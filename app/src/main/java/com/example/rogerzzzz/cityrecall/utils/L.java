@@ -13,4 +13,10 @@ public class L {
             Log.d("debug", debugContent);
         }
     }
+
+    public static void e(String debugContent){
+        if(isDebug){
+            Log.e("debug_error", debugContent);
+        }
+    }
 }
